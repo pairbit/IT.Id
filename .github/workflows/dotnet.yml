@@ -1,0 +1,37 @@
+name: .NET
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    env:
+      TAG_COMMIT: true
+      INCLUDE_SYMBOLS: true
+      NUGET_KEY: ${{secrets.NUGET}}
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: |
+            6.0.x
+            7.0.x
+    
+      - name: Install dependencies
+        run: dotnet restore IT.Id.sln
+    
+      - name: Build
+        run: dotnet build IT.Id.sln --configuration Release --no-restore 
+    
+      - name: Publish IT.Id
+        uses: pairbit/publish-nuget@v2.5.7
+        with:
+            PROJECT_FILE_PATH: src/IT.Id/IT.Id.csproj
