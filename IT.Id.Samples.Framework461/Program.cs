@@ -18,7 +18,7 @@ namespace Framework461
             var id2 = new Id(id.Timestamp, id.B, id.C);
             var id3 = new Id(id.Timestamp, id.Machine, id.Pid, id.Increment);
 
-            if (!id.Equals(id2) || !id.Equals(id3)) throw new InvalidOperationException();
+            if (!id.Equals(id2) || !id.Equals(id3) || id.Machine != Id.MachineHash24) throw new InvalidOperationException();
 
             Console.WriteLine($"{"ToString",16} | {"Created",26} | {"Machine",9} | {"Pid",6} | {"Increment"}");
             Console.WriteLine($"{id} | {id.Created.ToLocalTime()} | {id.Machine,9} | {id.Pid,6} | {id.Increment}");
