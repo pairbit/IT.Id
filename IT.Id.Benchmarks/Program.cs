@@ -19,6 +19,12 @@ using System.Text.Json.Serialization;
 var id = Id.Parse("62A84F674031E78D474FE23F");
 //var id = Id.New();
 
+var xxh64 = id.Hash64();
+
+var xxh64_2 = id.Hash64_Fast();
+
+if (xxh64 != xxh64_2) throw new InvalidOperationException();
+
 #region Json
 
 var serializerOptions = new JsonSerializerOptions();

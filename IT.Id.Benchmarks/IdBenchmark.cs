@@ -41,8 +41,11 @@ public class IdBenchmark
     //[Benchmark]
     public UInt32 Id_Hash32() => _id.Hash32();
 
-    //[Benchmark]
+    [Benchmark]
     public UInt64 Id_Hash64() => _id.Hash64();
+
+    [Benchmark]
+    public UInt64 Id_Hash64_2() => _id.Hash64_Fast();
 
     //[Benchmark]
     public String Id_Encode_HexLower() => _id.ToString(Idf.Hex);
@@ -80,7 +83,7 @@ public class IdBenchmark
     //[Benchmark]
     public System.Id Id_Decode_Base64Url() => System.Id.Parse(_idBase64Url);
 
-    [Benchmark]
+    //[Benchmark]
     public String Id_Encode_Base85() => _id.ToString(Idf.Base85);
 
     //[Benchmark]

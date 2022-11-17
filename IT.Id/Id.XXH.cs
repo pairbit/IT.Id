@@ -6,46 +6,50 @@ public readonly partial struct Id
 
     public UInt64 Hash64() => XXH64.DigestOf(ToByteArray());
 
-    //public unsafe UInt64 Hash64_Fast()
-    //{
-    //    ulong h64 = XXH64.PRIME64_5 + 12;
+    public unsafe UInt64 Hash64_Fast()
+    {
+        ulong h64 = XXH64.PRIME64_5 + 12;
 
-    //    fixed (byte* p64 = new[] {
-    //        (byte)(_timestamp >> 24),
-    //        (byte)(_timestamp >> 16),
-    //        (byte)(_timestamp >> 8),
-    //        (byte)(_timestamp),
-    //        (byte)(_b >> 24),
-    //        (byte)(_b >> 16),
-    //        (byte)(_b >> 8),
-    //        (byte)(_b)
-    //    })
-    //    {
-    //        var uint64 = XXH.XXH_read64(p64);//7773248848437546850
-    //        h64 ^= XXH64.XXH64_round(0, uint64);
-    //    }
+        fixed (byte* bytesP = stackalloc[] {
+            (byte)(_timestamp >> 24),
+            (byte)(_timestamp >> 16),
+            (byte)(_timestamp >> 8),
+            (byte)(_timestamp),
+            (byte)(_b >> 24),
+            (byte)(_b >> 16),
+            (byte)(_b >> 8),
+            (byte)(_b),
+            (byte)(_c >> 24),
+            (byte)(_c >> 16),
+            (byte)(_c >> 8),
+            (byte)(_c)
+        })
+        {
+            var uint64 = *(ulong*)bytesP;//10225195631648942178
 
-    //    h64 = XXH64.XXH_rotl64(h64, 27) * XXH64.PRIME64_1 + XXH64.PRIME64_4;
+            var x = uint64 * XXH64.PRIME64_2;
 
-    //    fixed (byte* p32 = new[] {
-    //        (byte)(_c >> 24),
-    //        (byte)(_c >> 16),
-    //        (byte)(_c >> 8),
-    //        (byte)(_c)
-    //    })
-    //    {
-    //        var uint32 = XXH.XXH_read32(p32);//2928914477
-    //        h64 ^= uint32 * XXH64.PRIME64_1;
-    //    }
+            h64 ^= (x << 31 | x >> 33) * XXH64.PRIME64_1;
 
-    //    h64 = XXH64.XXH_rotl64(h64, 23) * XXH64.PRIME64_2 + XXH64.PRIME64_3;
+            h64 = (h64 << 27 | h64 >> 37) * XXH64.PRIME64_1 + XXH64.PRIME64_4;
 
-    //    h64 ^= h64 >> 33;
-    //    h64 *= XXH64.PRIME64_2;
-    //    h64 ^= h64 >> 29;
-    //    h64 *= XXH64.PRIME64_3;
-    //    h64 ^= h64 >> 32;
+            var uint32 = *(uint*)(bytesP + 8);//1071796039
 
-    //    return h64;
-    //}
+            h64 ^= uint32 * XXH64.PRIME64_1;
+        }
+
+        h64 = (h64 << 23 | h64 >> 41) * XXH64.PRIME64_2 + XXH64.PRIME64_3;
+
+        //h64 ^= h64 >> 33;
+        //h64 *= XXH64.PRIME64_2;
+        //h64 ^= h64 >> 29;
+        //h64 *= XXH64.PRIME64_3;
+        //h64 ^= h64 >> 32;
+
+        h64 = (h64 ^ (h64 >> 33)) * XXH64.PRIME64_2;
+        h64 = (h64 ^ (h64 >> 29)) * XXH64.PRIME64_3;
+        h64 = h64 ^ (h64 >> 32);
+
+        return h64;
+    }
 }
