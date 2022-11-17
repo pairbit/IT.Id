@@ -10,7 +10,7 @@ internal static class Base32
     private const Int32 LookupSize = 43;
 
     private static readonly int[] _lookupValues;
-    private static readonly string ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+    internal static readonly string ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
 
     static Base32()
     {
@@ -50,23 +50,6 @@ internal static class Base32
 //        }
 //#endif
 //    }
-
-    public static String Encode(ReadOnlySpan<byte> bytes)
-    {
-        var result = new string((char)0, 20);
-
-        unsafe
-        {
-            fixed (byte* pInput = bytes)
-            fixed (char* pOutput = result)
-            fixed (char* pAlphabet = ALPHABET)
-            {
-                ToBase32GroupsUnsafe(pInput, pOutput, pAlphabet);
-            }
-        }
-
-        return result;
-    }
 
     public static unsafe void Encode(ReadOnlySpan<byte> input, Span<char> output)
     {
