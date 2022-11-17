@@ -34,4 +34,4 @@ jobs:
       - name: Publish IT.Id
         uses: pairbit/publish-nuget@v2.5.7
         with:
-            PROJECT_FILE_PATH: src/IT.Id/IT.Id.csproj
+            PROJECT_FILE_PATH: IT.Id/IT.Id.csproj
