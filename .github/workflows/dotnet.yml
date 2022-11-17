@@ -27,7 +27,7 @@ jobs:
         run: dotnet build IT.Id.sln --configuration Release --no-restore 
     
       - name: Publish IT.Id
-        uses: pairbit/publish-nuget@v2.5.7
+        uses: pairbit/publish-nuget@v2.5.8
         with:
             PROJECT_FILE_PATH: IT.Id/IT.Id.csproj
             NUGET_KEY: ${{secrets.NUGET}}
