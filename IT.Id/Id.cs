@@ -16,6 +16,8 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 , ISpanFormattable
 #endif
 {
+    #region Fields
+
     //DateTime.UnixEpoch
     private static readonly DateTime _unixEpoch = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
     private static readonly Int64 _unixEpochTicks = _unixEpoch.Ticks;
@@ -24,6 +26,11 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     private static readonly Int32 _machinePid = (GetMachineXXHash() << 8) | ((_pid >> 8) & 0xff);
     private static readonly Int64 _random = CalculateRandomValue();
     private static Int32 _staticIncrement = new Random().Next();
+
+    /// <summary>
+    /// First 3 bytes of machine name hash
+    /// </summary>
+    public static readonly Int32 MachineHash24 = GetMachineXXHash();
     public static readonly Id Empty = default;
     public static readonly Id Min = new(0, 0, 0);
     public static readonly Id Max = new(-1, -1, -1);
@@ -36,6 +43,8 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     [FieldOffset(8)]
     internal readonly Int32 _c;
+
+    #endregion Fields
 
     #region Ctors
 

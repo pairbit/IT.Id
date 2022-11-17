@@ -44,7 +44,9 @@ if (myobj == null || !myobj.Id.Equals(id)) throw new InvalidOperationException()
 var idCopy2 = new Id(id.Timestamp, id.B, id.C);
 var idCopy3 = new Id(id.Timestamp, id.Machine, id.Pid, id.Increment);
 
-if (!id.Equals(idCopy2) || !id.Equals(idCopy3)) throw new InvalidOperationException();
+var machine = Id.New().Machine;
+
+if (!id.Equals(idCopy2) || !id.Equals(idCopy3) || machine != Id.MachineHash24) throw new InvalidOperationException();
 
 var process = Process.GetCurrentProcess();
 
