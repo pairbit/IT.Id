@@ -11,11 +11,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    env:
-      TAG_COMMIT: true
-      INCLUDE_SYMBOLS: true
-      NUGET_KEY: ${{secrets.NUGET}}
-
     steps:
       - uses: actions/checkout@v3
       - name: Setup .NET
@@ -35,3 +30,6 @@ jobs:
         uses: pairbit/publish-nuget@v2.5.7
         with:
             PROJECT_FILE_PATH: IT.Id/IT.Id.csproj
+            NUGET_KEY: ${{secrets.NUGET}}
+            INCLUDE_SYMBOLS: true
+            TAG_COMMIT: true
