@@ -38,14 +38,11 @@ public class IdBenchmark
         _ulidString = Ulid_Encode();
     }
 
-    //[Benchmark]
+    [Benchmark]
     public UInt32 Id_Hash32() => _id.Hash32();
 
     [Benchmark]
     public UInt64 Id_Hash64() => _id.Hash64();
-
-    [Benchmark]
-    public UInt64 Id_Hash64_2() => _id.Hash64_Fast();
 
     //[Benchmark]
     public String Id_Encode_HexLower() => _id.ToString(Idf.Hex);

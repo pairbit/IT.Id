@@ -19,12 +19,6 @@ using System.Text.Json.Serialization;
 var id = Id.Parse("62A84F674031E78D474FE23F");
 //var id = Id.New();
 
-var xxh64 = id.Hash64();
-
-var xxh64_2 = id.Hash64_Fast();
-
-if (xxh64 != xxh64_2) throw new InvalidOperationException();
-
 #region Json
 
 var serializerOptions = new JsonSerializerOptions();
@@ -107,17 +101,17 @@ if (!id1.Equals(id2) || !id1.Equals(id3) || !id1.Equals(id4) ||
 
 Console.WriteLine("Ok");
 
-
 var idBytes = id.ToByteArray();
-
-//var lengths = new List<Int32>();
 
 //for (int i = 0; i < 10000; i++)
 //{
 //    var id58 = Id.New();
-//    var bitcoin = SimpleBase.Base58.Bitcoin.Encode(id.ToByteArray());
 
-//    if (!lengths.Contains(bitcoin.Length)) lengths.Add(bitcoin.Length);
+//    var xxh64_a = id58.Hash64();
+
+//    var xxh64_b = id58.Hash64_slow();
+
+//    if (xxh64_a != xxh64_b) throw new InvalidOperationException();
 //}
 
 var f1 = id.ToString(Idf.Base64Url);
