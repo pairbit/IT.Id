@@ -246,7 +246,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         //17 => ParseBase58(value),
         //18 => ParsePath2(value),
         //19 => ParsePath3(value),
-        //20 => ParseBase32(value),
+        20 => ParseBase32(value),
         24 => ParseHex(value),
         _ => throw new FormatException("The id must be between 15 and 20 or 24")
     };
@@ -386,6 +386,13 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         {
             ToBase64(destination, Base64.bytesUrl);
             charsWritten = 16;
+            return true;
+        }
+
+        if (format == Idf.Base32 && destination.Length >= 20)
+        {
+            ToBase32(destination);
+            charsWritten = 20;
             return true;
         }
 
