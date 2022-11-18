@@ -107,11 +107,11 @@ var idBytes = id.ToByteArray();
 //{
 //    var id58 = Id.New();
 
-//    var xxh64_a = id58.Hash64();
+//    var a = id58.Hash32();
 
-//    var xxh64_b = id58.XXH64();
+//    var b = id58.XXH32();
 
-//    if (xxh64_a != xxh64_b) throw new InvalidOperationException();
+//    if (a != b) throw new InvalidOperationException();
 //}
 
 var f1 = id.ToString(Idf.Base64Url);
