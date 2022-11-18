@@ -105,13 +105,11 @@ var idBytes = id.ToByteArray();
 
 //for (int i = 0; i < 10000; i++)
 //{
-//    var id58 = Id.New();
+//    var idn = Id.New();
 
-//    var a = id58.Hash32();
+//    if (idn.XXH32() != XXH32.DigestOf(idn.ToByteArray())) throw new InvalidOperationException("XXH32");
 
-//    var b = id58.XXH32();
-
-//    if (a != b) throw new InvalidOperationException();
+//    if (idn.XXH64() != XXH64.DigestOf(idn.ToByteArray())) throw new InvalidOperationException("XXH64");
 //}
 
 var f1 = id.ToString(Idf.Base64Url);
