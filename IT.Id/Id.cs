@@ -54,7 +54,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (bytes.Length != 12) throw new ArgumentException("Byte array must be 12 bytes long", nameof(bytes));
 
-        FromByteArray(bytes, 0, out _timestamp, out _b, out _c);
+        _timestamp = (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3];
+        _b = (bytes[4] << 24) | (bytes[5] << 16) | (bytes[6] << 8) | bytes[7];
+        _c = (bytes[8] << 24) | (bytes[9] << 16) | (bytes[10] << 8) | bytes[11];
     }
 
     public Id(DateTime timestamp, Int32 machine, Int16 pid, Int32 increment)

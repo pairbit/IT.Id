@@ -1,4 +1,7 @@
-﻿namespace System;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+namespace System;
 
 public readonly partial struct Id
 {
@@ -192,25 +195,129 @@ public readonly partial struct Id
     {
         if (value.Length != 16) throw new ArgumentException("String must be 16 characters long", nameof(value));
 
-        Span<Byte> bytes = stackalloc Byte[12];
+        ReadOnlySpan<sbyte> mapSpan = Base64._decodingMap;
+        ref char src = ref MemoryMarshal.GetReference(value);
+        ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
 
-        Base64.Parse(value, bytes);
+        int i0 = Unsafe.Add(ref src, 0);
+        int i1 = Unsafe.Add(ref src, 1);
+        int i2 = Unsafe.Add(ref src, 2);
+        int i3 = Unsafe.Add(ref src, 3);
 
-        FromByteArray(bytes, 0, out var timestamp, out var b, out var c);
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw new FormatException();
 
-        return new Id(timestamp, b, c);
+        i0 = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+
+        if (i0 < 0) throw new FormatException();
+
+        var timestamp = (byte)(i0 >> 16) << 24 | (byte)(i0 >> 8) << 16 | (byte)i0 << 8;
+
+        i0 = Unsafe.Add(ref src, 4);
+        i1 = Unsafe.Add(ref src, 5);
+        i2 = Unsafe.Add(ref src, 6);
+        i3 = Unsafe.Add(ref src, 7);
+
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw new FormatException();
+
+        i0 = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+
+        if (i0 < 0) throw new FormatException();
+
+        timestamp |= (byte)(i0 >> 16);
+
+        var b = (byte)(i0 >> 8) << 24 | (byte)i0 << 16;
+
+        i0 = Unsafe.Add(ref src, 8);
+        i1 = Unsafe.Add(ref src, 9);
+        i2 = Unsafe.Add(ref src, 10);
+        i3 = Unsafe.Add(ref src, 11);
+
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw new FormatException();
+
+        i0 = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+
+        if (i0 < 0) throw new FormatException();
+
+        b |= (byte)(i0 >> 16) << 8 | (byte)(i0 >> 8);
+
+        var c = (byte)i0 << 24;
+
+        i0 = Unsafe.Add(ref src, 12);
+        i1 = Unsafe.Add(ref src, 13);
+        i2 = Unsafe.Add(ref src, 14);
+        i3 = Unsafe.Add(ref src, 15);
+
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw new FormatException();
+
+        i0 = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+
+        if (i0 < 0) throw new FormatException();
+
+        return new Id(timestamp, b, c | i0);
     }
 
     private static Id ParseBase64(ReadOnlySpan<Byte> value)
     {
         if (value.Length != 16) throw new ArgumentException("Id must be 16 bytes long", nameof(value));
 
-        Span<Byte> bytes = stackalloc Byte[12];
+        ReadOnlySpan<sbyte> mapSpan = Base64._decodingMap;
+        ref byte src = ref MemoryMarshal.GetReference(value);
+        ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
 
-        Base64.Parse(value, bytes);
+        int i0 = Unsafe.Add(ref src, 0);
+        int i1 = Unsafe.Add(ref src, 1);
+        int i2 = Unsafe.Add(ref src, 2);
+        int i3 = Unsafe.Add(ref src, 3);
 
-        FromByteArray(bytes, 0, out var timestamp, out var b, out var c);
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw new FormatException();
 
-        return new Id(timestamp, b, c);
+        i0 = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+
+        if (i0 < 0) throw new FormatException();
+
+        var timestamp = (byte)(i0 >> 16) << 24 | (byte)(i0 >> 8) << 16 | (byte)i0 << 8;
+
+        i0 = Unsafe.Add(ref src, 4);
+        i1 = Unsafe.Add(ref src, 5);
+        i2 = Unsafe.Add(ref src, 6);
+        i3 = Unsafe.Add(ref src, 7);
+
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw new FormatException();
+
+        i0 = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+
+        if (i0 < 0) throw new FormatException();
+
+        timestamp |= (byte)(i0 >> 16);
+
+        var b = (byte)(i0 >> 8) << 24 | (byte)i0 << 16;
+
+        i0 = Unsafe.Add(ref src, 8);
+        i1 = Unsafe.Add(ref src, 9);
+        i2 = Unsafe.Add(ref src, 10);
+        i3 = Unsafe.Add(ref src, 11);
+
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw new FormatException();
+
+        i0 = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+
+        if (i0 < 0) throw new FormatException();
+
+        b |= (byte)(i0 >> 16) << 8 | (byte)(i0 >> 8);
+
+        var c = (byte)i0 << 24;
+
+        i0 = Unsafe.Add(ref src, 12);
+        i1 = Unsafe.Add(ref src, 13);
+        i2 = Unsafe.Add(ref src, 14);
+        i3 = Unsafe.Add(ref src, 15);
+
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw new FormatException();
+
+        i0 = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+
+        if (i0 < 0) throw new FormatException();
+
+        return new Id(timestamp, b, c | i0);
     }
 }

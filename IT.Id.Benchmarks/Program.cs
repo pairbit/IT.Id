@@ -22,7 +22,7 @@ var id = Id.Parse("62A84F674031E78D474FE23F");
 #region Json
 
 var serializerOptions = new JsonSerializerOptions();
-serializerOptions.Converters.Add(new IdJsonConverter { Format = Idf.Base85 });
+serializerOptions.Converters.Add(new IdJsonConverter { Format = Idf.Base64 });
 serializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
 
 var ids = JsonSerializer.Serialize(id, serializerOptions);
@@ -111,11 +111,10 @@ for (int i = 0; i < 10000; i++)
     //if (idn.XXH64() != XXH64.DigestOf(idn.ToByteArray())) throw new InvalidOperationException("XXH64");
 
     if (Id.Parse(idn.ToString(Idf.Base32)) != idn) throw new InvalidOperationException("Base32");
-
     if (Id.Parse(idn.ToString(Idf.HexUpper)) != idn) throw new InvalidOperationException("HexUpper");
     if (Id.Parse(idn.ToString(Idf.Hex)) != idn) throw new InvalidOperationException("Hex");
-
     if (Id.Parse(idn.ToString(Idf.Base85)) != idn) throw new InvalidOperationException("Base85");
+    if (Id.Parse(idn.ToString(Idf.Base64)) != idn) throw new InvalidOperationException("Base64");
 }
 
 var f1 = id.ToString(Idf.Base64Url);
