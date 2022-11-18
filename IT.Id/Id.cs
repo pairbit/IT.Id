@@ -398,7 +398,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Base85 && destination.Length >= 15)
         {
-            Base85.Encode(ToByteArray(), destination);
+            ToBase85(destination);
             charsWritten = 15;
             return true;
         }

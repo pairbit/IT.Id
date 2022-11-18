@@ -4,17 +4,17 @@ namespace System;
 
 internal static class Base85
 {
-    internal const uint U85P1 = 85u;
-    internal const uint U85P2 = 85u * 85u;
-    internal const uint U85P3 = 85u * 85u * 85u;
-    internal const uint U85P4 = 85u * 85u * 85u * 85u;
+    private const uint U85P1 = 85u;
+    private const uint U85P2 = 85u * 85u;
+    private const uint U85P3 = 85u * 85u * 85u;
+    private const uint U85P4 = 85u * 85u * 85u * 85u;
 
 	private const string Z85Xml = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?_~|()[]{}@%$#";
 
 	private const int MAX_DIGIT = 255;
 
-	private static readonly byte[] _byte2Byte = new byte[MAX_DIGIT + 1];
-	private static readonly byte[] _char2Byte = new byte[MAX_DIGIT + 1];
+    internal static readonly byte[] _byte2Byte = new byte[MAX_DIGIT + 1];
+    internal static readonly byte[] _char2Byte = new byte[MAX_DIGIT + 1];
     internal static readonly char[] _byte2Char = new char[MAX_DIGIT + 1];
 	private static readonly bool[] _validChar = new bool[MAX_DIGIT + 1];
 
