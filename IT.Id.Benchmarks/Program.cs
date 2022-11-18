@@ -22,7 +22,7 @@ var id = Id.Parse("62A84F674031E78D474FE23F");
 #region Json
 
 var serializerOptions = new JsonSerializerOptions();
-serializerOptions.Converters.Add(new IdJsonConverter { Format = Idf.Base85 });
+serializerOptions.Converters.Add(new IdJsonConverter { Format = Idf.Hex });
 serializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
 
 var ids = JsonSerializer.Serialize(id, serializerOptions);
@@ -103,14 +103,20 @@ Console.WriteLine("Ok");
 
 var idBytes = id.ToByteArray();
 
-//for (int i = 0; i < 10000; i++)
-//{
-//    var idn = Id.New();
+for (int i = 0; i < 10000; i++)
+{
+    var idn = Id.New();
+    //if (idn.XXH32() != XXH32.DigestOf(idn.ToByteArray())) throw new InvalidOperationException("XXH32");
 
-//    if (idn.XXH32() != XXH32.DigestOf(idn.ToByteArray())) throw new InvalidOperationException("XXH32");
+    //if (idn.XXH64() != XXH64.DigestOf(idn.ToByteArray())) throw new InvalidOperationException("XXH64");
 
-//    if (idn.XXH64() != XXH64.DigestOf(idn.ToByteArray())) throw new InvalidOperationException("XXH64");
-//}
+    if (Id.Parse(idn.ToString(Idf.Base32)) != idn) throw new InvalidOperationException("Base32");
+
+    if (Id.Parse(idn.ToString(Idf.HexUpper)) != idn) throw new InvalidOperationException("HexUpper");
+    if (Id.Parse(idn.ToString(Idf.Hex)) != idn) throw new InvalidOperationException("Hex");
+
+
+}
 
 var f1 = id.ToString(Idf.Base64Url);
 var f2 = id.ToString("u64");

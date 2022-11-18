@@ -63,16 +63,46 @@ public readonly partial struct Id
         Base32.Encode(ToByteArray(), destination);
     }
 
-    private static Id ParseBase32(ReadOnlySpan<Char> value)
+    private static unsafe Id ParseBase32(ReadOnlySpan<Char> encoded)
     {
-        if (value.Length != 20) throw new ArgumentException("String must be 20 characters long", nameof(value));
+        if (encoded.Length != 20) throw new ArgumentException("String must be 20 characters long", nameof(encoded));
 
-        Span<Byte> bytes = stackalloc Byte[12];
+        fixed (char* pEncoded = encoded)
+        {
+            ulong value = Base32.GetByte(pEncoded[0]);
+            value = (value << 5) | Base32.GetByte(pEncoded[1]);
+            value = (value << 5) | Base32.GetByte(pEncoded[2]);
+            value = (value << 5) | Base32.GetByte(pEncoded[3]);
+            value = (value << 5) | Base32.GetByte(pEncoded[4]);
+            value = (value << 5) | Base32.GetByte(pEncoded[5]);
+            value = (value << 5) | Base32.GetByte(pEncoded[6]);
+            value = (value << 5) | Base32.GetByte(pEncoded[7]);
 
-        Base32.Decode(value, bytes);
+            var timestamp = (byte)(value >> 32) << 24 | (byte)(value >> 24) << 16 | (byte)(value >> 16) << 8 | (byte)(value >> 8);
 
-        FromByteArray(bytes, 0, out var timestamp, out var b, out var c);
+            var b = (int)(byte)value;
 
-        return new Id(timestamp, b, c);
+            value = (value << 5) | Base32.GetByte(pEncoded[8]);
+            value = (value << 5) | Base32.GetByte(pEncoded[9]);
+            value = (value << 5) | Base32.GetByte(pEncoded[10]);
+            value = (value << 5) | Base32.GetByte(pEncoded[11]);
+            value = (value << 5) | Base32.GetByte(pEncoded[12]);
+            value = (value << 5) | Base32.GetByte(pEncoded[13]);
+            value = (value << 5) | Base32.GetByte(pEncoded[14]);
+            value = (value << 5) | Base32.GetByte(pEncoded[15]);
+
+            b = b << 24 | (byte)(value >> 32) << 16 | (byte)(value >> 24) << 8 | (byte)(value >> 16);
+
+            var c = (byte)(value >> 8) << 24 | (byte)value << 16;
+
+            value = Base32.GetByte(pEncoded[16]);
+            value = (value << 5) | Base32.GetByte(pEncoded[17]);
+            value = (value << 5) | Base32.GetByte(pEncoded[18]);
+            value = (value << 5) | Base32.GetByte(pEncoded[19]);
+
+            c |= (byte)(value >> 12) << 8 | (byte)(value >> 4);
+
+            return new Id(timestamp, b, c);
+        }
     }
 }

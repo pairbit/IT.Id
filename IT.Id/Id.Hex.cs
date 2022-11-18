@@ -98,11 +98,24 @@ public readonly partial struct Id
     {
         if (value.Length != 24) throw new ArgumentException("String must be 24 characters long", nameof(value));
 
-        Span<Byte> bytes = stackalloc Byte[12];
+        var map = Hex._charToHex;
 
-        Hex.Decode(value, bytes);
+        var b0 = (byte)((map[value[0]] << 4) | map[value[1]]);
+        var b1 = (byte)((map[value[2]] << 4) | map[value[3]]);
+        var b2 = (byte)((map[value[4]] << 4) | map[value[5]]);
+        var b3 = (byte)((map[value[6]] << 4) | map[value[7]]);
+        var b4 = (byte)((map[value[8]] << 4) | map[value[9]]);
+        var b5 = (byte)((map[value[10]] << 4) | map[value[11]]);
+        var b6 = (byte)((map[value[12]] << 4) | map[value[13]]);
+        var b7 = (byte)((map[value[14]] << 4) | map[value[15]]);
+        var b8 = (byte)((map[value[16]] << 4) | map[value[17]]);
+        var b9 = (byte)((map[value[18]] << 4) | map[value[19]]);
+        var b10 = (byte)((map[value[20]] << 4) | map[value[21]]);
+        var b11 = (byte)((map[value[22]] << 4) | map[value[23]]);
 
-        FromByteArray(bytes, 0, out var timestamp, out var b, out var c);
+        var timestamp = b0 << 24 | b1 << 16 | b2 << 8 | b3;
+        var b = b4 << 24 | b5 << 16 | b6 << 8 | b7;
+        var c = b8 << 24 | b9 << 16 | b10 << 8 | b11;
 
         return new Id(timestamp, b, c);
     }
@@ -111,11 +124,24 @@ public readonly partial struct Id
     {
         if (value.Length != 24) throw new ArgumentException("String must be 24 characters long", nameof(value));
 
-        Span<Byte> bytes = stackalloc Byte[12];
+        var map = Hex._charToHex;
 
-        Hex.Decode(value, bytes);
+        var b0 = (byte)((map[value[0]] << 4) | map[value[1]]);
+        var b1 = (byte)((map[value[2]] << 4) | map[value[3]]);
+        var b2 = (byte)((map[value[4]] << 4) | map[value[5]]);
+        var b3 = (byte)((map[value[6]] << 4) | map[value[7]]);
+        var b4 = (byte)((map[value[8]] << 4) | map[value[9]]);
+        var b5 = (byte)((map[value[10]] << 4) | map[value[11]]);
+        var b6 = (byte)((map[value[12]] << 4) | map[value[13]]);
+        var b7 = (byte)((map[value[14]] << 4) | map[value[15]]);
+        var b8 = (byte)((map[value[16]] << 4) | map[value[17]]);
+        var b9 = (byte)((map[value[18]] << 4) | map[value[19]]);
+        var b10 = (byte)((map[value[20]] << 4) | map[value[21]]);
+        var b11 = (byte)((map[value[22]] << 4) | map[value[23]]);
 
-        FromByteArray(bytes, 0, out var timestamp, out var b, out var c);
+        var timestamp = b0 << 24 | b1 << 16 | b2 << 8 | b3;
+        var b = b4 << 24 | b5 << 16 | b6 << 8 | b7;
+        var c = b8 << 24 | b9 << 16 | b10 << 8 | b11;
 
         return new Id(timestamp, b, c);
     }

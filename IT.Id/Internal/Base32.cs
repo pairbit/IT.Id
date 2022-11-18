@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace System;
 
@@ -33,23 +34,23 @@ internal static class Base32
         _lookupValues = table;
     }
 
-//    public static String Encode6(ReadOnlySpan<byte> bytes)
-//    {
-//#if NETSTANDARD2_0
-//        throw new NotImplementedException();
-//#else
-//        unsafe
-//        {
-//            fixed (byte* dataPtr = bytes)
-//            {
-//                return String.Create(20, (IntPtr)dataPtr, (encoded, state) =>
-//                {
-//                    Encode(new ReadOnlySpan<Byte>((Byte*)state, 12), encoded);
-//                });
-//            }
-//        }
-//#endif
-//    }
+    //    public static String Encode6(ReadOnlySpan<byte> bytes)
+    //    {
+    //#if NETSTANDARD2_0
+    //        throw new NotImplementedException();
+    //#else
+    //        unsafe
+    //        {
+    //            fixed (byte* dataPtr = bytes)
+    //            {
+    //                return String.Create(20, (IntPtr)dataPtr, (encoded, state) =>
+    //                {
+    //                    Encode(new ReadOnlySpan<Byte>((Byte*)state, 12), encoded);
+    //                });
+    //            }
+    //        }
+    //#endif
+    //    }
 
     public static unsafe void Encode(ReadOnlySpan<byte> input, Span<char> output)
     {
@@ -112,14 +113,14 @@ internal static class Base32
 
     private static unsafe void ToBytesGroupsUnsafe(char* pEncoded, byte* pOutput)
     {
-        ulong value = GetByte(*pEncoded++ - LowCode);
-        value = (value << 5) | GetByte(*pEncoded++ - LowCode);
-        value = (value << 5) | GetByte(*pEncoded++ - LowCode);
-        value = (value << 5) | GetByte(*pEncoded++ - LowCode);
-        value = (value << 5) | GetByte(*pEncoded++ - LowCode);
-        value = (value << 5) | GetByte(*pEncoded++ - LowCode);
-        value = (value << 5) | GetByte(*pEncoded++ - LowCode);
-        value = (value << 5) | GetByte(*pEncoded++ - LowCode);
+        ulong value = GetByte(*pEncoded++);
+        value = (value << 5) | GetByte(*pEncoded++);
+        value = (value << 5) | GetByte(*pEncoded++);
+        value = (value << 5) | GetByte(*pEncoded++);
+        value = (value << 5) | GetByte(*pEncoded++);
+        value = (value << 5) | GetByte(*pEncoded++);
+        value = (value << 5) | GetByte(*pEncoded++);
+        value = (value << 5) | GetByte(*pEncoded++);
 
         *pOutput++ = (byte)(value >> 32);
         *pOutput++ = (byte)(value >> 24);
@@ -127,14 +128,14 @@ internal static class Base32
         *pOutput++ = (byte)(value >> 8);
         *pOutput++ = (byte)value;
 
-        value = (value << 5) | GetByte(*pEncoded++ - LowCode);
-        value = (value << 5) | GetByte(*pEncoded++ - LowCode);
-        value = (value << 5) | GetByte(*pEncoded++ - LowCode);
-        value = (value << 5) | GetByte(*pEncoded++ - LowCode);
-        value = (value << 5) | GetByte(*pEncoded++ - LowCode);
-        value = (value << 5) | GetByte(*pEncoded++ - LowCode);
-        value = (value << 5) | GetByte(*pEncoded++ - LowCode);
-        value = (value << 5) | GetByte(*pEncoded++ - LowCode);
+        value = (value << 5) | GetByte(*pEncoded++);
+        value = (value << 5) | GetByte(*pEncoded++);
+        value = (value << 5) | GetByte(*pEncoded++);
+        value = (value << 5) | GetByte(*pEncoded++);
+        value = (value << 5) | GetByte(*pEncoded++);
+        value = (value << 5) | GetByte(*pEncoded++);
+        value = (value << 5) | GetByte(*pEncoded++);
+        value = (value << 5) | GetByte(*pEncoded++);
 
         *pOutput++ = (byte)(value >> 32);
         *pOutput++ = (byte)(value >> 24);
@@ -142,26 +143,27 @@ internal static class Base32
         *pOutput++ = (byte)(value >> 8);
         *pOutput++ = (byte)value;
 
-        value = GetByte(*pEncoded++ - LowCode);
-        value = (value << 5) | GetByte(*pEncoded++ - LowCode);
-        value = (value << 5) | GetByte(*pEncoded++ - LowCode);
-        value = (value << 5) | GetByte(*pEncoded - LowCode);
+        value = GetByte(*pEncoded++);
+        value = (value << 5) | GetByte(*pEncoded++);
+        value = (value << 5) | GetByte(*pEncoded++);
+        value = (value << 5) | GetByte(*pEncoded);
 
         *pOutput++ = (byte)(value >> 12);
         *pOutput = (byte)(value >> 4);
     }
 
-    private static Byte GetByte(int lookupIndex)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static Byte GetByte(int lookupIndex)
     {
-        if (lookupIndex < 0 || lookupIndex >= LookupSize)
-            throw new FormatException();
+        lookupIndex -= LowCode;
+
+        if (lookupIndex < 0 || lookupIndex >= LookupSize) throw new FormatException();
 
         //int item = *(pLookup + lookupIndex);
 
         var item = _lookupValues[lookupIndex];
 
-        if (item == LookupTableNullItem)
-            throw new FormatException();
+        if (item == LookupTableNullItem) throw new FormatException();
 
         return (byte)item;
     }
