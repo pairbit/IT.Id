@@ -4,11 +4,11 @@ namespace System;
 
 internal static unsafe class XXH64
 {
-    internal const ulong PRIME64_1 = 11400714785074694791ul;
-    internal const ulong PRIME64_2 = 14029467366897019727ul;
-    internal const ulong PRIME64_3 = 1609587929392839161ul;
-    internal const ulong PRIME64_4 = 9650029242287828579ul;
-    internal const ulong PRIME64_5 = 2870177450012600261ul;
+    private const ulong PRIME64_1 = 11400714785074694791ul;
+    private const ulong PRIME64_2 = 14029467366897019727ul;
+    private const ulong PRIME64_3 = 1609587929392839161ul;
+    private const ulong PRIME64_4 = 9650029242287828579ul;
+    private const ulong PRIME64_5 = 2870177450012600261ul;
 
     #region Public
 

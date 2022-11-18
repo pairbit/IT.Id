@@ -109,7 +109,7 @@ var idBytes = id.ToByteArray();
 
 //    var xxh64_a = id58.Hash64();
 
-//    var xxh64_b = id58.Hash64_slow();
+//    var xxh64_b = id58.XXH64();
 
 //    if (xxh64_a != xxh64_b) throw new InvalidOperationException();
 //}
