@@ -1,4 +1,6 @@
-﻿namespace System;
+﻿using System.Diagnostics;
+
+namespace System;
 
 internal static class Base58
 {
@@ -71,52 +73,12 @@ internal static class Base58
 
     public static unsafe bool Encode(ReadOnlySpan<byte> input, Span<char> output)
     {
-        int numZeroes = getZeroCount(input, 12);
-        if (numZeroes == 12)
-        {
-            output[0] = ZeroChar;
-            output[1] = ZeroChar;
-            output[2] = ZeroChar;
-            output[3] = ZeroChar;
-            output[4] = ZeroChar;
-            output[5] = ZeroChar;
-            output[6] = ZeroChar;
-            output[7] = ZeroChar;
-            output[8] = ZeroChar;
-            output[9] = ZeroChar;
-            output[10] = ZeroChar;
-            output[11] = ZeroChar;
-            output[12] = ZeroChar;
-            output[13] = ZeroChar;
-            output[14] = ZeroChar;
-            output[15] = ZeroChar;
-            output[16] = ZeroChar;
-            return true;
-        }
-
         Span<char> buffer = stackalloc char[17];
 
         fixed (byte* inputPtr = input)
         fixed (char* bufferPtr = buffer)
         {
-            if (!internalEncode(inputPtr, bufferPtr, numZeroes, out int length))
-            {
-                return false;
-            }
-
-            if (length != 17)
-            {
-                buffer = buffer.Slice(0, length);
-
-                length = 17 - length;
-
-                for (int i = 0; i < length; i++)
-                {
-                    output[i] = ZeroChar;
-                }
-
-                output = output.Slice(length);
-            }
+            if (!internalEncode_FAST(inputPtr, bufferPtr, out int length)) return false;
 
             buffer.CopyTo(output);
 
@@ -260,6 +222,160 @@ internal static class Base58
 
             numCharsWritten = actualLen;
             return true;
+        }
+    }
+
+    public static unsafe string Encode_FAST(ReadOnlySpan<byte> bytes)
+    {
+        var output = new string('\0', 17);
+
+        fixed (byte* inputPtr = bytes)
+        fixed (char* outputPtr = output)
+        {
+            if (!internalEncode_FAST(inputPtr, outputPtr, out int length))
+                throw new InvalidOperationException("Output buffer with insufficient size generated");
+
+            return output;
+        }
+    }
+
+    private static unsafe bool internalEncode_FAST(byte* input, char* output, out int written)
+    {
+        fixed (char* alphabetPtr = _alphabet)
+        {
+            byte* pInput = input;
+            byte* pInputEnd = input + 12;
+
+            int length = 0;
+            char* lastChar = output + 16;
+
+            #region while
+
+            ////1
+            //int carry = *pInput;
+            //int i = 0;
+            //for (char* pDigit = pLastChar; (carry != 0 || i < length) && pDigit >= outputPtr; pDigit--, i++)
+            //{
+            //    carry += *pDigit << 8;
+            //    carry = Math.DivRem(carry, 58, out int remainder);
+            //    *pDigit = (char)remainder;
+            //}
+
+            //length = i;
+
+            ////2
+            //carry = *(pInput + 1);
+            //i = 0;
+            //for (char* pDigit = pLastChar; (carry != 0 || i < length) && pDigit >= outputPtr; pDigit--, i++)
+            //{
+            //    carry += *pDigit << 8;
+            //    carry = Math.DivRem(carry, 58, out int remainder);
+            //    *pDigit = (char)remainder;
+            //}
+
+            //length = i;
+
+            #endregion while
+
+            while (pInput != pInputEnd)
+            {
+                int carry = *pInput++;
+                int i = 0;
+                for (char* pDigit = lastChar; (carry != 0 || i < length) && pDigit >= output; pDigit--, i++)
+                {
+                    carry += *pDigit << 8;
+                    carry = Math.DivRem(carry, 58, out int remainder);
+                    *pDigit = (char)remainder;
+                }
+
+                length = i;
+            }
+
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output];
+
+            written = length;
+
+            return true;
+        }
+    }
+
+    public static string Encode_New(ReadOnlySpan<byte> bytes)
+    {
+        int numZeroes = getZeroCount(bytes, 12);
+        if (numZeroes == 12) return Zero;
+
+        Span<char> output = stackalloc char[17];
+
+        if (!internalEncode(bytes, output, numZeroes, out int length))
+            throw new InvalidOperationException("Output buffer with insufficient size generated");
+
+        if (length != 17)
+        {
+            return new string(ZeroChar, 17 - length) + output.Slice(0, length).ToString();
+        }
+
+        return output.ToString();
+    }
+
+    private static bool internalEncode(
+        ReadOnlySpan<byte> input,
+        Span<char> output,
+        int numZeroes,
+        out int numCharsWritten)
+    {
+        ReadOnlySpan<char> alphabet = _alphabet.AsSpan();
+
+        int numDigits = 0;
+        int index = numZeroes;
+        while (index < input.Length)
+        {
+            int carry = input[index++];
+            int i = 0;
+            for (int j = output.Length - 1; (carry != 0 || i < numDigits) && j >= 0; j--, i++)
+            {
+                carry += output[j] << 8;
+                carry = Math.DivRem(carry, 58, out int remainder);
+                output[j] = (char)remainder;
+            }
+
+            numDigits = i;
+        }
+
+        translatedCopy(output.Slice(output.Length - numDigits), output.Slice(numZeroes), alphabet);
+        if (numZeroes > 0)
+        {
+            output.Slice(0, numZeroes).Fill(alphabet[0]);
+        }
+
+        numCharsWritten = numZeroes + numDigits;
+        return true;
+    }
+
+    private static void translatedCopy(
+    ReadOnlySpan<char> source,
+    Span<char> destination,
+    ReadOnlySpan<char> alphabet)
+    {
+        Debug.Assert(source.Length <= destination.Length, "source is too big");
+        for (int n = 0; n < source.Length; n++)
+        {
+            destination[n] = alphabet[source[n]];
         }
     }
 

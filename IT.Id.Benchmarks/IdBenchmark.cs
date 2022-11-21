@@ -47,25 +47,28 @@ public class IdBenchmark
     //[Benchmark]
     public String Id_Encode_HexLower() => _id.ToString(Idf.Hex);
 
-    [Benchmark]
+    //[Benchmark]
     public System.Id Id_Decode_HexLower() => System.Id.Parse(_idHexLower);
 
     //[Benchmark]
     public String Id_Encode_HexUpper() => _id.ToString(Idf.HexUpper);
 
-    [Benchmark]
+    //[Benchmark]
     public System.Id Id_Decode_HexUpper() => System.Id.Parse(_idHexUpper);
 
     //[Benchmark]
     public String Id_Encode_Base32() => _id.ToString(Idf.Base32);
 
-    [Benchmark]
+    //[Benchmark]
     public System.Id Id_Decode_Base32() => System.Id.Parse(_idBase32);
 
-    //[Benchmark]
-    public String Id_Encode_Base58() => _id.ToString(Idf.Base58);
+    [Benchmark]
+    public String Id_Encode_Base58() => _id.ToBase58();
 
-    //[Benchmark]
+    [Benchmark]
+    public String Id_Encode_Base58_New() => _id.ToBase58_New();
+
+    [Benchmark]
     public String Id_Encode_Base58_SimpleBase() => SimpleBase.Base58.Bitcoin.Encode(_id.ToByteArray());
 
     //[Benchmark]
@@ -77,30 +80,30 @@ public class IdBenchmark
     //[Benchmark]
     public String Id_Encode_Base64Url() => _id.ToString();
 
-    [Benchmark]
+    //[Benchmark]
     public System.Id Id_Decode_Base64() => System.Id.Parse(_idBase64Url);
 
     //[Benchmark]
     public String Id_Encode_Base85() => _id.ToString(Idf.Base85);
 
-    [Benchmark]
+    //[Benchmark]
     public System.Id Id_Decode_Base85() => System.Id.Parse(_idBase85);
 
     //[Benchmark]
     public String Id_Encode_Path2() => _id.ToString(Idf.Path2);
 
-    [Benchmark]
+    //[Benchmark]
     public System.Id Id_Decode_Path2() => System.Id.Parse(_idPath2);
 
     //[Benchmark]
     public String Id_Encode_Path3() => _id.ToString(Idf.Path3);
 
-    [Benchmark]
+    //[Benchmark]
     public System.Id Id_Decode_Path3() => System.Id.Parse(_idPath3);
 
-    [Benchmark]
+    //[Benchmark]
     public String Ulid_Encode() => _ulid.ToString();
 
-    [Benchmark]
+    //[Benchmark]
     public Ulid Ulid_Decode() => Ulid.Parse(_ulidString);
 }
