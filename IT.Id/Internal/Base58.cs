@@ -79,10 +79,7 @@ internal static class Base58
         fixed (char* inputPtr = input)
         fixed (byte* outputPtr = output)
         {
-            return internalDecode_Manual(
-                inputPtr,
-                input.Length,
-                outputPtr);
+            return internalDecode_Manual(inputPtr, input.Length, outputPtr);
         }
     }
 
@@ -101,14 +98,54 @@ internal static class Base58
 
             if (carry < 0) throw new ArgumentException($"Invalid character: {c}");
 
-            for (byte* p = outputEnd; p >= output; p--)
-            {
-                carry += 58 * (*p);
+            byte* p = outputEnd;
 
-                *p = (byte)carry;
+            //1
+            carry += 58 * *p;
+            *p-- = (byte)carry;
 
-                carry >>= 8;
-            }
+            //2
+            carry = (carry >> 8) + (58 * *p);
+            *p-- = (byte)carry;
+
+            //3
+            carry = (carry >> 8) + (58 * *p);
+            *p-- = (byte)carry;
+
+            //4
+            carry = (carry >> 8) + (58 * *p);
+            *p-- = (byte)carry;
+
+            //5
+            carry = (carry >> 8) + (58 * *p);
+            *p-- = (byte)carry;
+
+            //6
+            carry = (carry >> 8) + (58 * *p);
+            *p-- = (byte)carry;
+
+            //7
+            carry = (carry >> 8) + (58 * *p);
+            *p-- = (byte)carry;
+
+            //8
+            carry = (carry >> 8) + (58 * *p);
+            *p-- = (byte)carry;
+
+            //9
+            carry = (carry >> 8) + (58 * *p);
+            *p-- = (byte)carry;
+
+            //10
+            carry = (carry >> 8) + (58 * *p);
+            *p-- = (byte)carry;
+
+            //11
+            carry = (carry >> 8) + (58 * *p);
+            *p-- = (byte)carry;
+
+            //12
+            *p = (byte)((carry >> 8) + (58 * *p));
         }
 
         return true;
