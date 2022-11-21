@@ -62,16 +62,16 @@ public class IdBenchmark
     //[Benchmark]
     public System.Id Id_Decode_Base32() => System.Id.Parse(_idBase32);
 
-    [Benchmark]
-    public String Id_Encode_Base58() => _id.ToBase58();
+    //[Benchmark]
+    public String Id_Encode_Base58() => _id.ToString(Idf.Base58);
 
-    [Benchmark]
+    //[Benchmark]
     public String Id_Encode_Base58_SimpleBase() => SimpleBase.Base58.Bitcoin.Encode(_id.ToByteArray());
 
-    //[Benchmark]
+    [Benchmark]
     public System.Id Id_Decode_Base58() => System.Id.Parse(_idBase58);
 
-    //[Benchmark]
+    [Benchmark]
     public System.Id Id_Decode_Base58_SimpleBase() => new System.Id(SimpleBase.Base58.Bitcoin.Decode(_idBase58));
 
     //[Benchmark]

@@ -398,6 +398,13 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             return true;
         }
 
+        if (format == Idf.Base58 && destination.Length >= 17)
+        {
+            ToBase58(destination);
+            charsWritten = 17;
+            return true;
+        }
+
         if (format == Idf.Base85 && destination.Length >= 15)
         {
             ToBase85(destination);

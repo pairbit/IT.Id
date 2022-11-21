@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text;
 
 namespace System;
 
@@ -11,6 +12,7 @@ internal static class Base58
     private const Char ZeroChar = '1';
 
     internal static readonly String _alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+    internal static readonly byte[] _bytes = Encoding.UTF8.GetBytes(_alphabet);
     private static readonly char _zeroChar;
     private static readonly byte[] _lookupTable;
 
@@ -147,6 +149,60 @@ internal static class Base58
         Buffer.MemoryCopy(outputPtr + startIndex, outputPtr, numBytesWritten, numBytesWritten);
         return true;
     }
+
+    //private bool internalDecode_NEW(
+    //ReadOnlySpan<char> input,
+    //Span<byte> output,
+    //int numZeroes,
+    //out int numBytesWritten)
+    //{
+    //    if (numZeroes == input.Length)
+    //    {
+    //        return decodeZeroes(output, numZeroes, out numBytesWritten);
+    //    }
+
+    //    var table = _lookupTable;
+    //    int min = output.Length - 1;
+    //    for (int i = 0; i < input.Length; i++)
+    //    {
+    //        char c = input[i];
+    //        int carry = table[c] - 1;
+    //        if (carry < 0)
+    //        {
+    //            throw new ArgumentException($"Invalid character: {c}");
+    //        }
+
+    //        for (int o = output.Length - 1; o >= 0; o--)
+    //        {
+    //            carry += 58 * output[o];
+    //            output[o] = (byte)carry;
+    //            if (min > o && carry != 0)
+    //            {
+    //                min = o;
+    //            }
+
+    //            carry >>= 8;
+    //        }
+    //    }
+
+    //    int startIndex = min - numZeroes;
+    //    numBytesWritten = output.Length - startIndex;
+    //    output[startIndex..].CopyTo(output[..numBytesWritten]);
+    //    return true;
+    //}
+
+    //private static bool decodeZeroes(Span<byte> output, int length, out int numBytesWritten)
+    //{
+    //    if (length > output.Length)
+    //    {
+    //        numBytesWritten = 0;
+    //        return false;
+    //    }
+
+    //    output[..length].Fill(0);
+    //    numBytesWritten = length;
+    //    return true;
+    //}
 
     private static unsafe bool internalEncode(
         byte* inputPtr,
