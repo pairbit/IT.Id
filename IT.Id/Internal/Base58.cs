@@ -74,6 +74,46 @@ internal static class Base58
     }
 
     /// <inheritdoc/>
+    public static unsafe bool Decode_Manual(ReadOnlySpan<char> input, Span<byte> output)
+    {
+        fixed (char* inputPtr = input)
+        fixed (byte* outputPtr = output)
+        {
+            return internalDecode_Manual(
+                inputPtr,
+                input.Length,
+                outputPtr);
+        }
+    }
+
+    private static unsafe bool internalDecode_Manual(char* input, int inputLen, byte* output)
+    {
+        var table = _lookupTable;
+
+        char* inputEnd = input + inputLen;
+        byte* outputEnd = output + 11;
+
+        while (input != inputEnd)
+        {
+            char c = *input++;
+
+            int carry = table[c] - 1;
+
+            if (carry < 0) throw new ArgumentException($"Invalid character: {c}");
+
+            for (byte* p = outputEnd; p >= output; p--)
+            {
+                carry += 58 * (*p);
+
+                *p = (byte)carry;
+
+                carry >>= 8;
+            }
+        }
+
+        return true;
+    }
+
     public static unsafe bool Decode(ReadOnlySpan<char> input, Span<byte> output, out int numBytesWritten)
     {
         int zeroCount = getPrefixCount(input, input.Length, _zeroChar);

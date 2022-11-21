@@ -801,11 +801,9 @@ public readonly partial struct Id
         var len = chars.Length;
         if (len < 12 || len > 17) throw new ArgumentOutOfRangeException(nameof(chars), len, "The id must be between 12 to 17 characters long");
 
-        Span<Byte> bytes = stackalloc Byte[18];
+        Span<Byte> bytes = stackalloc Byte[12];
 
-        Base58.Decode(chars, bytes, out var written);
-
-        bytes = bytes.Slice(written - 12, 12);
+        Base58.Decode_Manual(chars, bytes);
 
         FromByteArray(bytes, 0, out var timestamp, out var b, out var c);
 
