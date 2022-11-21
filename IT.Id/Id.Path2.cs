@@ -152,19 +152,19 @@ public readonly partial struct Id
         }
     }
 
-    private static Id ParsePath2(ReadOnlySpan<Char> value)
+    private static Id ParsePath2(ReadOnlySpan<Char> chars)
     {
-        if (value.Length != 18) throw new ArgumentException("String must be 18 characters long", nameof(value));
+        if (chars.Length != 18) throw new ArgumentException("The id must be 18 characters long", nameof(chars));
 
-        var c1 = value[1];
-        var c3 = value[3];
+        var c1 = chars[1];
+        var c3 = chars[3];
 
         if ((c1 != '\\' && c1 != '/') || (c3 != '\\' && c3 != '/')) throw new FormatException();
 
         //_\I\-TH145xA0ZPhqY
 
         ReadOnlySpan<sbyte> mapSpan = Base64._decodingMap;
-        ref char src = ref MemoryMarshal.GetReference(value);
+        ref char src = ref MemoryMarshal.GetReference(chars);
         ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
 
         int i0 = Unsafe.Add(ref src, 17);
@@ -224,19 +224,19 @@ public readonly partial struct Id
         return new Id(timestamp, b, c | i0);
     }
 
-    private static Id ParsePath2(ReadOnlySpan<Byte> value)
+    private static Id ParsePath2(ReadOnlySpan<Byte> bytes)
     {
-        if (value.Length != 18) throw new ArgumentException("String must be 18 characters long", nameof(value));
+        if (bytes.Length != 18) throw new ArgumentException("The id must be 18 bytes long", nameof(bytes));
 
-        var c1 = value[1];
-        var c3 = value[3];
+        var c1 = bytes[1];
+        var c3 = bytes[3];
 
         if ((c1 != '\\' && c1 != '/') || (c3 != '\\' && c3 != '/')) throw new FormatException();
 
         //_\I\-TH145xA0ZPhqY
 
         ReadOnlySpan<sbyte> mapSpan = Base64._decodingMap;
-        ref byte src = ref MemoryMarshal.GetReference(value);
+        ref byte src = ref MemoryMarshal.GetReference(bytes);
         ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
 
         int i0 = Unsafe.Add(ref src, 17);

@@ -94,24 +94,24 @@ public readonly partial struct Id
         }
     }
 
-    private static Id ParseHex(ReadOnlySpan<Char> value)
+    private static Id ParseHex(ReadOnlySpan<Char> chars)
     {
-        if (value.Length != 24) throw new ArgumentException("String must be 24 characters long", nameof(value));
+        if (chars.Length != 24) throw new ArgumentException("The id must be 24 characters long", nameof(chars));
 
         var map = Hex._charToHex;
 
-        var b0 = (byte)((map[value[0]] << 4) | map[value[1]]);
-        var b1 = (byte)((map[value[2]] << 4) | map[value[3]]);
-        var b2 = (byte)((map[value[4]] << 4) | map[value[5]]);
-        var b3 = (byte)((map[value[6]] << 4) | map[value[7]]);
-        var b4 = (byte)((map[value[8]] << 4) | map[value[9]]);
-        var b5 = (byte)((map[value[10]] << 4) | map[value[11]]);
-        var b6 = (byte)((map[value[12]] << 4) | map[value[13]]);
-        var b7 = (byte)((map[value[14]] << 4) | map[value[15]]);
-        var b8 = (byte)((map[value[16]] << 4) | map[value[17]]);
-        var b9 = (byte)((map[value[18]] << 4) | map[value[19]]);
-        var b10 = (byte)((map[value[20]] << 4) | map[value[21]]);
-        var b11 = (byte)((map[value[22]] << 4) | map[value[23]]);
+        var b0 = (byte)((map[chars[0]] << 4) | map[chars[1]]);
+        var b1 = (byte)((map[chars[2]] << 4) | map[chars[3]]);
+        var b2 = (byte)((map[chars[4]] << 4) | map[chars[5]]);
+        var b3 = (byte)((map[chars[6]] << 4) | map[chars[7]]);
+        var b4 = (byte)((map[chars[8]] << 4) | map[chars[9]]);
+        var b5 = (byte)((map[chars[10]] << 4) | map[chars[11]]);
+        var b6 = (byte)((map[chars[12]] << 4) | map[chars[13]]);
+        var b7 = (byte)((map[chars[14]] << 4) | map[chars[15]]);
+        var b8 = (byte)((map[chars[16]] << 4) | map[chars[17]]);
+        var b9 = (byte)((map[chars[18]] << 4) | map[chars[19]]);
+        var b10 = (byte)((map[chars[20]] << 4) | map[chars[21]]);
+        var b11 = (byte)((map[chars[22]] << 4) | map[chars[23]]);
 
         var timestamp = b0 << 24 | b1 << 16 | b2 << 8 | b3;
         var b = b4 << 24 | b5 << 16 | b6 << 8 | b7;
@@ -120,24 +120,24 @@ public readonly partial struct Id
         return new Id(timestamp, b, c);
     }
 
-    private static Id ParseHex(ReadOnlySpan<Byte> value)
+    private static Id ParseHex(ReadOnlySpan<Byte> bytes)
     {
-        if (value.Length != 24) throw new ArgumentException("String must be 24 characters long", nameof(value));
+        if (bytes.Length != 24) throw new ArgumentException("The id must be 24 bytes long", nameof(bytes));
 
         var map = Hex._charToHex;
 
-        var b0 = (byte)((map[value[0]] << 4) | map[value[1]]);
-        var b1 = (byte)((map[value[2]] << 4) | map[value[3]]);
-        var b2 = (byte)((map[value[4]] << 4) | map[value[5]]);
-        var b3 = (byte)((map[value[6]] << 4) | map[value[7]]);
-        var b4 = (byte)((map[value[8]] << 4) | map[value[9]]);
-        var b5 = (byte)((map[value[10]] << 4) | map[value[11]]);
-        var b6 = (byte)((map[value[12]] << 4) | map[value[13]]);
-        var b7 = (byte)((map[value[14]] << 4) | map[value[15]]);
-        var b8 = (byte)((map[value[16]] << 4) | map[value[17]]);
-        var b9 = (byte)((map[value[18]] << 4) | map[value[19]]);
-        var b10 = (byte)((map[value[20]] << 4) | map[value[21]]);
-        var b11 = (byte)((map[value[22]] << 4) | map[value[23]]);
+        var b0 = (byte)((map[bytes[0]] << 4) | map[bytes[1]]);
+        var b1 = (byte)((map[bytes[2]] << 4) | map[bytes[3]]);
+        var b2 = (byte)((map[bytes[4]] << 4) | map[bytes[5]]);
+        var b3 = (byte)((map[bytes[6]] << 4) | map[bytes[7]]);
+        var b4 = (byte)((map[bytes[8]] << 4) | map[bytes[9]]);
+        var b5 = (byte)((map[bytes[10]] << 4) | map[bytes[11]]);
+        var b6 = (byte)((map[bytes[12]] << 4) | map[bytes[13]]);
+        var b7 = (byte)((map[bytes[14]] << 4) | map[bytes[15]]);
+        var b8 = (byte)((map[bytes[16]] << 4) | map[bytes[17]]);
+        var b9 = (byte)((map[bytes[18]] << 4) | map[bytes[19]]);
+        var b10 = (byte)((map[bytes[20]] << 4) | map[bytes[21]]);
+        var b11 = (byte)((map[bytes[22]] << 4) | map[bytes[23]]);
 
         var timestamp = b0 << 24 | b1 << 16 | b2 << 8 | b3;
         var b = b4 << 24 | b5 << 16 | b6 << 8 | b7;

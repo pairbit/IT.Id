@@ -191,12 +191,12 @@ public readonly partial struct Id
         }
     }
 
-    private static Id ParseBase64(ReadOnlySpan<Char> value)
+    private static Id ParseBase64(ReadOnlySpan<Char> chars)
     {
-        if (value.Length != 16) throw new ArgumentException("String must be 16 characters long", nameof(value));
+        if (chars.Length != 16) throw new ArgumentException("The id must be 16 characters long", nameof(chars));
 
         ReadOnlySpan<sbyte> mapSpan = Base64._decodingMap;
-        ref char src = ref MemoryMarshal.GetReference(value);
+        ref char src = ref MemoryMarshal.GetReference(chars);
         ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
 
         int i0 = Unsafe.Add(ref src, 0);
@@ -256,12 +256,12 @@ public readonly partial struct Id
         return new Id(timestamp, b, c | i0);
     }
 
-    private static Id ParseBase64(ReadOnlySpan<Byte> value)
+    private static Id ParseBase64(ReadOnlySpan<Byte> bytes)
     {
-        if (value.Length != 16) throw new ArgumentException("Id must be 16 bytes long", nameof(value));
+        if (bytes.Length != 16) throw new ArgumentException("The id must be 16 bytes long", nameof(bytes));
 
         ReadOnlySpan<sbyte> mapSpan = Base64._decodingMap;
-        ref byte src = ref MemoryMarshal.GetReference(value);
+        ref byte src = ref MemoryMarshal.GetReference(bytes);
         ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
 
         int i0 = Unsafe.Add(ref src, 0);

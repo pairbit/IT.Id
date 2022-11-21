@@ -227,30 +227,30 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     /// <exception cref="ArgumentException"/>
     /// <exception cref="FormatException"/>
-    public static Id Parse(ReadOnlySpan<Char> value) => value.Length switch
+    public static Id Parse(ReadOnlySpan<Char> chars) => chars.Length switch
     {
-        15 => ParseBase85(value),
-        16 => ParseBase64(value),
-        17 => ParseBase58(value),
-        18 => ParsePath2(value),
-        19 => ParsePath3(value),
-        20 => ParseBase32(value),
-        24 => ParseHex(value),
-        _ => throw new FormatException("The id must be between 15 and 20 or 24")
+        15 => ParseBase85(chars),
+        16 => ParseBase64(chars),
+        17 => ParseBase58(chars),
+        18 => ParsePath2(chars),
+        19 => ParsePath3(chars),
+        20 => ParseBase32(chars),
+        24 => ParseHex(chars),
+        _ => throw new FormatException($"The id cannot be {chars.Length} characters long. The id must be 24 characters long or between 15 and 20")
     };
 
     /// <exception cref="ArgumentException"/>
     /// <exception cref="FormatException"/>
-    public static Id Parse(ReadOnlySpan<Byte> value) => value.Length switch
+    public static Id Parse(ReadOnlySpan<Byte> bytes) => bytes.Length switch
     {
-        15 => ParseBase85(value),
-        16 => ParseBase64(value),
+        15 => ParseBase85(bytes),
+        16 => ParseBase64(bytes),
         //17 => ParseBase58(value),
-        18 => ParsePath2(value),
-        19 => ParsePath3(value),
-        20 => ParseBase32(value),
-        24 => ParseHex(value),
-        _ => throw new FormatException("The id must be between 15 and 20 or 24")
+        18 => ParsePath2(bytes),
+        19 => ParsePath3(bytes),
+        20 => ParseBase32(bytes),
+        24 => ParseHex(bytes),
+        _ => throw new FormatException($"The id cannot be {bytes.Length} bytes long. The id must be 24 bytes long or between 15 and 20")
     };
 
     /// <exception cref="ArgumentException"/>

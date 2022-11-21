@@ -108,60 +108,60 @@ public readonly partial struct Id
         }
     }
 
-    private static unsafe Id ParseBase85(ReadOnlySpan<Char> value)
+    private static unsafe Id ParseBase85(ReadOnlySpan<Char> chars)
     {
-        if (value.Length != 15) throw new ArgumentException("String must be 15 characters long", nameof(value));
+        if (chars.Length != 15) throw new ArgumentException("The id must be 15 characters long", nameof(chars));
 
-        fixed (char* sourceP = value)
+        fixed (char* src = chars)
         fixed (byte* map = Base85._char2Byte)
         {
-            var timestamp = Decode1(map, *sourceP) * U85P4 +
-                            Decode1(map, *(sourceP + 1)) * U85P3 +
-                            Decode1(map, *(sourceP + 2)) * U85P2 +
-                            Decode1(map, *(sourceP + 3)) * U85P1 +
-                            Decode1(map, *(sourceP + 4));
+            var timestamp = Decode1(map, *src) * U85P4 +
+                            Decode1(map, *(src + 1)) * U85P3 +
+                            Decode1(map, *(src + 2)) * U85P2 +
+                            Decode1(map, *(src + 3)) * U85P1 +
+                            Decode1(map, *(src + 4));
 
-            var b = Decode1(map, *(sourceP + 5)) * U85P4 +
-                    Decode1(map, *(sourceP + 6)) * U85P3 +
-                    Decode1(map, *(sourceP + 7)) * U85P2 +
-                    Decode1(map, *(sourceP + 8)) * U85P1 +
-                    Decode1(map, *(sourceP + 9));
+            var b = Decode1(map, *(src + 5)) * U85P4 +
+                    Decode1(map, *(src + 6)) * U85P3 +
+                    Decode1(map, *(src + 7)) * U85P2 +
+                    Decode1(map, *(src + 8)) * U85P1 +
+                    Decode1(map, *(src + 9));
 
 
-            var c = Decode1(map, *(sourceP + 10)) * U85P4 +
-                    Decode1(map, *(sourceP + 11)) * U85P3 +
-                    Decode1(map, *(sourceP + 12)) * U85P2 +
-                    Decode1(map, *(sourceP + 13)) * U85P1 +
-                    Decode1(map, *(sourceP + 14));
+            var c = Decode1(map, *(src + 10)) * U85P4 +
+                    Decode1(map, *(src + 11)) * U85P3 +
+                    Decode1(map, *(src + 12)) * U85P2 +
+                    Decode1(map, *(src + 13)) * U85P1 +
+                    Decode1(map, *(src + 14));
 
             return new Id((int)timestamp, (int)b, (int)c);
         }
     }
 
-    private static unsafe Id ParseBase85(ReadOnlySpan<Byte> value)
+    private static unsafe Id ParseBase85(ReadOnlySpan<Byte> bytes)
     {
-        if (value.Length != 15) throw new ArgumentException("String must be 15 characters long", nameof(value));
+        if (bytes.Length != 15) throw new ArgumentException("The id must be 15 bytes long", nameof(bytes));
 
-        fixed (byte* sourceP = value)
+        fixed (byte* src = bytes)
         fixed (byte* map = Base85._char2Byte)
         {
-            var timestamp = *(map + *sourceP) * U85P4 +
-                            *(map + *(sourceP + 1)) * U85P3 +
-                            *(map + *(sourceP + 2)) * U85P2 +
-                            *(map + *(sourceP + 3)) * U85P1 +
-                            *(map + *(sourceP + 4));
+            var timestamp = *(map + *src) * U85P4 +
+                            *(map + *(src + 1)) * U85P3 +
+                            *(map + *(src + 2)) * U85P2 +
+                            *(map + *(src + 3)) * U85P1 +
+                            *(map + *(src + 4));
 
-            var b = *(map + *(sourceP + 5)) * U85P4 +
-                    *(map + *(sourceP + 6)) * U85P3 +
-                    *(map + *(sourceP + 7)) * U85P2 +
-                    *(map + *(sourceP + 8)) * U85P1 +
-                    *(map + *(sourceP + 9));
+            var b = *(map + *(src + 5)) * U85P4 +
+                    *(map + *(src + 6)) * U85P3 +
+                    *(map + *(src + 7)) * U85P2 +
+                    *(map + *(src + 8)) * U85P1 +
+                    *(map + *(src + 9));
 
-            var c = *(map + *(sourceP + 10)) * U85P4 +
-                    *(map + *(sourceP + 11)) * U85P3 +
-                    *(map + *(sourceP + 12)) * U85P2 +
-                    *(map + *(sourceP + 13)) * U85P1 +
-                    *(map + *(sourceP + 14));
+            var c = *(map + *(src + 10)) * U85P4 +
+                    *(map + *(src + 11)) * U85P3 +
+                    *(map + *(src + 12)) * U85P2 +
+                    *(map + *(src + 13)) * U85P1 +
+                    *(map + *(src + 14));
 
             return new Id((int)timestamp, (int)b, (int)c);
         }

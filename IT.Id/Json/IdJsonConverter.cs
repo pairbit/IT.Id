@@ -18,7 +18,7 @@ public class IdJsonConverter : JsonConverter<Id>
 
             var llen = seq.Length;
 
-            if (llen < 15 || (llen != 24 && llen > 20)) throw new JsonException($"The id cannot be {llen} long. The id must be 24 long or between 15 and 20");
+            if (llen < 15 || (llen != 24 && llen > 20)) throw new JsonException($"The id cannot be {llen} bytes long. The id must be 24 bytes long or between 15 and 20");
 
             Span<byte> buffer = stackalloc byte[(Int32)llen];
 

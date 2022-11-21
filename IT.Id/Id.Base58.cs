@@ -796,6 +796,21 @@ public readonly partial struct Id
         }
     }
 
+    private static Id ParseBase58(ReadOnlySpan<Char> chars)
+    {
+        if (chars.Length != 17) throw new ArgumentException("The id must be 17 characters long", nameof(chars));
+
+        Span<Byte> bytes = stackalloc Byte[18];
+
+        Base58.Decode(chars, bytes, out var written);
+
+        bytes = bytes.Slice(written - 12, 12);
+
+        FromByteArray(bytes, 0, out var timestamp, out var b, out var c);
+
+        return new Id(timestamp, b, c);
+    }
+
     private unsafe void ToBase58(char* output)
     {
         fixed (char* alphabetPtr = Base58._alphabet)
@@ -1568,20 +1583,4 @@ public readonly partial struct Id
 
     private static Exception CarryException(Int32 bytes, Int32 length, Int32 carry)
         => new InvalidOperationException($"{bytes} bytes, {length} length, carry ({carry}) != 0");
-
-    private static Id ParseBase58(ReadOnlySpan<Char> value)
-    {
-        var len = value.Length;
-        if (len < 12 || len > 17) throw new ArgumentOutOfRangeException(nameof(value), len, "String must be 12 to 17 characters long");
-
-        Span<Byte> bytes = stackalloc Byte[18];
-
-        Base58.Decode(value, bytes, out var written);
-
-        bytes = bytes.Slice(written - 12, 12);
-
-        FromByteArray(bytes, 0, out var timestamp, out var b, out var c);
-
-        return new Id(timestamp, b, c);
-    }
 }
