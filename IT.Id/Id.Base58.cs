@@ -801,11 +801,141 @@ public readonly partial struct Id
         var len = chars.Length;
         if (len < 12 || len > 17) throw new ArgumentOutOfRangeException(nameof(chars), len, "The id must be between 12 to 17 characters long");
 
-        Span<Byte> bytes = stackalloc Byte[12];
+        var table = Base58._lookupTable;
 
-        Base58.Decode_Manual(chars, bytes);
+        byte b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, b7 = 0, b8 = 0, b9 = 0, b10 = 0, b11 = 0;
 
-        FromByteArray(bytes, 0, out var timestamp, out var b, out var c);
+        for (int i = 0; i < chars.Length; i++)
+        {
+            char ch = chars[i];
+
+            int carry = table[ch] - 1;
+
+            if (carry < 0) throw new ArgumentException($"Invalid character: {ch}");
+
+            //1
+            carry += 58 * b11;
+            b11 = (byte)carry;
+
+            //2
+            carry = (carry >> 8) + (58 * b10);
+            b10 = (byte)carry;
+
+            //3
+            carry = (carry >> 8) + (58 * b9);
+            b9 = (byte)carry;
+
+            //4
+            carry = (carry >> 8) + (58 * b8);
+            b8 = (byte)carry;
+
+            //5
+            carry = (carry >> 8) + (58 * b7);
+            b7 = (byte)carry;
+
+            //6
+            carry = (carry >> 8) + (58 * b6);
+            b6 = (byte)carry;
+
+            //7
+            carry = (carry >> 8) + (58 * b5);
+            b5 = (byte)carry;
+
+            //8
+            carry = (carry >> 8) + (58 * b4);
+            b4 = (byte)carry;
+
+            //9
+            carry = (carry >> 8) + (58 * b3);
+            b3 = (byte)carry;
+
+            //10
+            carry = (carry >> 8) + (58 * b2);
+            b2 = (byte)carry;
+
+            //11
+            carry = (carry >> 8) + (58 * b1);
+            b1 = (byte)carry;
+
+            //12
+            b0 = (byte)((carry >> 8) + (58 * b0));
+        }
+
+        var timestamp = (b0 << 24) | (b1 << 16) | (b2 << 8) | b3;
+        var b = (b4 << 24) | (b5 << 16) | (b6 << 8) | b7;
+        var c = (b8 << 24) | (b9 << 16) | (b10 << 8) | b11;
+
+        return new Id(timestamp, b, c);
+    }
+
+    private static Id ParseBase58(ReadOnlySpan<Byte> bytes)
+    {
+        var len = bytes.Length;
+        if (len < 12 || len > 17) throw new ArgumentOutOfRangeException(nameof(bytes), len, "The id must be between 12 to 17 bytes long");
+
+        var table = Base58._lookupTable;
+
+        byte b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, b7 = 0, b8 = 0, b9 = 0, b10 = 0, b11 = 0;
+
+        for (int i = 0; i < bytes.Length; i++)
+        {
+            byte byt = bytes[i];
+
+            int carry = table[byt] - 1;
+
+            if (carry < 0) throw new ArgumentException($"Invalid byte: {byt}");
+
+            //1
+            carry += 58 * b11;
+            b11 = (byte)carry;
+
+            //2
+            carry = (carry >> 8) + (58 * b10);
+            b10 = (byte)carry;
+
+            //3
+            carry = (carry >> 8) + (58 * b9);
+            b9 = (byte)carry;
+
+            //4
+            carry = (carry >> 8) + (58 * b8);
+            b8 = (byte)carry;
+
+            //5
+            carry = (carry >> 8) + (58 * b7);
+            b7 = (byte)carry;
+
+            //6
+            carry = (carry >> 8) + (58 * b6);
+            b6 = (byte)carry;
+
+            //7
+            carry = (carry >> 8) + (58 * b5);
+            b5 = (byte)carry;
+
+            //8
+            carry = (carry >> 8) + (58 * b4);
+            b4 = (byte)carry;
+
+            //9
+            carry = (carry >> 8) + (58 * b3);
+            b3 = (byte)carry;
+
+            //10
+            carry = (carry >> 8) + (58 * b2);
+            b2 = (byte)carry;
+
+            //11
+            carry = (carry >> 8) + (58 * b1);
+            b1 = (byte)carry;
+
+            //12
+            b0 = (byte)((carry >> 8) + (58 * b0));
+        }
+
+        var timestamp = (b0 << 24) | (b1 << 16) | (b2 << 8) | b3;
+        var b = (b4 << 24) | (b5 << 16) | (b6 << 8) | b7;
+        var c = (b8 << 24) | (b9 << 16) | (b10 << 8) | b11;
 
         return new Id(timestamp, b, c);
     }

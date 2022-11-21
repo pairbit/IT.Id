@@ -259,7 +259,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     {
         15 => ParseBase85(bytes),
         16 => ParseBase64(bytes),
-        //17 => ParseBase58(value),
+        17 => ParseBase58(bytes),
         18 => ParsePath2(bytes),
         19 => ParsePath3(bytes),
         20 => ParseBase32(bytes),
@@ -273,7 +273,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     {
         Idf.Hex or Idf.HexUpper => ParseHex(bytes),
         Idf.Base32 => ParseBase32(bytes),
-        //Idf.Base58 => ParseBase58(bytes),
+        Idf.Base58 => ParseBase58(bytes),
         Idf.Base64 or Idf.Base64Url => ParseBase64(bytes),
         Idf.Base85 => ParseBase85(bytes),
         Idf.Path2 => ParsePath2(bytes),

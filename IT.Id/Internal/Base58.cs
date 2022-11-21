@@ -14,7 +14,7 @@ internal static class Base58
     internal static readonly String _alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
     internal static readonly byte[] _bytes = Encoding.UTF8.GetBytes(_alphabet);
     private static readonly char _zeroChar;
-    private static readonly byte[] _lookupTable;
+    internal static readonly byte[] _lookupTable;
 
     static Base58()
     {
