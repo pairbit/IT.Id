@@ -369,7 +369,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         _ => throw new FormatException($"The '{format}' format string is not supported."),
     };
 
-    public Boolean TryFormat(Span<Byte> destination, out Int32 charsWritten, Idf format)
+    public Boolean TryFormat(Span<Byte> destination, out Int32 written, Idf format)
     {
         if (format == Idf.Hex && destination.Length >= 24)
         {
@@ -377,7 +377,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             {
                 ToHex(destination, Hex._lowerLookup16UnsafeP);
             }
-            charsWritten = 24;
+            written = 24;
             return true;
         }
 
@@ -387,21 +387,82 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             {
                 ToHex(destination, Hex._upperLookup16UnsafeP);
             }
-            charsWritten = 24;
+            written = 24;
+            return true;
+        }
+
+        if (format == Idf.Base32 && destination.Length >= 20)
+        {
+            ToBase32(destination);
+            written = 20;
+            return true;
+        }
+
+        if (format == Idf.Base58 && destination.Length >= 17)
+        {
+            ToBase58(destination);
+            written = 17;
             return true;
         }
 
         if (format == Idf.Base64 && destination.Length >= 16)
         {
             ToBase64(destination, Base64.bytes);
-            charsWritten = 16;
+            written = 16;
             return true;
         }
 
         if (format == Idf.Base64Url && destination.Length >= 16)
         {
             ToBase64(destination, Base64.bytesUrl);
-            charsWritten = 16;
+            written = 16;
+            return true;
+        }
+
+        if (format == Idf.Base85 && destination.Length >= 15)
+        {
+            ToBase85(destination);
+            written = 15;
+            return true;
+        }
+
+        if (format == Idf.Path2 && destination.Length >= 18)
+        {
+            ToPath2(destination, (byte)'/');
+            written = 18;
+            return true;
+        }
+
+        if (format == Idf.Path3 && destination.Length >= 19)
+        {
+            ToPath3(destination, (byte)'/');
+            written = 19;
+            return true;
+        }
+
+        written = 0;
+        return false;
+    }
+
+    public Boolean TryFormat(Span<Char> destination, out Int32 charsWritten, Idf format)
+    {
+        if (format == Idf.Hex && destination.Length >= 24)
+        {
+            unsafe
+            {
+                ToHex(destination, Hex._lowerLookup32UnsafeP);
+            }
+            charsWritten = 24;
+            return true;
+        }
+
+        if (format == Idf.HexUpper && destination.Length >= 24)
+        {
+            unsafe
+            {
+                ToHex(destination, Hex._upperLookup32UnsafeP);
+            }
+            charsWritten = 24;
             return true;
         }
 
@@ -419,6 +480,20 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             return true;
         }
 
+        if (format == Idf.Base64 && destination.Length >= 16)
+        {
+            ToBase64(destination, Base64.table);
+            charsWritten = 16;
+            return true;
+        }
+
+        if (format == Idf.Base64Url && destination.Length >= 16)
+        {
+            ToBase64(destination, Base64.tableUrl);
+            charsWritten = 16;
+            return true;
+        }
+
         if (format == Idf.Base85 && destination.Length >= 15)
         {
             ToBase85(destination);
@@ -428,14 +503,14 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Path2 && destination.Length >= 18)
         {
-            ToPath2(destination, (byte)'/');
+            ToPath2(destination);
             charsWritten = 18;
             return true;
         }
 
         if (format == Idf.Path3 && destination.Length >= 19)
         {
-            ToPath3(destination, (byte)'/');
+            ToPath3(destination);
             charsWritten = 19;
             return true;
         }
