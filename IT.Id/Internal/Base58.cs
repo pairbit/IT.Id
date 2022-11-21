@@ -232,10 +232,894 @@ internal static class Base58
         fixed (byte* inputPtr = bytes)
         fixed (char* outputPtr = output)
         {
-            if (!internalEncode_FAST(inputPtr, outputPtr, out int length))
+            if (!internalEncode_Manual(inputPtr, outputPtr, out int length))
                 throw new InvalidOperationException("Output buffer with insufficient size generated");
 
             return output;
+        }
+    }
+
+    private static unsafe bool internalEncode_Manual(byte* input, char* output, out int written)
+    {
+        fixed (char* alphabetPtr = _alphabet)
+        {
+            int length = 0;
+            char* lastChar = output + 16;
+
+            //1
+            char* pDigit;
+            int remainder;
+            int carry = *input++;
+
+            if (carry != 0)
+            {
+                pDigit = lastChar;
+                carry = Math.DivRem(carry, 58, out remainder);
+                *pDigit-- = (char)remainder;
+
+                if (carry != 0)
+                {
+                    carry = Math.DivRem(carry, 58, out remainder);
+                    if (carry != 0) throw new InvalidOperationException("Error implementation");
+                    *pDigit = (char)remainder;
+                    length = 2;
+                }
+                else length = 1;
+            }
+
+            //2
+            carry = *input++;
+
+            if (carry != 0 || length > 0)
+            {
+                pDigit = lastChar;
+                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                *pDigit-- = (char)remainder;
+
+                if (carry != 0 || length > 1)
+                {
+                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                    *pDigit-- = (char)remainder;
+
+                    if (carry != 0)
+                    {
+                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                        if (carry != 0) throw new InvalidOperationException("Error implementation");
+                        *pDigit = (char)remainder;
+                        length = 3;
+                    }
+                    else length = 2;
+                }
+                else length = 1;
+            }
+
+            //3
+            carry = *input++;
+
+            if (carry != 0 || length > 0)
+            {
+                pDigit = lastChar;
+                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                *pDigit-- = (char)remainder;
+
+                if (carry != 0 || length > 1)
+                {
+                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                    *pDigit-- = (char)remainder;
+
+                    if (carry != 0 || length > 2)
+                    {
+                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                        *pDigit-- = (char)remainder;
+
+                        if (carry != 0 || length > 3)
+                        {
+                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                            *pDigit-- = (char)remainder;
+
+                            if (carry != 0)
+                            {
+                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                if (carry != 0) throw new InvalidOperationException("Error implementation");
+                                *pDigit = (char)remainder;
+                                length = 5;
+                            }
+                            else length = 4;
+                        }
+                        else length = 3;
+                    }
+                    else length = 2;
+                }
+                else length = 1;
+            }
+
+            //4
+            carry = *input++;
+
+            if (carry != 0 || length > 0)
+            {
+                pDigit = lastChar;
+                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                *pDigit-- = (char)remainder;
+
+                if (carry != 0 || length > 1)
+                {
+                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                    *pDigit-- = (char)remainder;
+
+                    if (carry != 0 || length > 2)
+                    {
+                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                        *pDigit-- = (char)remainder;
+
+                        if (carry != 0 || length > 3)
+                        {
+                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                            *pDigit-- = (char)remainder;
+
+                            if (carry != 0 || length > 4)
+                            {
+                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                *pDigit-- = (char)remainder;
+
+                                if (carry != 0)
+                                {
+                                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                    if (carry != 0) throw new InvalidOperationException("Error implementation");
+                                    *pDigit = (char)remainder;
+                                    length = 6;
+                                }
+                                else length = 5;
+                            }
+                            else length = 4;
+                        }
+                        else length = 3;
+                    }
+                    else length = 2;
+                }
+                else length = 1;
+            }
+
+            //5
+            carry = *input++;
+
+            if (carry != 0 || length > 0)
+            {
+                pDigit = lastChar;
+                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                *pDigit-- = (char)remainder;
+
+                if (carry != 0 || length > 1)
+                {
+                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                    *pDigit-- = (char)remainder;
+
+                    if (carry != 0 || length > 2)
+                    {
+                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                        *pDigit-- = (char)remainder;
+
+                        if (carry != 0 || length > 3)
+                        {
+                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                            *pDigit-- = (char)remainder;
+
+                            if (carry != 0 || length > 4)
+                            {
+                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                *pDigit-- = (char)remainder;
+
+                                if (carry != 0 || length > 5)
+                                {
+                                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                    *pDigit-- = (char)remainder;
+
+                                    if (carry != 0)
+                                    {
+                                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                        if (carry != 0) throw new InvalidOperationException("Error implementation");
+                                        *pDigit = (char)remainder;
+                                        length = 7;
+                                    }
+                                    else length = 6;
+                                }
+                                else length = 5;
+                            }
+                            else length = 4;
+                        }
+                        else length = 3;
+                    }
+                    else length = 2;
+                }
+                else length = 1;
+            }
+
+            //6
+            carry = *input++;
+
+            if (carry != 0 || length > 0)
+            {
+                pDigit = lastChar;
+                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                *pDigit-- = (char)remainder;
+
+                if (carry != 0 || length > 1)
+                {
+                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                    *pDigit-- = (char)remainder;
+
+                    if (carry != 0 || length > 2)
+                    {
+                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                        *pDigit-- = (char)remainder;
+
+                        if (carry != 0 || length > 3)
+                        {
+                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                            *pDigit-- = (char)remainder;
+
+                            if (carry != 0 || length > 4)
+                            {
+                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                *pDigit-- = (char)remainder;
+
+                                if (carry != 0 || length > 5)
+                                {
+                                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                    *pDigit-- = (char)remainder;
+
+                                    if (carry != 0 || length > 6)
+                                    {
+                                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                        *pDigit-- = (char)remainder;
+
+                                        if (carry != 0 || length > 7)
+                                        {
+                                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                            *pDigit-- = (char)remainder;
+
+                                            if (carry != 0)
+                                            {
+                                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                if (carry != 0) throw new InvalidOperationException("Error implementation");
+                                                *pDigit = (char)remainder;
+                                                length = 9;
+                                            }
+                                            else length = 8;
+                                        }
+                                        else length = 7;
+                                    }
+                                    else length = 6;
+                                }
+                                else length = 5;
+                            }
+                            else length = 4;
+                        }
+                        else length = 3;
+                    }
+                    else length = 2;
+                }
+                else length = 1;
+            }
+
+            //7
+            carry = *input++;
+
+            if (carry != 0 || length > 0)
+            {
+                pDigit = lastChar;
+                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                *pDigit-- = (char)remainder;
+
+                if (carry != 0 || length > 1)
+                {
+                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                    *pDigit-- = (char)remainder;
+
+                    if (carry != 0 || length > 2)
+                    {
+                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                        *pDigit-- = (char)remainder;
+
+                        if (carry != 0 || length > 3)
+                        {
+                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                            *pDigit-- = (char)remainder;
+
+                            if (carry != 0 || length > 4)
+                            {
+                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                *pDigit-- = (char)remainder;
+
+                                if (carry != 0 || length > 5)
+                                {
+                                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                    *pDigit-- = (char)remainder;
+
+                                    if (carry != 0 || length > 6)
+                                    {
+                                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                        *pDigit-- = (char)remainder;
+
+                                        if (carry != 0 || length > 7)
+                                        {
+                                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                            *pDigit-- = (char)remainder;
+
+                                            if (carry != 0 || length > 8)
+                                            {
+                                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                *pDigit-- = (char)remainder;
+
+                                                if (carry != 0)
+                                                {
+                                                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                    if (carry != 0) throw new InvalidOperationException("Error implementation");
+                                                    *pDigit = (char)remainder;
+                                                    length = 10;
+                                                }
+                                                else length = 9;
+                                            }
+                                            else length = 8;
+                                        }
+                                        else length = 7;
+                                    }
+                                    else length = 6;
+                                }
+                                else length = 5;
+                            }
+                            else length = 4;
+                        }
+                        else length = 3;
+                    }
+                    else length = 2;
+                }
+                else length = 1;
+            }
+
+            //8
+            carry = *input++;
+
+            if (carry != 0 || length > 0)
+            {
+                pDigit = lastChar;
+                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                *pDigit-- = (char)remainder;
+
+                if (carry != 0 || length > 1)
+                {
+                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                    *pDigit-- = (char)remainder;
+
+                    if (carry != 0 || length > 2)
+                    {
+                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                        *pDigit-- = (char)remainder;
+
+                        if (carry != 0 || length > 3)
+                        {
+                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                            *pDigit-- = (char)remainder;
+
+                            if (carry != 0 || length > 4)
+                            {
+                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                *pDigit-- = (char)remainder;
+
+                                if (carry != 0 || length > 5)
+                                {
+                                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                    *pDigit-- = (char)remainder;
+
+                                    if (carry != 0 || length > 6)
+                                    {
+                                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                        *pDigit-- = (char)remainder;
+
+                                        if (carry != 0 || length > 7)
+                                        {
+                                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                            *pDigit-- = (char)remainder;
+
+                                            if (carry != 0 || length > 8)
+                                            {
+                                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                *pDigit-- = (char)remainder;
+
+                                                if (carry != 0 || length > 9)
+                                                {
+                                                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                    *pDigit-- = (char)remainder;
+
+                                                    if (carry != 0)
+                                                    {
+                                                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                        if (carry != 0) throw new InvalidOperationException("Error implementation");
+                                                        *pDigit = (char)remainder;
+                                                        length = 11;
+                                                    }
+                                                    else length = 10;
+                                                }
+                                                else length = 9;
+                                            }
+                                            else length = 8;
+                                        }
+                                        else length = 7;
+                                    }
+                                    else length = 6;
+                                }
+                                else length = 5;
+                            }
+                            else length = 4;
+                        }
+                        else length = 3;
+                    }
+                    else length = 2;
+                }
+                else length = 1;
+            }
+
+            //9
+            carry = *input++;
+
+            if (carry != 0 || length > 0)
+            {
+                pDigit = lastChar;
+                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                *pDigit-- = (char)remainder;
+
+                if (carry != 0 || length > 1)
+                {
+                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                    *pDigit-- = (char)remainder;
+
+                    if (carry != 0 || length > 2)
+                    {
+                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                        *pDigit-- = (char)remainder;
+
+                        if (carry != 0 || length > 3)
+                        {
+                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                            *pDigit-- = (char)remainder;
+
+                            if (carry != 0 || length > 4)
+                            {
+                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                *pDigit-- = (char)remainder;
+
+                                if (carry != 0 || length > 5)
+                                {
+                                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                    *pDigit-- = (char)remainder;
+
+                                    if (carry != 0 || length > 6)
+                                    {
+                                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                        *pDigit-- = (char)remainder;
+
+                                        if (carry != 0 || length > 7)
+                                        {
+                                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                            *pDigit-- = (char)remainder;
+
+                                            if (carry != 0 || length > 8)
+                                            {
+                                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                *pDigit-- = (char)remainder;
+
+                                                if (carry != 0 || length > 9)
+                                                {
+                                                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                    *pDigit-- = (char)remainder;
+
+                                                    if (carry != 0 || length > 10)
+                                                    {
+                                                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                        *pDigit-- = (char)remainder;
+
+                                                        if (carry != 0 || length > 11)
+                                                        {
+                                                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                            *pDigit-- = (char)remainder;
+
+                                                            if (carry != 0)
+                                                            {
+                                                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                                if (carry != 0) throw new InvalidOperationException("Error implementation");
+                                                                *pDigit = (char)remainder;
+                                                                length = 13;
+                                                            }
+                                                            else length = 12;
+                                                        }
+                                                        else length = 11;
+                                                    }
+                                                    else length = 10;
+                                                }
+                                                else length = 9;
+                                            }
+                                            else length = 8;
+                                        }
+                                        else length = 7;
+                                    }
+                                    else length = 6;
+                                }
+                                else length = 5;
+                            }
+                            else length = 4;
+                        }
+                        else length = 3;
+                    }
+                    else length = 2;
+                }
+                else length = 1;
+            }
+
+            //10
+            carry = *input++;
+
+            if (carry != 0 || length > 0)
+            {
+                pDigit = lastChar;
+                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                *pDigit-- = (char)remainder;
+
+                if (carry != 0 || length > 1)
+                {
+                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                    *pDigit-- = (char)remainder;
+
+                    if (carry != 0 || length > 2)
+                    {
+                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                        *pDigit-- = (char)remainder;
+
+                        if (carry != 0 || length > 3)
+                        {
+                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                            *pDigit-- = (char)remainder;
+
+                            if (carry != 0 || length > 4)
+                            {
+                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                *pDigit-- = (char)remainder;
+
+                                if (carry != 0 || length > 5)
+                                {
+                                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                    *pDigit-- = (char)remainder;
+
+                                    if (carry != 0 || length > 6)
+                                    {
+                                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                        *pDigit-- = (char)remainder;
+
+                                        if (carry != 0 || length > 7)
+                                        {
+                                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                            *pDigit-- = (char)remainder;
+
+                                            if (carry != 0 || length > 8)
+                                            {
+                                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                *pDigit-- = (char)remainder;
+
+                                                if (carry != 0 || length > 9)
+                                                {
+                                                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                    *pDigit-- = (char)remainder;
+
+                                                    if (carry != 0 || length > 10)
+                                                    {
+                                                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                        *pDigit-- = (char)remainder;
+
+                                                        if (carry != 0 || length > 11)
+                                                        {
+                                                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                            *pDigit-- = (char)remainder;
+
+                                                            if (carry != 0 || length > 12)
+                                                            {
+                                                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                                *pDigit-- = (char)remainder;
+
+                                                                if (carry != 0)
+                                                                {
+                                                                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                                    if (carry != 0) throw new InvalidOperationException("Error implementation");
+                                                                    *pDigit = (char)remainder;
+                                                                    length = 14;
+                                                                }
+                                                                else length = 13;
+                                                            }
+                                                            else length = 12;
+                                                        }
+                                                        else length = 11;
+                                                    }
+                                                    else length = 10;
+                                                }
+                                                else length = 9;
+                                            }
+                                            else length = 8;
+                                        }
+                                        else length = 7;
+                                    }
+                                    else length = 6;
+                                }
+                                else length = 5;
+                            }
+                            else length = 4;
+                        }
+                        else length = 3;
+                    }
+                    else length = 2;
+                }
+                else length = 1;
+            }
+
+            //11
+            carry = *input++;
+
+            if (carry != 0 || length > 0)
+            {
+                pDigit = lastChar;
+                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                *pDigit-- = (char)remainder;
+
+                if (carry != 0 || length > 1)
+                {
+                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                    *pDigit-- = (char)remainder;
+
+                    if (carry != 0 || length > 2)
+                    {
+                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                        *pDigit-- = (char)remainder;
+
+                        if (carry != 0 || length > 3)
+                        {
+                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                            *pDigit-- = (char)remainder;
+
+                            if (carry != 0 || length > 4)
+                            {
+                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                *pDigit-- = (char)remainder;
+
+                                if (carry != 0 || length > 5)
+                                {
+                                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                    *pDigit-- = (char)remainder;
+
+                                    if (carry != 0 || length > 6)
+                                    {
+                                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                        *pDigit-- = (char)remainder;
+
+                                        if (carry != 0 || length > 7)
+                                        {
+                                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                            *pDigit-- = (char)remainder;
+
+                                            if (carry != 0 || length > 8)
+                                            {
+                                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                *pDigit-- = (char)remainder;
+
+                                                if (carry != 0 || length > 9)
+                                                {
+                                                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                    *pDigit-- = (char)remainder;
+
+                                                    if (carry != 0 || length > 10)
+                                                    {
+                                                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                        *pDigit-- = (char)remainder;
+
+                                                        if (carry != 0 || length > 11)
+                                                        {
+                                                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                            *pDigit-- = (char)remainder;
+
+                                                            if (carry != 0 || length > 12)
+                                                            {
+                                                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                                *pDigit-- = (char)remainder;
+
+                                                                if (carry != 0 || length > 13)
+                                                                {
+                                                                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                                    *pDigit-- = (char)remainder;
+
+                                                                    if (carry != 0 || length > 14)
+                                                                    {
+                                                                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                                        *pDigit-- = (char)remainder;
+
+                                                                        if (carry != 0)
+                                                                        {
+                                                                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                                            if (carry != 0) throw new InvalidOperationException("Error implementation");
+                                                                            *pDigit = (char)remainder;
+                                                                            length = 16;
+                                                                        }
+                                                                        else length = 15;
+                                                                    }
+                                                                    else length = 14;
+                                                                }
+                                                                else length = 13;
+                                                            }
+                                                            else length = 12;
+                                                        }
+                                                        else length = 11;
+                                                    }
+                                                    else length = 10;
+                                                }
+                                                else length = 9;
+                                            }
+                                            else length = 8;
+                                        }
+                                        else length = 7;
+                                    }
+                                    else length = 6;
+                                }
+                                else length = 5;
+                            }
+                            else length = 4;
+                        }
+                        else length = 3;
+                    }
+                    else length = 2;
+                }
+                else length = 1;
+            }
+
+            //12
+            carry = *input;
+
+            if (carry != 0 || length > 0)
+            {
+                pDigit = lastChar;
+                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                *pDigit-- = (char)remainder;
+
+                if (carry != 0 || length > 1)
+                {
+                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                    *pDigit-- = (char)remainder;
+
+                    if (carry != 0 || length > 2)
+                    {
+                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                        *pDigit-- = (char)remainder;
+
+                        if (carry != 0 || length > 3)
+                        {
+                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                            *pDigit-- = (char)remainder;
+
+                            if (carry != 0 || length > 4)
+                            {
+                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                *pDigit-- = (char)remainder;
+
+                                if (carry != 0 || length > 5)
+                                {
+                                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                    *pDigit-- = (char)remainder;
+
+                                    if (carry != 0 || length > 6)
+                                    {
+                                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                        *pDigit-- = (char)remainder;
+
+                                        if (carry != 0 || length > 7)
+                                        {
+                                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                            *pDigit-- = (char)remainder;
+
+                                            if (carry != 0 || length > 8)
+                                            {
+                                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                *pDigit-- = (char)remainder;
+
+                                                if (carry != 0 || length > 9)
+                                                {
+                                                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                    *pDigit-- = (char)remainder;
+
+                                                    if (carry != 0 || length > 10)
+                                                    {
+                                                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                        *pDigit-- = (char)remainder;
+
+                                                        if (carry != 0 || length > 11)
+                                                        {
+                                                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                            *pDigit-- = (char)remainder;
+
+                                                            if (carry != 0 || length > 12)
+                                                            {
+                                                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                                *pDigit-- = (char)remainder;
+
+                                                                if (carry != 0 || length > 13)
+                                                                {
+                                                                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                                    *pDigit-- = (char)remainder;
+
+                                                                    if (carry != 0 || length > 14)
+                                                                    {
+                                                                        carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                                        *pDigit-- = (char)remainder;
+
+                                                                        if (carry != 0 || length > 15)
+                                                                        {
+                                                                            carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                                            *pDigit-- = (char)remainder;
+
+                                                                            if (carry != 0)
+                                                                            {
+                                                                                carry = Math.DivRem(carry + (*pDigit << 8), 58, out remainder);
+                                                                                if (carry != 0) throw new InvalidOperationException("Error implementation");
+                                                                                *pDigit = (char)remainder;
+                                                                                length = 17;
+                                                                            }
+                                                                            else length = 16;
+                                                                        }
+                                                                        else length = 15;
+                                                                    }
+                                                                    else length = 14;
+                                                                }
+                                                                else length = 13;
+                                                            }
+                                                            else length = 12;
+                                                        }
+                                                        else length = 11;
+                                                    }
+                                                    else length = 10;
+                                                }
+                                                else length = 9;
+                                            }
+                                            else length = 8;
+                                        }
+                                        else length = 7;
+                                    }
+                                    else length = 6;
+                                }
+                                else length = 5;
+                            }
+                            else length = 4;
+                        }
+                        else length = 3;
+                    }
+                    else length = 2;
+                }
+                else length = 1;
+            }
+
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output++];
+            *output = alphabetPtr[*output];
+
+            written = length;
+
+            return true;
         }
     }
 
@@ -243,53 +1127,29 @@ internal static class Base58
     {
         fixed (char* alphabetPtr = _alphabet)
         {
-            byte* pInput = input;
             byte* pInputEnd = input + 12;
 
             int length = 0;
             char* lastChar = output + 16;
 
-            #region while
+            //Console.Write($"{length} | ");
 
-            ////1
-            //int carry = *pInput;
-            //int i = 0;
-            //for (char* pDigit = pLastChar; (carry != 0 || i < length) && pDigit >= outputPtr; pDigit--, i++)
-            //{
-            //    carry += *pDigit << 8;
-            //    carry = Math.DivRem(carry, 58, out int remainder);
-            //    *pDigit = (char)remainder;
-            //}
-
-            //length = i;
-
-            ////2
-            //carry = *(pInput + 1);
-            //i = 0;
-            //for (char* pDigit = pLastChar; (carry != 0 || i < length) && pDigit >= outputPtr; pDigit--, i++)
-            //{
-            //    carry += *pDigit << 8;
-            //    carry = Math.DivRem(carry, 58, out int remainder);
-            //    *pDigit = (char)remainder;
-            //}
-
-            //length = i;
-
-            #endregion while
-
-            while (pInput != pInputEnd)
+            while (input != pInputEnd)
             {
-                int carry = *pInput++;
+                int carry = *input++;
                 int i = 0;
                 for (char* pDigit = lastChar; (carry != 0 || i < length) && pDigit >= output; pDigit--, i++)
                 {
-                    carry += *pDigit << 8;
-                    carry = Math.DivRem(carry, 58, out int remainder);
+                    carry = Math.DivRem(carry + (*pDigit << 8), 58, out int remainder);
                     *pDigit = (char)remainder;
                 }
 
                 length = i;
+
+                //Console.Write($"{length} | ");
             }
+
+            //Console.WriteLine();
 
             *output = alphabetPtr[*output++];
             *output = alphabetPtr[*output++];

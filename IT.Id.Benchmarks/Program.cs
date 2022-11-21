@@ -16,6 +16,14 @@ using System.Text.Json.Serialization;
 
 //Console.WriteLine($"{Id.GetMachineHash()} - {Id.GetMachineXXHash()}");
 
+//var b = new byte[] { 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255 };
+var b = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 58 };
+//var b = new byte[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+var a = new Id(b);
+Console.WriteLine($"{a.ToString("58")} == {SimpleBase.Base58.Bitcoin.Encode(b)}");
+
+//Console.ReadLine();
+
 var id = Id.Parse("62A84F674031E78D474FE23F");
 //var id = Id.New();
 
