@@ -798,7 +798,8 @@ public readonly partial struct Id
 
     private static Id ParseBase58(ReadOnlySpan<Char> chars)
     {
-        if (chars.Length != 17) throw new ArgumentException("The id must be 17 characters long", nameof(chars));
+        var len = chars.Length;
+        if (len < 12 || len > 17) throw new ArgumentOutOfRangeException(nameof(chars), len, "The id must be between 12 to 17 characters long");
 
         Span<Byte> bytes = stackalloc Byte[18];
 

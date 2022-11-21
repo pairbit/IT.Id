@@ -241,6 +241,20 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     /// <exception cref="ArgumentException"/>
     /// <exception cref="FormatException"/>
+    public static Id Parse(ReadOnlySpan<Char> chars, Idf format) => format switch
+    {
+        Idf.Hex or Idf.HexUpper => ParseHex(chars),
+        Idf.Base32 => ParseBase32(chars),
+        Idf.Base58 => ParseBase58(chars),
+        Idf.Base64 or Idf.Base64Url => ParseBase64(chars),
+        Idf.Base85 => ParseBase85(chars),
+        Idf.Path2 => ParsePath2(chars),
+        Idf.Path3 => ParsePath3(chars),
+        _ => throw new ArgumentException($"The id does not support the '{format}' format", nameof(format))
+    };
+
+    /// <exception cref="ArgumentException"/>
+    /// <exception cref="FormatException"/>
     public static Id Parse(ReadOnlySpan<Byte> bytes) => bytes.Length switch
     {
         15 => ParseBase85(bytes),
@@ -255,16 +269,16 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     /// <exception cref="ArgumentException"/>
     /// <exception cref="FormatException"/>
-    public static Id Parse(ReadOnlySpan<Char> value, Idf format) => format switch
+    public static Id Parse(ReadOnlySpan<Byte> bytes, Idf format) => format switch
     {
-        Idf.Hex or Idf.HexUpper => ParseHex(value),
-        Idf.Base32 => ParseBase32(value),
-        Idf.Base58 => ParseBase58(value),
-        Idf.Base64 or Idf.Base64Url => ParseBase64(value),
-        Idf.Base85 => ParseBase85(value),
-        Idf.Path2 => ParsePath2(value),
-        Idf.Path3 => ParsePath3(value),
-        _ => throw new FormatException()
+        Idf.Hex or Idf.HexUpper => ParseHex(bytes),
+        Idf.Base32 => ParseBase32(bytes),
+        //Idf.Base58 => ParseBase58(bytes),
+        Idf.Base64 or Idf.Base64Url => ParseBase64(bytes),
+        Idf.Base85 => ParseBase85(bytes),
+        Idf.Path2 => ParsePath2(bytes),
+        Idf.Path3 => ParsePath3(bytes),
+        _ => throw new ArgumentException($"The id does not support the '{format}' format", nameof(format))
     };
 
     //public static void Unpack(Byte[] bytes, out Int32 timestamp, out Int32 machine, out Int16 pid, out Int32 increment)
