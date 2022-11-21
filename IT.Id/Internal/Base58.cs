@@ -71,21 +71,6 @@ internal static class Base58
         }
     }
 
-    public static unsafe bool Encode(ReadOnlySpan<byte> input, Span<char> output)
-    {
-        Span<char> buffer = stackalloc char[17];
-
-        fixed (byte* inputPtr = input)
-        fixed (char* bufferPtr = buffer)
-        {
-            if (!internalEncode_FAST(inputPtr, bufferPtr, out int length)) return false;
-
-            buffer.CopyTo(output);
-
-            return true;
-        }
-    }
-
     /// <inheritdoc/>
     public static unsafe bool Decode(ReadOnlySpan<char> input, Span<byte> output, out int numBytesWritten)
     {
@@ -224,20 +209,6 @@ internal static class Base58
             return true;
         }
     }
-
-    //public static unsafe string Encode_FAST(ReadOnlySpan<byte> bytes)
-    //{
-    //    var output = new string('\0', 17);
-
-    //    fixed (byte* inputPtr = bytes)
-    //    fixed (char* outputPtr = output)
-    //    {
-    //        if (!internalEncode_Manual(inputPtr, outputPtr, out int length))
-    //            throw new InvalidOperationException("Output buffer with insufficient size generated");
-
-    //        return output;
-    //    }
-    //}
 
     private static unsafe bool internalEncode_FAST(byte* input, char* output, out int written)
     {

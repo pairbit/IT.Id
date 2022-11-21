@@ -125,8 +125,7 @@ for (int i = 0; i < 10000; i++)
     if (Id.Parse(idn.ToString(Idf.Base64)) != idn) throw new InvalidOperationException("Base64");
     if (Id.Parse(idn.ToString(Idf.Path2)) != idn) throw new InvalidOperationException("Path2");
     if (Id.Parse(idn.ToString(Idf.Path3)) != idn) throw new InvalidOperationException("Path3");
-
-    if (idn.ToBase58() != idn.ToBase58_New()) throw new InvalidOperationException("Base58");
+    if (Id.Parse(idn.ToString(Idf.Base58)) != idn) throw new InvalidOperationException("Base58");
 }
 
 var f1 = id.ToString(Idf.Base64Url);

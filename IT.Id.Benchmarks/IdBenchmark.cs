@@ -66,9 +66,6 @@ public class IdBenchmark
     public String Id_Encode_Base58() => _id.ToBase58();
 
     [Benchmark]
-    public String Id_Encode_Base58_New() => _id.ToBase58_New();
-
-    [Benchmark]
     public String Id_Encode_Base58_SimpleBase() => SimpleBase.Base58.Bitcoin.Encode(_id.ToByteArray());
 
     //[Benchmark]

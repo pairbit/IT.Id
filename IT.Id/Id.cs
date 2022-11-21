@@ -472,9 +472,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format.SequenceEqual("58"))
         {
-            var res = Base58.Encode(ToByteArray(), destination);
             charsWritten = 17;
-            return res;
+            ToBase58(destination);
+            return true;
         }
 
         if (format.SequenceEqual("85"))
