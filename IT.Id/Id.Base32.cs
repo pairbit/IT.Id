@@ -10,7 +10,13 @@ public readonly partial struct Id
         {
             fixed (char* resultP = result)
             {
-                ulong value = ((ulong)_timestamp << 8) | (byte)(_b >> 24);
+                ulong value = (byte)(_timestamp >> 24);
+                value = (value << 8) | (byte)(_timestamp >> 16);
+                value = (value << 8) | (byte)(_timestamp >> 8);
+                value = (value << 8) | (byte)(_timestamp);
+                value = (value << 8) | (byte)(_b >> 24);
+
+                //ulong value = ((ulong)_timestamp << 8) | (byte)(_b >> 24);
 
                 resultP[0] = map[value >> 35];
                 resultP[1] = map[(value >> 30) & 0x1F];
