@@ -383,15 +383,15 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     public String ToString(String? format, IFormatProvider? provider = null) => format switch
     {
-        "h" or "b16" or "16" => ToHexLower(),
-        "H" or "B16" => ToHexUpper(),
-        "32" => ToBase32(),
-        "58" => ToBase58(),
-        "b64" or "64" => ToBase64(),
-        "u64" or null => ToBase64Url(),
-        "85" => ToBase85(),
-        "p2" => ToPath2(),
-        "p3" => ToPath3(),
+        "h" => ToHexLower(),
+        "H" => ToHexUpper(),
+        "B32" => ToBase32(),
+        "B58" => ToBase58(),
+        "B64" => ToBase64(),
+        null => ToBase64Url(),
+        "B85" => ToBase85(),
+        "P2" => ToPath2(),
+        "P3" => ToPath3(),
         _ => throw new FormatException($"The '{format}' format string is not supported."),
     };
 
@@ -563,21 +563,21 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     {
         //check destination.Length
 
-        if (format.IsEmpty || format.SequenceEqual("u64"))
+        if (format.IsEmpty && destination.Length >= 16)
         {
             written = 16;
             ToBase64(destination, Base64.tableUrl);
             return true;
         }
 
-        if (format.SequenceEqual("b64") || format.SequenceEqual("64"))
+        if (format.SequenceEqual("B64") && destination.Length >= 16)
         {
             written = 16;
             ToBase64(destination, Base64.table);
             return true;
         }
 
-        if (format[0] == 'h' || format.SequenceEqual("b16") || format.SequenceEqual("16"))
+        if (format[0] == 'h' && destination.Length >= 24)
         {
             written = 24;
             unsafe
@@ -588,7 +588,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             return true;
         }
 
-        if (format[0] == 'H' || format.SequenceEqual("B16"))
+        if (format[0] == 'H' && destination.Length >= 24)
         {
             written = 24;
             unsafe
@@ -599,21 +599,21 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             return true;
         }
 
-        if (format.SequenceEqual("32"))
+        if (format.SequenceEqual("B32") && destination.Length >= 20)
         {
             written = 20;
             ToBase32(destination);
             return true;
         }
 
-        if (format.SequenceEqual("58"))
+        if (format.SequenceEqual("B58") && destination.Length >= 17)
         {
             written = 17;
             ToBase58(destination);
             return true;
         }
 
-        if (format.SequenceEqual("85"))
+        if (format.SequenceEqual("B85") && destination.Length >= 15)
         {
             written = 15;
             ToBase85(destination);
@@ -621,7 +621,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             return true;
         }
 
-        if (format.SequenceEqual("p2"))
+        if (format.SequenceEqual("P2") && destination.Length >= 18)
         {
             written = 18;
             ToPath2(destination);
@@ -629,7 +629,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             return true;
         }
 
-        if (format.SequenceEqual("p3"))
+        if (format.SequenceEqual("P3") && destination.Length >= 19)
         {
             written = 19;
             ToPath3(destination);

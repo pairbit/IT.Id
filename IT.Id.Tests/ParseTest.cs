@@ -1,4 +1,4 @@
-namespace IT.Id.Tests;
+namespace Tests;
 
 public class ParseTest
 {
@@ -7,7 +7,7 @@ public class ParseTest
     {
     }
 
-    [Test]
+    //[Test]
     public void Test1()
     {
         Assert.Pass();
