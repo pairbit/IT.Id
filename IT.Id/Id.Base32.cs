@@ -5,10 +5,10 @@ public readonly partial struct Id
     private String ToBase32()
     {
         var result = new string((char)0, 20);
-        var map = Base32.Chars;
         unsafe
         {
             fixed (char* resultP = result)
+            fixed (char* map = Base32.ALPHABET)
             {
                 ulong value = (byte)(_timestamp >> 24);
                 value = (value << 8) | (byte)(_timestamp >> 16);
