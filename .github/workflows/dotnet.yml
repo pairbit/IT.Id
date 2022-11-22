@@ -50,9 +50,31 @@ jobs:
     
       - name: Test
         run: dotnet test IT.Id.Tests/IT.Id.Tests.csproj
+
+  mac:
+    name: mac
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: |
+            6.0.x
+            7.0.x
     
+      - name: Restore
+        run: dotnet restore IT.Id.sln
+    
+      - name: Build
+        run: dotnet build IT.Id.sln --configuration Release --no-restore 
+    
+      - name: Test
+        run: dotnet test IT.Id.Tests/IT.Id.Tests.csproj
+
   publish:
-    needs: [linux, win]
+    needs: [linux, win, mac]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
