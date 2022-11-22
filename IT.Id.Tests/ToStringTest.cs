@@ -18,7 +18,7 @@ public class ToStringTest
 
         Assert.That(CheckId(Id.Parse("62A84F674031E78D474FE23F")).ToString(Idf.HexUpper), Is.EqualTo("62A84F674031E78D474FE23F"));
 
-        //Assert.That(CheckId(Id.Parse("CAM4YST067KRTHTFW8ZG")).ToString(Idf.Base32), Is.EqualTo("CAM4YST067KRTHTFW8ZG"));
+        Assert.That(CheckId(Id.Parse("CAM4YST067KRTHTFW8ZG")).ToString(Idf.Base32), Is.EqualTo("CAM4YST067KRTHTFW8ZG"));
         
         Assert.That(CheckId(Id.Parse("2ryw1nk6d1eiGQSL6")).ToString(Idf.Base58), Is.EqualTo("2ryw1nk6d1eiGQSL6"));
 

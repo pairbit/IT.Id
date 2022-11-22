@@ -13,7 +13,7 @@ public readonly partial struct Id
                 ulong value = (byte)(_timestamp >> 24);
                 value = (value << 8) | (byte)(_timestamp >> 16);
                 value = (value << 8) | (byte)(_timestamp >> 8);
-                value = (value << 8) | (byte)(_timestamp);
+                value = (value << 8) | (byte)_timestamp;
                 value = (value << 8) | (byte)(_b >> 24);
 
                 //ulong value = ((ulong)_timestamp << 8) | (byte)(_b >> 24);
@@ -59,7 +59,13 @@ public readonly partial struct Id
         fixed (char* resultP = destination)
         fixed (char* map = Base32.ALPHABET)
         {
-            ulong value = ((ulong)_timestamp << 8) | (byte)(_b >> 24);
+            ulong value = (byte)(_timestamp >> 24);
+            value = (value << 8) | (byte)(_timestamp >> 16);
+            value = (value << 8) | (byte)(_timestamp >> 8);
+            value = (value << 8) | (byte)_timestamp;
+            value = (value << 8) | (byte)(_b >> 24);
+
+            //ulong value = ((ulong)_timestamp << 8) | (byte)(_b >> 24);
 
             resultP[0] = map[value >> 35];
             resultP[1] = map[(value >> 30) & 0x1F];
@@ -99,7 +105,13 @@ public readonly partial struct Id
         fixed (byte* resultP = destination)
         fixed (byte* map = Base32.Bytes)
         {
-            ulong value = ((ulong)_timestamp << 8) | (byte)(_b >> 24);
+            ulong value = (byte)(_timestamp >> 24);
+            value = (value << 8) | (byte)(_timestamp >> 16);
+            value = (value << 8) | (byte)(_timestamp >> 8);
+            value = (value << 8) | (byte)_timestamp;
+            value = (value << 8) | (byte)(_b >> 24);
+
+            //ulong value = ((ulong)_timestamp << 8) | (byte)(_b >> 24);
 
             resultP[0] = map[value >> 35];
             resultP[1] = map[(value >> 30) & 0x1F];
