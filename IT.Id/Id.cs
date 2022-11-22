@@ -484,7 +484,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         return false;
     }
 
-    public Boolean TryFormat(Span<Char> destination, out Int32 charsWritten, Idf format)
+    public Boolean TryFormat(Span<Char> destination, out Int32 written, Idf format)
     {
         if (format == Idf.Hex && destination.Length >= 24)
         {
@@ -492,7 +492,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             {
                 ToHex(destination, Hex._lowerLookup32UnsafeP);
             }
-            charsWritten = 24;
+            written = 24;
             return true;
         }
 
@@ -502,84 +502,84 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             {
                 ToHex(destination, Hex._upperLookup32UnsafeP);
             }
-            charsWritten = 24;
+            written = 24;
             return true;
         }
 
         if (format == Idf.Base32 && destination.Length >= 20)
         {
             ToBase32(destination);
-            charsWritten = 20;
+            written = 20;
             return true;
         }
 
         if (format == Idf.Base58 && destination.Length >= 17)
         {
             ToBase58(destination);
-            charsWritten = 17;
+            written = 17;
             return true;
         }
 
         if (format == Idf.Base64 && destination.Length >= 16)
         {
             ToBase64(destination, Base64.table);
-            charsWritten = 16;
+            written = 16;
             return true;
         }
 
         if (format == Idf.Base64Url && destination.Length >= 16)
         {
             ToBase64(destination, Base64.tableUrl);
-            charsWritten = 16;
+            written = 16;
             return true;
         }
 
         if (format == Idf.Base85 && destination.Length >= 15)
         {
             ToBase85(destination);
-            charsWritten = 15;
+            written = 15;
             return true;
         }
 
         if (format == Idf.Path2 && destination.Length >= 18)
         {
             ToPath2(destination);
-            charsWritten = 18;
+            written = 18;
             return true;
         }
 
         if (format == Idf.Path3 && destination.Length >= 19)
         {
             ToPath3(destination);
-            charsWritten = 19;
+            written = 19;
             return true;
         }
 
-        charsWritten = 0;
+        written = 0;
         return false;
     }
 
-    public Boolean TryFormat(Span<Char> destination, out Int32 charsWritten, ReadOnlySpan<Char> format, IFormatProvider? provider)
+    public Boolean TryFormat(Span<Char> destination, out Int32 written, ReadOnlySpan<Char> format, IFormatProvider? provider)
     {
         //check destination.Length
 
         if (format.IsEmpty || format.SequenceEqual("u64"))
         {
-            charsWritten = 16;
+            written = 16;
             ToBase64(destination, Base64.tableUrl);
             return true;
         }
 
         if (format.SequenceEqual("b64") || format.SequenceEqual("64"))
         {
-            charsWritten = 16;
+            written = 16;
             ToBase64(destination, Base64.table);
             return true;
         }
 
         if (format[0] == 'h' || format.SequenceEqual("b16") || format.SequenceEqual("16"))
         {
-            charsWritten = 24;
+            written = 24;
             unsafe
             {
                 ToHex(destination, Hex._lowerLookup32UnsafeP);
@@ -590,7 +590,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format[0] == 'H' || format.SequenceEqual("B16"))
         {
-            charsWritten = 24;
+            written = 24;
             unsafe
             {
                 ToHex(destination, Hex._upperLookup32UnsafeP);
@@ -601,21 +601,21 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format.SequenceEqual("32"))
         {
-            charsWritten = 20;
+            written = 20;
             ToBase32(destination);
             return true;
         }
 
         if (format.SequenceEqual("58"))
         {
-            charsWritten = 17;
+            written = 17;
             ToBase58(destination);
             return true;
         }
 
         if (format.SequenceEqual("85"))
         {
-            charsWritten = 15;
+            written = 15;
             ToBase85(destination);
 
             return true;
@@ -623,7 +623,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format.SequenceEqual("p2"))
         {
-            charsWritten = 18;
+            written = 18;
             ToPath2(destination);
 
             return true;
@@ -631,13 +631,13 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format.SequenceEqual("p3"))
         {
-            charsWritten = 19;
+            written = 19;
             ToPath3(destination);
 
             return true;
         }
 
-        charsWritten = 0;
+        written = 0;
         return false;
     }
 
