@@ -96,7 +96,8 @@ public enum Idf
     /// <example>_\I\-TH145xA0ZPhqY</example>
     /// <remarks>
     /// Alphabet: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_/\ <br/>
-    /// Example: _\I\-TH145xA0ZPhqY <br/>
+    /// Example for Win: _\I\-TH145xA0ZPhqY <br/>
+    /// Example for Linux: _/I/-TH145xA0ZPhqY <br/>
     /// Length: 18 <br/>
     /// Format: P2
     /// </remarks>
@@ -109,8 +110,9 @@ public enum Idf
     /// <example>_\I\-\TH145xA0ZPhqY</example>
     /// <remarks>
     /// Alphabet: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_/\ <br/>
-    /// Example: _\I\-\TH145xA0ZPhqY <br/>
-    /// Length: 18 <br/>
+    /// Example for Win: _\I\-\TH145xA0ZPhqY <br/>
+    /// Example for Linux: _/I/-/TH145xA0ZPhqY <br/>
+    /// Length: 19 <br/>
     /// Format: P3
     /// </remarks>
     Path3

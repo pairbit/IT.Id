@@ -28,13 +28,20 @@ public class ToStringTest
 
         Assert.That(CheckId(Id.Parse("v{IV^PiNKcFO_~|")).ToString(Idf.Base85), Is.EqualTo("v{IV^PiNKcFO_~|"));
 
-        Assert.That(CheckId(Id.Parse("_\\I\\-TH145xA0ZPhqY")).ToString(Idf.Path2), Is.EqualTo("_\\I\\-TH145xA0ZPhqY"));
-        Assert.That(CheckId(Id.Parse("_/I/-TH145xA0ZPhqY")).ToString(Idf.Path2), Is.EqualTo("_\\I\\-TH145xA0ZPhqY"));
-        Assert.That(CheckId(Id.Parse("//I\\+TH145xA0ZPhqY")).ToString(Idf.Path2), Is.EqualTo("_\\I\\-TH145xA0ZPhqY"));
+        //Win = \, Linux = /
+        var p = Path.DirectorySeparatorChar;
 
-        Assert.That(CheckId(Id.Parse("_\\I\\-\\TH145xA0ZPhqY")).ToString(Idf.Path3), Is.EqualTo("_\\I\\-\\TH145xA0ZPhqY"));
-        Assert.That(CheckId(Id.Parse("_/I/-/TH145xA0ZPhqY")).ToString(Idf.Path3), Is.EqualTo("_\\I\\-\\TH145xA0ZPhqY"));
-        Assert.That(CheckId(Id.Parse("/\\I/+\\TH145xA0ZPhqY")).ToString(Idf.Path3), Is.EqualTo("_\\I\\-\\TH145xA0ZPhqY"));
+        var path2 = $"_{p}I{p}-TH145xA0ZPhqY";
+
+        Assert.That(CheckId(Id.Parse("_\\I\\-TH145xA0ZPhqY")).ToString(Idf.Path2), Is.EqualTo(path2));
+        Assert.That(CheckId(Id.Parse("_/I/-TH145xA0ZPhqY")).ToString(Idf.Path2), Is.EqualTo(path2));
+        Assert.That(CheckId(Id.Parse("//I\\+TH145xA0ZPhqY")).ToString(Idf.Path2), Is.EqualTo(path2));
+
+        var path3 = $"_{p}I{p}-{p}TH145xA0ZPhqY";
+
+        Assert.That(CheckId(Id.Parse("_\\I\\-\\TH145xA0ZPhqY")).ToString(Idf.Path3), Is.EqualTo(path3));
+        Assert.That(CheckId(Id.Parse("_/I/-/TH145xA0ZPhqY")).ToString(Idf.Path3), Is.EqualTo(path3));
+        Assert.That(CheckId(Id.Parse("/\\I/+\\TH145xA0ZPhqY")).ToString(Idf.Path3), Is.EqualTo(path3));
     }
 
     [Test]
