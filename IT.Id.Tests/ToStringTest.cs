@@ -97,10 +97,10 @@ public class ToStringTest
         CheckString(19, 66, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_/\\",
             id.ToString(Idf.Path3), id.ToString("P3"), $"{id:P3}", path3);
 
-        //var base32 = SimpleBase.Base32.Crockford.Encode(bytes);
+        var base32 = SimpleBase.Base32.Crockford.Encode(bytes);
 
-        CheckString(20, 32, "0123456789ABCDEFGHJKMNPQRSTVWXYZ",
-            id.ToString(Idf.Base32), id.ToString("B32"), $"{id:B32}");
+        //id.ToString(Idf.Base32), id.ToString("B32"), 
+        CheckString(20, 32, "0123456789ABCDEFGHJKMNPQRSTVWXYZ", $"{id:B32}", base32);
 
         var hexUpper = Convert.ToHexString(bytes);
 
