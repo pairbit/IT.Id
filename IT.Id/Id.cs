@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -14,6 +15,9 @@ namespace System;
 public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattable
 #if NET6_0_OR_GREATER
 , ISpanFormattable
+#endif
+#if NET7_0_OR_GREATER
+, IMinMaxValue<Id>, ISpanParsable<Id>
 #endif
 {
     #region Fields
@@ -100,6 +104,14 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     public DateTimeOffset Created => _unixEpoch.AddSeconds((uint)_timestamp);
 
+#if NET7_0_OR_GREATER
+
+    static Id IMinMaxValue<Id>.MaxValue => Max;
+
+    static Id IMinMaxValue<Id>.MinValue => Min;
+
+#endif
+
     #endregion Props
 
     #region Operators
@@ -179,28 +191,6 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     #endregion NewObjectId
 
-    //public static Byte[] Pack(Int32 timestamp, Int32 machine, Int16 pid, Int32 increment)
-    //{
-    //    if ((machine & 0xff000000) != 0) throw new ArgumentOutOfRangeException(nameof(machine), "The machine value must be between 0 and 16777215 (it must fit in 3 bytes).");
-
-    //    if ((increment & 0xff000000) != 0) throw new ArgumentOutOfRangeException(nameof(increment), "The increment value must be between 0 and 16777215 (it must fit in 3 bytes).");
-
-    //    byte[] bytes = new byte[12];
-    //    bytes[0] = (byte)(timestamp >> 24);
-    //    bytes[1] = (byte)(timestamp >> 16);
-    //    bytes[2] = (byte)(timestamp >> 8);
-    //    bytes[3] = (byte)(timestamp);
-    //    bytes[4] = (byte)(machine >> 16);
-    //    bytes[5] = (byte)(machine >> 8);
-    //    bytes[6] = (byte)(machine);
-    //    bytes[7] = (byte)(pid >> 8);
-    //    bytes[8] = (byte)(pid);
-    //    bytes[9] = (byte)(increment >> 16);
-    //    bytes[10] = (byte)(increment >> 8);
-    //    bytes[11] = (byte)(increment);
-    //    return bytes;
-    //}
-
     public static Int32 GetLength(Idf format) => format switch
     {
         Idf.Base85 => 15,
@@ -224,6 +214,16 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         24 => Idf.Hex,
         _ => null
     };
+
+    #region Parse
+
+    /// <exception cref="ArgumentException"/>
+    /// <exception cref="FormatException"/>
+    public static Id Parse(String s, IFormatProvider? provider) => Parse(s.AsSpan());
+    
+    /// <exception cref="ArgumentException"/>
+    /// <exception cref="FormatException"/>
+    public static Id Parse(ReadOnlySpan<Char> chars, IFormatProvider? provider) => Parse(chars);
 
     /// <exception cref="ArgumentException"/>
     /// <exception cref="FormatException"/>
@@ -280,6 +280,46 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         Idf.Path3 => ParsePath3(bytes),
         _ => throw new ArgumentException($"The id does not support the '{format}' format", nameof(format))
     };
+
+    #endregion Parse
+
+    #region TryParse
+
+    public static Boolean TryParse(String? s, IFormatProvider? provider, out Id id) => throw new NotImplementedException("https://github.com/pairbit/IT.Id/issues/1");
+
+    public static Boolean TryParse(ReadOnlySpan<Char> chars, IFormatProvider? provider, out Id id) => TryParse(chars, out id);
+
+    public static Boolean TryParse(ReadOnlySpan<Char> chars, out Id id) => throw new NotImplementedException("https://github.com/pairbit/IT.Id/issues/1");
+
+    public static Boolean TryParse(ReadOnlySpan<Char> chars, Idf format, out Id id) => throw new NotImplementedException("https://github.com/pairbit/IT.Id/issues/1");
+
+    public static Boolean TryParse(ReadOnlySpan<Byte> bytes, out Id id) => throw new NotImplementedException("https://github.com/pairbit/IT.Id/issues/1");
+
+    public static Boolean TryParse(ReadOnlySpan<Byte> bytes, Idf format, out Id id) => throw new NotImplementedException("https://github.com/pairbit/IT.Id/issues/1");
+
+    #endregion TryParse
+
+    //public static Byte[] Pack(Int32 timestamp, Int32 machine, Int16 pid, Int32 increment)
+    //{
+    //    if ((machine & 0xff000000) != 0) throw new ArgumentOutOfRangeException(nameof(machine), "The machine value must be between 0 and 16777215 (it must fit in 3 bytes).");
+
+    //    if ((increment & 0xff000000) != 0) throw new ArgumentOutOfRangeException(nameof(increment), "The increment value must be between 0 and 16777215 (it must fit in 3 bytes).");
+
+    //    byte[] bytes = new byte[12];
+    //    bytes[0] = (byte)(timestamp >> 24);
+    //    bytes[1] = (byte)(timestamp >> 16);
+    //    bytes[2] = (byte)(timestamp >> 8);
+    //    bytes[3] = (byte)(timestamp);
+    //    bytes[4] = (byte)(machine >> 16);
+    //    bytes[5] = (byte)(machine >> 8);
+    //    bytes[6] = (byte)(machine);
+    //    bytes[7] = (byte)(pid >> 8);
+    //    bytes[8] = (byte)(pid);
+    //    bytes[9] = (byte)(increment >> 16);
+    //    bytes[10] = (byte)(increment >> 8);
+    //    bytes[11] = (byte)(increment);
+    //    return bytes;
+    //}
 
     //public static void Unpack(Byte[] bytes, out Int32 timestamp, out Int32 machine, out Int16 pid, out Int32 increment)
     //{
@@ -341,7 +381,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     public override String ToString() => ToBase64Url();
 
-    public String ToString(String? format, IFormatProvider? formatProvider = null) => format switch
+    public String ToString(String? format, IFormatProvider? provider = null) => format switch
     {
         "h" or "b16" or "16" => ToHexLower(),
         "H" or "B16" => ToHexUpper(),
