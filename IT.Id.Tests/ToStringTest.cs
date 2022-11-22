@@ -99,8 +99,8 @@ public class ToStringTest
 
         //var base32 = SimpleBase.Base32.Crockford.Encode(bytes);
 
-        //CheckString(20, 32, "0123456789ABCDEFGHJKMNPQRSTVWXYZ",
-        //    id.ToString(Idf.Base32), id.ToString("B32"), $"{id:B32}", base32);
+        CheckString(20, 32, "0123456789ABCDEFGHJKMNPQRSTVWXYZ",
+            id.ToString(Idf.Base32), id.ToString("B32"), $"{id:B32}");
 
         var hexUpper = Convert.ToHexString(bytes);
 
