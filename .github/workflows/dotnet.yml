@@ -7,8 +7,8 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-    name: .NET Linux
+  ubuntu:
+    name: test ubuntu
     runs-on: ubuntu-latest
 
     steps:
@@ -29,7 +29,11 @@ jobs:
       - name: Tests
         run: dotnet test IT.Id.Tests/IT.Id.Tests.csproj
     
-      - name: Publish IT.Id
+  publish-nuget:
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish
         uses: pairbit/publish-nuget@v2.5.9
         with:
             PROJECT_FILE_PATH: IT.Id/IT.Id.csproj
