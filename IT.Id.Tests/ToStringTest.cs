@@ -20,7 +20,7 @@ public class ToStringTest
 
         var id = Id.Parse("CAM4YST067KRTHTFW8ZG");
         Assert.That(SimpleBase.Base32.Crockford.Encode(id.ToByteArray()), Is.EqualTo("CAM4YST067KRTHTFW8ZG"));
-        Assert.That(CheckId(id).ToBase32_CAM4YST067KRTHTFW8ZG(), Is.EqualTo("CAM4YST067KRTHTFW8ZG"));
+        Assert.That(CheckId(id).ToString(Idf.Base32), Is.EqualTo("CAM4YST067KRTHTFW8ZG"));
         
         Assert.That(CheckId(Id.Parse("2ryw1nk6d1eiGQSL6")).ToString(Idf.Base58), Is.EqualTo("2ryw1nk6d1eiGQSL6"));
 
