@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-
+    name: .NET Linux
     runs-on: ubuntu-latest
 
     steps:
@@ -25,6 +25,9 @@ jobs:
     
       - name: Build
         run: dotnet build IT.Id.sln --configuration Release --no-restore 
+    
+      - name: Tests
+        run: dotnet test IT.Id.Tests/IT.Id.Tests.csproj
     
       - name: Publish IT.Id
         uses: pairbit/publish-nuget@v2.5.9
