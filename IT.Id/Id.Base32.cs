@@ -49,6 +49,57 @@ public readonly partial struct Id
         return result;
     }
 
+    public String ToBase32_CAM4YST067KRTHTFW8ZG()
+    {
+        var result = new string((char)0, 20);
+
+        unsafe
+        {
+            fixed (char* resultP = result)
+            fixed (char* map = Base32.ALPHABET)
+            {
+                ulong value = ((ulong)_timestamp << 8) | (byte)(_b >> 24);
+
+                //CAM4YST067KRTHTFW8ZG
+
+                resultP[0] = 'C';
+                resultP[1] = 'A';
+                resultP[2] = 'M';
+                resultP[3] = '4';
+                resultP[4] = 'Y';
+                resultP[5] = 'S';
+                resultP[6] = 'T';
+                resultP[7] = '0';
+
+                value = (byte)(_b >> 16);
+                value = (value << 8) | (byte)(_b >> 8);
+                value = (value << 8) | (byte)_b;
+                value = (value << 8) | (byte)(_c >> 24);
+                value = (value << 8) | (byte)(_c >> 16);
+
+                resultP[8] = '6';
+                resultP[9] = '7';
+                resultP[10] = 'K';
+                resultP[11] = 'R';
+                resultP[12] = 'T';
+                resultP[13] = 'H';
+                resultP[14] = 'T';
+                resultP[15] = 'F';
+
+                value = (((ulong)(byte)(_c >> 8) << 8) | (byte)_c) << 4;
+
+                resultP[16] = 'W';
+                resultP[17] = '8';
+                resultP[18] = 'Z';
+                resultP[19] = 'G';
+            }
+        }
+
+        return result;
+    }
+
+    //CAM4YST067KRTHTFW8ZG
+
     private unsafe void ToBase32(Span<Char> destination)
     {
         fixed (char* resultP = destination)
