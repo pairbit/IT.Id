@@ -13,6 +13,7 @@ internal static class Base32
 
     private static readonly int[] _lookupValues;
     internal static readonly string ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+    internal static readonly char[] Chars = ALPHABET.ToCharArray();
     internal static readonly byte[] Bytes = Encoding.UTF8.GetBytes(ALPHABET);
 
     static Base32()
