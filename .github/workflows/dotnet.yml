@@ -1,4 +1,4 @@
-name: .NET Linux
+name: .NET
 
 on:
   push:
@@ -7,6 +7,28 @@ on:
     branches: [ main ]
 
 jobs:
+  win:
+    name: test windows
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: |
+            6.0.x
+            7.0.x
+    
+      - name: Install dependencies
+        run: dotnet restore IT.Id.sln
+    
+      - name: Build
+        run: dotnet build IT.Id.sln --configuration Release --no-restore 
+    
+      - name: Tests
+        run: dotnet test IT.Id.Tests/IT.Id.Tests.csproj
+
   ubuntu:
     name: test ubuntu
     runs-on: ubuntu-latest
@@ -29,8 +51,8 @@ jobs:
       - name: Tests
         run: dotnet test IT.Id.Tests/IT.Id.Tests.csproj
     
-  publish-nuget:
-
+  publish:
+    needs: [ubuntu, win]
     runs-on: ubuntu-latest
     steps:
       - name: Publish
