@@ -24,13 +24,13 @@ jobs:
             7.0.x
     
       - name: Restore
-        run: dotnet restore IT.Id.sln
+        run: dotnet restore
     
       - name: Build
-        run: dotnet build IT.Id.sln --configuration Release --no-restore 
+        run: dotnet build --configuration Release --no-restore 
     
       - name: Test
-        run: dotnet test IT.Id.Tests/IT.Id.Tests.csproj --no-restore
+        run: dotnet test --no-restore
 
   publish:
     needs: [build]
