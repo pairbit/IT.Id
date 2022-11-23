@@ -1,6 +1,6 @@
 namespace Tests;
 
-public class ToStringTest
+public class IdToStringTest
 {
     [SetUp]
     public void Setup()

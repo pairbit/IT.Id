@@ -122,7 +122,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     public static Boolean operator ==(Id left, Id right) => left.Equals(right);
 
-    public static Boolean operator !=(Id left, Id right) => !(left == right);
+    public static Boolean operator !=(Id left, Id right) => !left.Equals(right);
 
     public static Boolean operator >=(Id left, Id right) => left.CompareTo(right) >= 0;
 
@@ -347,22 +347,22 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         (byte)(_c)
     };
 
-    public void ToByteArray(Span<Byte> destination, Int32 offset)
+    public void ToByteArray(Span<Byte> bytes, Int32 offset)
     {
-        if (offset + 12 > destination.Length) throw new ArgumentException("Not enough room in destination buffer.", nameof(offset));
+        if (offset + 12 > bytes.Length) throw new ArgumentException("Not enough room in destination buffer.", nameof(offset));
 
-        destination[offset + 0] = (byte)(_timestamp >> 24);
-        destination[offset + 1] = (byte)(_timestamp >> 16);
-        destination[offset + 2] = (byte)(_timestamp >> 8);
-        destination[offset + 3] = (byte)(_timestamp);
-        destination[offset + 4] = (byte)(_b >> 24);
-        destination[offset + 5] = (byte)(_b >> 16);
-        destination[offset + 6] = (byte)(_b >> 8);
-        destination[offset + 7] = (byte)(_b);
-        destination[offset + 8] = (byte)(_c >> 24);
-        destination[offset + 9] = (byte)(_c >> 16);
-        destination[offset + 10] = (byte)(_c >> 8);
-        destination[offset + 11] = (byte)(_c);
+        bytes[offset + 0] = (byte)(_timestamp >> 24);
+        bytes[offset + 1] = (byte)(_timestamp >> 16);
+        bytes[offset + 2] = (byte)(_timestamp >> 8);
+        bytes[offset + 3] = (byte)(_timestamp);
+        bytes[offset + 4] = (byte)(_b >> 24);
+        bytes[offset + 5] = (byte)(_b >> 16);
+        bytes[offset + 6] = (byte)(_b >> 8);
+        bytes[offset + 7] = (byte)(_b);
+        bytes[offset + 8] = (byte)(_c >> 24);
+        bytes[offset + 9] = (byte)(_c >> 16);
+        bytes[offset + 10] = (byte)(_c >> 8);
+        bytes[offset + 11] = (byte)(_c);
     }
 
     public Int32 CompareTo(Id other)
@@ -409,73 +409,73 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         _ => throw new FormatException($"The '{format}' format string is not supported."),
     };
 
-    public Boolean TryFormat(Span<Byte> destination, out Int32 written, Idf format)
+    public Boolean TryFormat(Span<Byte> bytes, out Int32 written, Idf format)
     {
-        if (format == Idf.Hex && destination.Length >= 24)
+        if (format == Idf.Hex && bytes.Length >= 24)
         {
             unsafe
             {
-                ToHex(destination, Hex._lowerLookup16UnsafeP);
+                ToHex(bytes, Hex._lowerLookup16UnsafeP);
             }
             written = 24;
             return true;
         }
 
-        if (format == Idf.HexUpper && destination.Length >= 24)
+        if (format == Idf.HexUpper && bytes.Length >= 24)
         {
             unsafe
             {
-                ToHex(destination, Hex._upperLookup16UnsafeP);
+                ToHex(bytes, Hex._upperLookup16UnsafeP);
             }
             written = 24;
             return true;
         }
 
-        if (format == Idf.Base32 && destination.Length >= 20)
+        if (format == Idf.Base32 && bytes.Length >= 20)
         {
-            ToBase32(destination);
+            ToBase32(bytes);
             written = 20;
             return true;
         }
 
-        if (format == Idf.Base58 && destination.Length >= 17)
+        if (format == Idf.Base58 && bytes.Length >= 17)
         {
-            ToBase58(destination);
+            ToBase58(bytes);
             written = 17;
             return true;
         }
 
-        if (format == Idf.Base64 && destination.Length >= 16)
+        if (format == Idf.Base64 && bytes.Length >= 16)
         {
-            ToBase64(destination, Base64.bytes);
+            ToBase64(bytes, Base64.bytes);
             written = 16;
             return true;
         }
 
-        if (format == Idf.Base64Url && destination.Length >= 16)
+        if (format == Idf.Base64Url && bytes.Length >= 16)
         {
-            ToBase64(destination, Base64.bytesUrl);
+            ToBase64(bytes, Base64.bytesUrl);
             written = 16;
             return true;
         }
 
-        if (format == Idf.Base85 && destination.Length >= 15)
+        if (format == Idf.Base85 && bytes.Length >= 15)
         {
-            ToBase85(destination);
+            ToBase85(bytes);
             written = 15;
             return true;
         }
 
-        if (format == Idf.Path2 && destination.Length >= 18)
+        if (format == Idf.Path2 && bytes.Length >= 18)
         {
-            ToPath2(destination, (byte)'/');
+            ToPath2(bytes, (byte)'/');
             written = 18;
             return true;
         }
 
-        if (format == Idf.Path3 && destination.Length >= 19)
+        if (format == Idf.Path3 && bytes.Length >= 19)
         {
-            ToPath3(destination, (byte)'/');
+            ToPath3(bytes, (byte)'/');
             written = 19;
             return true;
         }
@@ -484,73 +484,73 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         return false;
     }
 
-    public Boolean TryFormat(Span<Char> destination, out Int32 written, Idf format)
+    public Boolean TryFormat(Span<Char> chars, out Int32 written, Idf format)
     {
-        if (format == Idf.Hex && destination.Length >= 24)
+        if (format == Idf.Hex && chars.Length >= 24)
         {
             unsafe
             {
-                ToHex(destination, Hex._lowerLookup32UnsafeP);
+                ToHex(chars, Hex._lowerLookup32UnsafeP);
             }
             written = 24;
             return true;
         }
 
-        if (format == Idf.HexUpper && destination.Length >= 24)
+        if (format == Idf.HexUpper && chars.Length >= 24)
         {
             unsafe
             {
-                ToHex(destination, Hex._upperLookup32UnsafeP);
+                ToHex(chars, Hex._upperLookup32UnsafeP);
             }
             written = 24;
             return true;
         }
 
-        if (format == Idf.Base32 && destination.Length >= 20)
+        if (format == Idf.Base32 && chars.Length >= 20)
         {
-            ToBase32(destination);
+            ToBase32(chars);
             written = 20;
             return true;
         }
 
-        if (format == Idf.Base58 && destination.Length >= 17)
+        if (format == Idf.Base58 && chars.Length >= 17)
         {
-            ToBase58(destination);
+            ToBase58(chars);
             written = 17;
             return true;
         }
 
-        if (format == Idf.Base64 && destination.Length >= 16)
+        if (format == Idf.Base64 && chars.Length >= 16)
         {
-            ToBase64(destination, Base64.table);
+            ToBase64(chars, Base64.table);
             written = 16;
             return true;
         }
 
-        if (format == Idf.Base64Url && destination.Length >= 16)
+        if (format == Idf.Base64Url && chars.Length >= 16)
         {
-            ToBase64(destination, Base64.tableUrl);
+            ToBase64(chars, Base64.tableUrl);
             written = 16;
             return true;
         }
 
-        if (format == Idf.Base85 && destination.Length >= 15)
+        if (format == Idf.Base85 && chars.Length >= 15)
         {
-            ToBase85(destination);
+            ToBase85(chars);
             written = 15;
             return true;
         }
 
-        if (format == Idf.Path2 && destination.Length >= 18)
+        if (format == Idf.Path2 && chars.Length >= 18)
         {
-            ToPath2(destination);
+            ToPath2(chars);
             written = 18;
             return true;
         }
 
-        if (format == Idf.Path3 && destination.Length >= 19)
+        if (format == Idf.Path3 && chars.Length >= 19)
         {
-            ToPath3(destination);
+            ToPath3(chars);
             written = 19;
             return true;
         }
@@ -559,80 +559,80 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         return false;
     }
 
-    public Boolean TryFormat(Span<Char> destination, out Int32 written, ReadOnlySpan<Char> format, IFormatProvider? provider)
+    public Boolean TryFormat(Span<Char> chars, out Int32 written, ReadOnlySpan<Char> format, IFormatProvider? provider)
     {
         //check destination.Length
 
-        if (format.IsEmpty && destination.Length >= 16)
+        if (format.IsEmpty && chars.Length >= 16)
         {
             written = 16;
-            ToBase64(destination, Base64.tableUrl);
+            ToBase64(chars, Base64.tableUrl);
             return true;
         }
 
-        if (format.SequenceEqual("B64") && destination.Length >= 16)
+        if (format.SequenceEqual("B64") && chars.Length >= 16)
         {
             written = 16;
-            ToBase64(destination, Base64.table);
+            ToBase64(chars, Base64.table);
             return true;
         }
 
-        if (format[0] == 'h' && destination.Length >= 24)
+        if (format[0] == 'h' && chars.Length >= 24)
         {
             written = 24;
             unsafe
             {
-                ToHex(destination, Hex._lowerLookup32UnsafeP);
+                ToHex(chars, Hex._lowerLookup32UnsafeP);
             }
 
             return true;
         }
 
-        if (format[0] == 'H' && destination.Length >= 24)
+        if (format[0] == 'H' && chars.Length >= 24)
         {
             written = 24;
             unsafe
             {
-                ToHex(destination, Hex._upperLookup32UnsafeP);
+                ToHex(chars, Hex._upperLookup32UnsafeP);
             }
 
             return true;
         }
 
-        if (format.SequenceEqual("B32") && destination.Length >= 20)
+        if (format.SequenceEqual("B32") && chars.Length >= 20)
         {
             written = 20;
-            ToBase32(destination);
+            ToBase32(chars);
             return true;
         }
 
-        if (format.SequenceEqual("B58") && destination.Length >= 17)
+        if (format.SequenceEqual("B58") && chars.Length >= 17)
         {
             written = 17;
-            ToBase58(destination);
+            ToBase58(chars);
             return true;
         }
 
-        if (format.SequenceEqual("B85") && destination.Length >= 15)
+        if (format.SequenceEqual("B85") && chars.Length >= 15)
         {
             written = 15;
-            ToBase85(destination);
+            ToBase85(chars);
 
             return true;
         }
 
-        if (format.SequenceEqual("P2") && destination.Length >= 18)
+        if (format.SequenceEqual("P2") && chars.Length >= 18)
         {
             written = 18;
-            ToPath2(destination);
+            ToPath2(chars);
 
             return true;
         }
 
-        if (format.SequenceEqual("P3") && destination.Length >= 19)
+        if (format.SequenceEqual("P3") && chars.Length >= 19)
         {
             written = 19;
-            ToPath3(destination);
+            ToPath3(chars);
 
             return true;
         }

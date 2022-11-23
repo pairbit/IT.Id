@@ -1,6 +1,6 @@
 namespace Tests;
 
-public class TryParseTest
+public class IdTryParseTest
 {
     [SetUp]
     public void Setup()
