@@ -30,7 +30,7 @@ jobs:
         run: dotnet build IT.Id.sln --configuration Release --no-restore 
     
       - name: Test
-        run: dotnet test IT.Id.Tests/IT.Id.Tests.csproj --no-restore --verbosity normal
+        run: dotnet test IT.Id.Tests/IT.Id.Tests.csproj --no-restore
 
   publish:
     needs: [build]
