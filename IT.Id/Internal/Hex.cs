@@ -40,6 +40,24 @@ internal static class Hex
     public const UInt64 NumCount8 = (UInt64)NumCount7 * NumCount1;
     //public const UInt64 NumSum8 = NumCount8 + NumSum7;
 
+    public static String ToString(UInt32 value)
+    {
+        var len = GetLength(value);
+
+        var str = new string('\0', len);
+
+        unsafe
+        {
+            fixed (char* ptr = str)
+            {
+                var chars = new Span<Char>(ptr, len);
+
+                TryWrite(chars, value, _numLower);
+            }
+        }
+        return str;
+    }
+
     public static OperationStatus TryWrite(Span<Char> chars, UInt32 value, Char[] map)
     {
         if (chars.Length == 0) return OperationStatus.DestinationTooSmall;
