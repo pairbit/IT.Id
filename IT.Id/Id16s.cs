@@ -3,7 +3,7 @@
 namespace System;
 
 [StructLayout(LayoutKind.Explicit, Size = 16)]
-internal readonly struct Id16i
+internal readonly struct Id16s
 {
     [FieldOffset(0)]
     private readonly Id _id;
@@ -14,9 +14,9 @@ internal readonly struct Id16i
     [FieldOffset(14)]
     private readonly UInt16 _index;
 
-    public static readonly Id16i Empty = default;
-    public static readonly Id16i Min = new(Id.Min, UInt16.MinValue, UInt16.MinValue);
-    public static readonly Id16i Max = new(Id.Max, UInt16.MaxValue, UInt16.MaxValue);
+    public static readonly Id16s Empty = default;
+    public static readonly Id16s Min = new(Id.Min, UInt16.MinValue, UInt16.MinValue);
+    public static readonly Id16s Max = new(Id.Max, UInt16.MaxValue, UInt16.MaxValue);
 
     public Id Id => _id;
 
@@ -24,7 +24,7 @@ internal readonly struct Id16i
 
     public Int32 Index => _index;
 
-    public Id16i(Id id, UInt16 value, UInt16 index)
+    public Id16s(Id id, UInt16 value, UInt16 index)
     {
         _id = id;
         _value = value;

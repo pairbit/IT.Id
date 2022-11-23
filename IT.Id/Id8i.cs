@@ -1,6 +1,6 @@
 ﻿namespace System;
 
-internal readonly struct Id8L
+internal readonly struct Id8i
 {
     private readonly Id _id;
     private readonly UInt16 _index1;
@@ -9,9 +9,9 @@ internal readonly struct Id8L
 
     public static readonly Int32 MinIndex = 0;
     public static readonly Int32 MaxIndex = 16777215;//3 bytes
-    public static readonly Id8L Empty = default;
-    public static readonly Id8L Min = new(Id.Min, Byte.MinValue, MinIndex);
-    public static readonly Id8L Max = new(Id.Max, Byte.MaxValue, MaxIndex);
+    public static readonly Id8i Empty = default;
+    public static readonly Id8i Min = new(Id.Min, Byte.MinValue, MinIndex);
+    public static readonly Id8i Max = new(Id.Max, Byte.MaxValue, MaxIndex);
 
     public Id Id => _id;
 
@@ -21,7 +21,7 @@ internal readonly struct Id8L
 
     /// <param name="index">3 bytes</param>
     /// <exception cref="ArgumentOutOfRangeException">The index value must be between 0 and 16777215 (it must fit in 3 bytes)</exception>
-    public Id8L(Id id, Byte value, Int32 index)
+    public Id8i(Id id, Byte value, Int32 index)
     {
         if ((index & 0xff000000) != 0) throw new ArgumentOutOfRangeException(nameof(index), "The index value must be between 0 and 16777215 (it must fit in 3 bytes)");
 
