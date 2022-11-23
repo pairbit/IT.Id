@@ -203,7 +203,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         _ => throw new NotImplementedException($"id format '{format}' not supported")
     };
 
-    public static Idf? TryGetFormat(Int32 length) => length switch
+    public static Idf GetFormat(Int32 length) => length switch
     {
         15 => Idf.Base85,
         16 => Idf.Base64,
@@ -212,8 +212,56 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         19 => Idf.Path3,
         20 => Idf.Base32,
         24 => Idf.Hex,
-        _ => null
+        _ => throw new ArgumentOutOfRangeException(nameof(length), length, $"The id cannot be {length} long. The id must be 24 characters long or between 15 and 20")
     };
+
+    public static Boolean TryGetFormat(Int32 length, out Idf format)
+    {
+        if (length == 15)
+        {
+            format = Idf.Base85;
+            return true;
+        }
+
+        if (length == 16)
+        {
+            format = Idf.Base64;
+            return true;
+        }
+
+        if (length == 17)
+        {
+            format = Idf.Base58;
+            return true;
+        }
+
+        if (length == 18)
+        {
+            format = Idf.Path2;
+            return true;
+        }
+
+        if (length == 19)
+        {
+            format = Idf.Path3;
+            return true;
+        }
+
+        if (length == 20)
+        {
+            format = Idf.Base32;
+            return true;
+        }
+
+        if (length == 20)
+        {
+            format = Idf.Hex;
+            return true;
+        }
+
+        format = default;
+        return false;
+    }
 
     #region Parse
 
