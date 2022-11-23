@@ -7,53 +7,12 @@ on:
     branches: [ main ]
 
 jobs:
-  win:
-    name: windows
-    runs-on: windows-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: |
-            6.0.x
-            7.0.x
-    
-      - name: Restore
-        run: dotnet restore IT.Id.sln
-    
-      - name: Build
-        run: dotnet build IT.Id.sln --configuration Release --no-restore 
-    
-      - name: Test
-        run: dotnet test IT.Id.Tests/IT.Id.Tests.csproj --no-restore
-
-  linux:
-    name: ubuntu
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: |
-            6.0.x
-            7.0.x
-    
-      - name: Restore
-        run: dotnet restore IT.Id.sln
-    
-      - name: Build
-        run: dotnet build IT.Id.sln --configuration Release --no-restore 
-    
-      - name: Test
-        run: dotnet test IT.Id.Tests/IT.Id.Tests.csproj --no-restore
-
-  mac:
-    name: mac
-    runs-on: macos-latest
+  build:
+    name: test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v3
@@ -74,7 +33,7 @@ jobs:
         run: dotnet test IT.Id.Tests/IT.Id.Tests.csproj --no-restore
 
   publish:
-    needs: [linux, win, mac]
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
