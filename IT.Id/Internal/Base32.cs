@@ -1,41 +1,189 @@
-﻿using System.Linq;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace System;
 
 internal static class Base32
 {
-    private const int AlphabetLength = 32;
-    private const int LookupTableNullItem = -1;
-    private const Int32 LowCode = 48;
-    private const Int32 LookupSize = 43;
+    private static readonly sbyte[] _map = new sbyte[] {
+    -1, //0
+    -1, //1
+    -1, //2
+    -1, //3
+    -1, //4
+    -1, //5
+    -1, //6
+    -1, //7
+    -1, //8
+    -1, //9
+    -1, //10
+    -1, //11
+    -1, //12
+    -1, //13
+    -1, //14
+    -1, //15
+    -1, //16
+    -1, //17
+    -1, //18
+    -1, //19
+    -1, //20
+    -1, //21
+    -1, //22
+    -1, //23
+    -1, //24
+    -1, //25
+    -1, //26
+    -1, //27
+    -1, //28
+    -1, //29
+    -1, //30
+    -1, //31
+    -1, //32
+    -1, //33
+    -1, //34
+    -1, //35
+    -1, //36
+    -1, //37
+    -1, //38
+    -1, //39
+    -1, //40
+    -1, //41
+    -1, //42
+    -1, //43
+    -1, //44
+    -1, //45
+    -1, //46
+    -1, //47
+     0, //48 -> 0
+     1, //49 -> 1
+     2, //50 -> 2
+     3, //51 -> 3
+     4, //52 -> 4
+     5, //53 -> 5
+     6, //54 -> 6
+     7, //55 -> 7
+     8, //56 -> 8
+     9, //57 -> 9
+    -1, //58
+    -1, //59
+    -1, //60
+    -1, //61
+    -1, //62
+    -1, //63
+    -1, //64
+    10, //65 -> A
+    11, //66 -> B
+    12, //67 -> C
+    13, //68 -> D
+    14, //69 -> E
+    15, //70 -> F
+    16, //71 -> G
+    17, //72 -> H
+     1, //73 -> I
+    18, //74 -> J
+    19, //75 -> K
+     1, //76 -> L
+    20, //77 -> M
+    21, //78 -> N
+     0, //79 -> O
+    22, //80 -> P
+    23, //81 -> Q
+    24, //82 -> R
+    25, //83 -> S
+    26, //84 -> T
+    27, //85 -> U
+    27, //86 -> V
+    28, //87 -> W
+    29, //88 -> X
+    30, //89 -> Y
+    31, //90 -> Z
+    -1, //91
+    -1, //92
+    -1, //93
+    -1, //94
+    -1, //95
+    -1, //96
+    10, //97 -> a
+    11, //98 -> b
+    12, //99 -> c
+    13, //100 -> d
+    14, //101 -> e
+    15, //102 -> f
+    16, //103 -> g
+    17, //104 -> h
+     1, //105 -> i
+    18, //106 -> j
+    19, //107 -> k
+     1, //108 -> l
+    20, //109 -> m
+    21, //110 -> n
+     0, //111 -> o
+    22, //112 -> p
+    23, //113 -> q
+    24, //114 -> r
+    25, //115 -> s
+    26, //116 -> t
+    27, //117 -> u
+    27, //118 -> v
+    28, //119 -> w
+    29, //120 -> x
+    30, //121 -> y
+    31, //122 -> z
+    };
 
-    private static readonly int[] _lookupValues;
     internal static readonly string ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
     internal static readonly char[] Chars = ALPHABET.ToCharArray();
     internal static readonly byte[] Bytes = Encoding.UTF8.GetBytes(ALPHABET);
 
-    static Base32()
-    {
-        int[] codes = ALPHABET.Select(ch => (int)ch).ToArray();
-        int min = codes.Min();
-        int max = codes.Max();
-        int size = max - min + 1;
-        var table = new int[size];
+    //static Base32()
+    //{
+    //    var table = new sbyte[123];
 
-        for (int i = 0; i < table.Length; i++)
-            table[i] = LookupTableNullItem;
+    //    for (int i = 0; i < table.Length; i++)
+    //        table[i] = LookupTableNullItem;
 
-        foreach (int code in codes)
-            table[code - min] = ALPHABET.IndexOf((char)code);
+    //    for (sbyte i = 0; i < Chars.Length; i++)
+    //    {
+    //        var ch = Chars[i];
 
-        if (min != LowCode) throw new InvalidOperationException();
+    //        var chlower = Char.ToLowerInvariant(ch);
 
-        if (table.Length != LookupSize) throw new InvalidOperationException();
+    //        table[ch] = i;
 
-        _lookupValues = table;
-    }
+    //        table[chlower] = i;
+
+    //        if (ch == '0')
+    //        {
+    //            table['o'] = i;
+    //            table['O'] = i;
+    //        }
+
+    //        if (ch == 'V')
+    //        {
+    //            table['u'] = i;
+    //            table['U'] = i;
+    //        }
+
+    //        if (ch == '1')
+    //        {
+    //            table['i'] = i;
+    //            table['I'] = i;
+    //            table['l'] = i;
+    //            table['L'] = i;
+    //        }
+    //    }
+    //    Console.WriteLine("new sbyte[] {");
+    //    for (int i = 0; i < table.Length; i++)
+    //    {
+    //        var code = table[i];
+    //        if (code == -1)
+    //            Console.WriteLine($"-1, //{i}");
+    //        else
+    //            Console.WriteLine($"{code,2}, //{i} -> {(char)i}");
+    //    }
+    //    Console.WriteLine("}");
+    //    _lookupValues = table;
+    //}
 
     //    public static String Encode6(ReadOnlySpan<byte> bytes)
     //    {
@@ -156,17 +304,13 @@ internal static class Base32
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static Byte GetByte(int lookupIndex)
+    internal static Byte GetByte(int ch)
     {
-        lookupIndex -= LowCode;
+        if (ch < 0 || ch >= 123) throw new FormatException($"Char '{(char)ch}' not found");
 
-        if (lookupIndex < 0 || lookupIndex >= LookupSize) throw new FormatException();
+        var item = _map[ch];
 
-        //int item = *(pLookup + lookupIndex);
-
-        var item = _lookupValues[lookupIndex];
-
-        if (item == LookupTableNullItem) throw new FormatException();
+        if (item == -1) throw new FormatException($"Char '{(char)ch}' not found");
 
         return (byte)item;
     }
