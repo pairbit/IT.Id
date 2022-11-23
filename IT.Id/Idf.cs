@@ -12,7 +12,7 @@ public enum Idf
     /// Length: 24 <br/>
     /// Format: h
     /// </remarks>
-    Hex,
+    Hex = 15,
 
     /// <summary>
     /// Base16 Upper
@@ -24,7 +24,7 @@ public enum Idf
     /// Length: 24 <br/>
     /// Format: H
     /// </remarks>
-    HexUpper,
+    HexUpper = 16,
 
     /// <summary>
     /// Base32 Crockford's
@@ -36,7 +36,15 @@ public enum Idf
     /// Length: 20 <br/>
     /// Format: B32
     /// </remarks>
-    Base32,
+    Base32 = 32,
+
+    //Base36 = 36,
+
+    /// <summary>
+    /// RFC 9285 <br/>
+    /// https://datatracker.ietf.org/doc/html/rfc9285
+    /// </summary>
+    Base45 = 45,
 
     /// <summary>
     /// Base58 Bitcoin Fixed
@@ -48,7 +56,7 @@ public enum Idf
     /// Length: 17 <br/>
     /// Format: B58
     /// </remarks>
-    Base58,
+    Base58 = 58,
 
     /// <summary>
     /// Base64 Classic
@@ -60,7 +68,7 @@ public enum Idf
     /// Length: 16 <br/>
     /// Format: B64
     /// </remarks>
-    Base64,
+    Base64 = 64,
 
     /// <summary>
     /// RFC 7515 <br/>
@@ -74,7 +82,7 @@ public enum Idf
     /// </remarks>
     /// <example>YqhPZ0Ax541HT-I_</example>
     /// <see cref="https://datatracker.ietf.org/doc/html/rfc7515#appendix-C"/>
-    Base64Url,
+    Base64Url = 63,
 
     /// <summary>
     /// Z85 Xml <br/>
@@ -87,7 +95,7 @@ public enum Idf
     /// Length: 15 <br/>
     /// Format: B85
     /// </remarks>
-    Base85,
+    Base85 = 85,
 
     /// <summary>
     /// Win   = 38^2 + 38 = 1 482 max <br/>
@@ -101,7 +109,7 @@ public enum Idf
     /// Length: 18 <br/>
     /// Format: P2
     /// </remarks>
-    Path2,
+    Path2 = 61,
 
     /// <summary>
     /// Win   = 38^3 + 38^2 + 38 =  56 354 max <br/>
@@ -115,5 +123,5 @@ public enum Idf
     /// Length: 19 <br/>
     /// Format: P3
     /// </remarks>
-    Path3
+    Path3 = 62,
 }
