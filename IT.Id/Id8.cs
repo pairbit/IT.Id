@@ -64,7 +64,56 @@ public readonly struct Id8 : IComparable<Id8>, IEquatable<Id8>
         return hash;
     }
 
-    public override String ToString()
+    public override String ToString() => ToBase64();
+
+    public String ToString(Idf format) => format switch
+    {
+        Idf.Hex => ToHex(format),
+        Idf.HexUpper => ToHex(format),
+        Idf.Base64Url => ToBase64(),
+        _ => throw new FormatException($"The '{format}' format string is not supported."),
+    };
+
+    public static Id8 Parse(ReadOnlySpan<Char> chars)
+    {
+        var len = chars.Length;
+        if (len == 0) throw new FormatException();
+
+        var b = chars[len - 1];
+
+        if (b == '6') return ParseBase64(chars);
+        if (b == '1') return ParseHex(chars);
+
+        throw new FormatException();
+    }
+
+    #endregion Public Methods
+
+    private String ToHex(Idf format)
+    {
+        var len = 24 + Hex.GetLength(_value) + 1;
+        var str = new string('\0', len);
+
+        unsafe
+        {
+            fixed (char* ptr = str)
+            {
+                var chars = new Span<Char>(ptr, len);
+
+                _id.TryFormat(chars, out _, format);
+
+                var map = format == Idf.HexUpper ? Hex._numUpper : Hex._numLower;
+
+                Hex.TryWrite(chars.Slice(24), _value, map);
+
+                chars[len - 1] = '1';
+            }
+        }
+
+        return str;
+    }
+
+    private String ToBase64()
     {
         var len = 16 + Base64.GetLength(_value) + 1;
         var str = new string('\0', len);
@@ -86,7 +135,27 @@ public readonly struct Id8 : IComparable<Id8>, IEquatable<Id8>
         return str;
     }
 
-    public static Id8 Parse(ReadOnlySpan<Char> chars)
+    private static Id8 ParseHex(ReadOnlySpan<Char> chars)
+    {
+        var len = chars.Length;
+        if (len == 0) throw new FormatException();
+
+        var b = chars[len - 1];
+
+        if (b != '1') throw new FormatException();
+
+        len -= 25;
+
+        if (len == 0) throw new FormatException();
+
+        var value = Hex.ToByte(chars.Slice(24, len));
+
+        var id = Id.Parse(chars.Slice(0, 24));
+
+        return new Id8(id, value);
+    }
+
+    private static Id8 ParseBase64(ReadOnlySpan<Char> chars)
     {
         var len = chars.Length;
         if (len == 0) throw new FormatException();
@@ -105,6 +174,4 @@ public readonly struct Id8 : IComparable<Id8>, IEquatable<Id8>
 
         return new Id8(id, value);
     }
-
-    #endregion Public Methods
 }
