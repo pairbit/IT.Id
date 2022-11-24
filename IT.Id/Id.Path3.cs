@@ -166,7 +166,7 @@ public readonly partial struct Id
 
         //_\I\-\TH145xA0ZPhqY
 
-        ReadOnlySpan<sbyte> mapSpan = Base64._decodingMap;
+        ReadOnlySpan<sbyte> mapSpan = Base64.DecodeMap;
         ref char src = ref MemoryMarshal.GetReference(chars);
         ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
 
@@ -175,56 +175,56 @@ public readonly partial struct Id
         int i2 = Unsafe.Add(ref src, 16);
         int i3 = Unsafe.Add(ref src, 15);
 
-        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw new FormatException();
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw NewFormatException(Idf.Path3, i0, i1, i2, i3);
 
-        i0 = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+        var val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
 
-        if (i0 < 0) throw new FormatException();
+        if (val < 0) throw NewFormatException(Idf.Path3, i0, i1, i2, i3);
 
-        var timestamp = (byte)(i0 >> 16) << 24 | (byte)(i0 >> 8) << 16 | (byte)i0 << 8;
+        var timestamp = (byte)(val >> 16) << 24 | (byte)(val >> 8) << 16 | (byte)val << 8;
 
         i0 = Unsafe.Add(ref src, 14);
         i1 = Unsafe.Add(ref src, 13);
         i2 = Unsafe.Add(ref src, 12);
         i3 = Unsafe.Add(ref src, 11);
 
-        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw new FormatException();
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw NewFormatException(Idf.Path3, i0, i1, i2, i3);
 
-        i0 = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+        val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
 
-        if (i0 < 0) throw new FormatException();
+        if (val < 0) throw NewFormatException(Idf.Path3, i0, i1, i2, i3);
 
-        timestamp |= (byte)(i0 >> 16);
+        timestamp |= (byte)(val >> 16);
 
-        var b = (byte)(i0 >> 8) << 24 | (byte)i0 << 16;
+        var b = (byte)(val >> 8) << 24 | (byte)val << 16;
 
         i0 = Unsafe.Add(ref src, 10);
         i1 = Unsafe.Add(ref src, 9);
         i2 = Unsafe.Add(ref src, 8);
         i3 = Unsafe.Add(ref src, 7);
 
-        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw new FormatException();
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw NewFormatException(Idf.Path3, i0, i1, i2, i3);
 
-        i0 = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+        val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
 
-        if (i0 < 0) throw new FormatException();
+        if (val < 0) throw NewFormatException(Idf.Path3, i0, i1, i2, i3);
 
-        b |= (byte)(i0 >> 16) << 8 | (byte)(i0 >> 8);
+        b |= (byte)(val >> 16) << 8 | (byte)(val >> 8);
 
-        var c = (byte)i0 << 24;
+        var c = (byte)val << 24;
 
         i0 = Unsafe.Add(ref src, 6);
         i1 = Unsafe.Add(ref src, 4);
         i2 = Unsafe.Add(ref src, 2);
         i3 = Unsafe.Add(ref src, 0);
 
-        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw new FormatException();
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw NewFormatException(Idf.Path3, i0, i1, i2, i3);
 
-        i0 = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+        val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
 
-        if (i0 < 0) throw new FormatException();
+        if (val < 0) throw NewFormatException(Idf.Path3, i0, i1, i2, i3);
 
-        return new Id(timestamp, b, c | i0);
+        return new Id(timestamp, b, c | val);
     }
 
     private static Id ParsePath3(ReadOnlySpan<Byte> bytes)
@@ -238,7 +238,7 @@ public readonly partial struct Id
 
         //_\I\-\TH145xA0ZPhqY
 
-        ReadOnlySpan<sbyte> mapSpan = Base64._decodingMap;
+        ReadOnlySpan<sbyte> mapSpan = Base64.DecodeMap;
         ref byte src = ref MemoryMarshal.GetReference(bytes);
         ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
 

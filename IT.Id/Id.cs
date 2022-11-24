@@ -1,11 +1,11 @@
-﻿using System.Diagnostics;
+﻿using Internal;
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using System.Threading;
-using Internal;
 
 namespace System;
 
@@ -807,8 +807,59 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         }
     }
 
+    private static Exception NewFormatException(Idf format, params int[] codes)
+    {
+        var min = GetMin(format);
+        var max = GetMax(format);
+        var map = GetMap(format);
+
+        foreach (var code in codes)
+        {
+            if (code < min || code > max || map[code] == -1)
+                return NewFormatException((char)code, format);
+        }
+
+        return new FormatException();
+    }
+
     private static Exception NewFormatException(Char ch, Idf format) 
         => new FormatException($"Char '{ch}' not found {format}");
+
+    private static int GetMin(Idf format) => format switch
+    {
+        Idf.Base85 => Base85.Min,
+        Idf.Base64 => Base64.Min,
+        Idf.Base58 => Base58.Min,
+        Idf.Path2 => Base64.Min,
+        Idf.Path3 => Base64.Min,
+        Idf.Base32 => Base32.Min,
+        Idf.Hex => Hex.Min,
+        _ => throw new NotImplementedException()
+    };
+
+    private static int GetMax(Idf format) => format switch
+    {
+        Idf.Base85 => Base85.Max,
+        Idf.Base64 => Base64.Max,
+        Idf.Base58 => Base58.Max,
+        Idf.Path2 => Base64.Max,
+        Idf.Path3 => Base64.Max,
+        Idf.Base32 => Base32.Max,
+        Idf.Hex => Hex.Max,
+        _ => throw new NotImplementedException()
+    };
+
+    private static sbyte[] GetMap(Idf format) => format switch
+    {
+        Idf.Base85 => Base85.DecodeMap,
+        Idf.Base64 => Base64.DecodeMap,
+        Idf.Base58 => Base58.DecodeMap,
+        Idf.Path2 => Base64.DecodeMap,
+        Idf.Path3 => Base64.DecodeMap,
+        Idf.Base32 => Base32.DecodeMap,
+        Idf.Hex => Hex.DecodeMap,
+        _ => throw new NotImplementedException()
+    };
 
     #endregion Private Methods
 }

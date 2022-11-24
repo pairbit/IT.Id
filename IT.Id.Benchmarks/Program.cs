@@ -94,8 +94,8 @@ if (!base32.Equals(idb._ulidString))
 
 //var base32_2 = Wiry.Base32.Base32Encoding.Base32.GetString(bytes);
 
-var id1 = idb.Id_Decode_HexLower();
-var id2 = idb.Id_Decode_HexUpper();
+var id1 = idb.Id_Decode_Hex();
+var id2 = idb.Id_Decode_Hex();
 var id3 = idb.Id_Decode_Base85();
 var id4 = idb.Id_Decode_Path2();
 var id5 = idb.Id_Decode_Path3();

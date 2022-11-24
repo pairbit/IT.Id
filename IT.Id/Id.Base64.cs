@@ -194,34 +194,72 @@ public readonly partial struct Id
     {
         if (chars.Length != 16) throw new ArgumentException("The id must be 16 characters long", nameof(chars));
 
+        ReadOnlySpan<sbyte> mapSpan = Base64.DecodeMap;
         ref char src = ref MemoryMarshal.GetReference(chars);
+        ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
 
-        var value = (Map64(Unsafe.Add(ref src, 0)) << 18) | (Map64(Unsafe.Add(ref src, 1)) << 12) | Map64(Unsafe.Add(ref src, 2)) << 6 | Map64(Unsafe.Add(ref src, 3));
+        int i0 = Unsafe.Add(ref src, 0);
+        int i1 = Unsafe.Add(ref src, 1);
+        int i2 = Unsafe.Add(ref src, 2);
+        int i3 = Unsafe.Add(ref src, 3);
 
-        var timestamp = (byte)(value >> 16) << 24 | (byte)(value >> 8) << 16 | (byte)value << 8;
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw NewFormatException(Idf.Base64, i0, i1, i2, i3);
 
-        value = (Map64(Unsafe.Add(ref src, 4)) << 18) | (Map64(Unsafe.Add(ref src, 5)) << 12) | Map64(Unsafe.Add(ref src, 6)) << 6 | Map64(Unsafe.Add(ref src, 7));
+        var val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
 
-        timestamp |= (byte)(value >> 16);
+        if (val < 0) throw NewFormatException(Idf.Base64, i0, i1, i2, i3);
 
-        var b = (byte)(value >> 8) << 24 | (byte)value << 16;
+        var timestamp = (byte)(val >> 16) << 24 | (byte)(val >> 8) << 16 | (byte)val << 8;
 
-        value = (Map64(Unsafe.Add(ref src, 8)) << 18) | (Map64(Unsafe.Add(ref src, 9)) << 12) | Map64(Unsafe.Add(ref src, 10)) << 6 | Map64(Unsafe.Add(ref src, 11));
+        i0 = Unsafe.Add(ref src, 4);
+        i1 = Unsafe.Add(ref src, 5);
+        i2 = Unsafe.Add(ref src, 6);
+        i3 = Unsafe.Add(ref src, 7);
 
-        b |= (byte)(value >> 16) << 8 | (byte)(value >> 8);
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw NewFormatException(Idf.Base64, i0, i1, i2, i3);
 
-        var c = (byte)value << 24;
+        val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
 
-        value = (Map64(Unsafe.Add(ref src, 12)) << 18) | (Map64(Unsafe.Add(ref src, 13)) << 12) | Map64(Unsafe.Add(ref src, 14)) << 6 | Map64(Unsafe.Add(ref src, 15));
+        if (val < 0) throw NewFormatException(Idf.Base64, i0, i1, i2, i3);
 
-        return new Id(timestamp, b, c | value);
+        timestamp |= (byte)(val >> 16);
+
+        var b = (byte)(val >> 8) << 24 | (byte)val << 16;
+
+        i0 = Unsafe.Add(ref src, 8);
+        i1 = Unsafe.Add(ref src, 9);
+        i2 = Unsafe.Add(ref src, 10);
+        i3 = Unsafe.Add(ref src, 11);
+
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw NewFormatException(Idf.Base64, i0, i1, i2, i3);
+
+        val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+
+        if (val < 0) throw NewFormatException(Idf.Base64, i0, i1, i2, i3);
+
+        b |= (byte)(val >> 16) << 8 | (byte)(val >> 8);
+
+        var c = (byte)val << 24;
+
+        i0 = Unsafe.Add(ref src, 12);
+        i1 = Unsafe.Add(ref src, 13);
+        i2 = Unsafe.Add(ref src, 14);
+        i3 = Unsafe.Add(ref src, 15);
+
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw NewFormatException(Idf.Base64, i0, i1, i2, i3);
+
+        val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+
+        if (val < 0) throw NewFormatException(Idf.Base64, i0, i1, i2, i3);
+
+        return new Id(timestamp, b, c | val);
     }
 
     private static Id ParseBase64(ReadOnlySpan<Byte> bytes)
     {
         if (bytes.Length != 16) throw new ArgumentException("The id must be 16 bytes long", nameof(bytes));
 
-        ReadOnlySpan<sbyte> mapSpan = Base64._decodingMap;
+        ReadOnlySpan<sbyte> mapSpan = Base64.DecodeMap;
         ref byte src = ref MemoryMarshal.GetReference(bytes);
         ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
 
@@ -280,20 +318,5 @@ public readonly partial struct Id
         if (i0 < 0) throw new FormatException();
 
         return new Id(timestamp, b, c | i0);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Byte Map64(int c)
-    {
-        if (c < Base64.Min || c > Base64.Max) throw NewFormatException((char)c, Idf.Base64);
-
-        ReadOnlySpan<sbyte> mapSpan = Base64.DecodeMap;
-        ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
-
-        var value = Unsafe.Add(ref map, c);
-
-        if (value == -1) throw NewFormatException((char)c, Idf.Base64);
-
-        return (byte)value;
     }
 }
