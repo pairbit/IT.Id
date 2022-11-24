@@ -1,7 +1,8 @@
-﻿using System.Buffers;
+﻿using System;
+using System.Buffers;
 using System.Text;
 
-namespace System;
+namespace Internal;
 
 internal static class Base64
 {

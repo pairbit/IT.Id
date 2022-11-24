@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using System.Threading;
+using Internal;
 
 namespace System;
 
@@ -751,7 +752,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     {
         var machineName = Environment.MachineName;
         var bytes = Encoding.UTF8.GetBytes(machineName);
-        var hash = (int)System.XXH32.DigestOf(bytes);
+        var hash = (int)Internal.XXH32.DigestOf(bytes);
         return 0x00ffffff & hash; // use first 3 bytes of hash
     }
 

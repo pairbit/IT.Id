@@ -1,6 +1,7 @@
+using System;
 using System.Runtime.CompilerServices;
 
-namespace System;
+namespace Internal;
 
 internal static class Base85
 {

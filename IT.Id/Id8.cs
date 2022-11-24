@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using Internal;
+using System.Runtime.InteropServices;
 
 namespace System;
 
