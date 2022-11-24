@@ -8,7 +8,6 @@ internal static class Base32
     public const int Max = 122;
 
     public static readonly string Alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
-    public static readonly char[] Chars = Alphabet.ToCharArray();
     public static readonly byte[] EncodeMap = Encoding.UTF8.GetBytes(Alphabet);
     public static readonly sbyte[] DecodeMap = new sbyte[] {
     -1, //0

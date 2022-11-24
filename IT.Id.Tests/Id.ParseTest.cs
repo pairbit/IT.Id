@@ -1,3 +1,5 @@
+using SimpleBase;
+
 namespace Tests;
 
 public class IdParseTest
@@ -10,15 +12,31 @@ public class IdParseTest
     [Test]
     public void Invalid()
     {
+        //Base16 -> 62a84f674031e78d474fe23f
+        InvalidFormat("62a84f674031e/8d474fe23f", '/');//47
+        InvalidFormat("62a84f674031e78d474fe23G", 'G');//71
+        InvalidFormat("62a84f674031e78d474fe23g", 'g');//103
+
         //Base32
-        InvalidFormat("CDZ6ZZEC14FS687T52V\0", '\0');
-        InvalidFormat("CDZ6{ZEC14FS687T52V0", '{');
-        InvalidFormat("CDZ6ZZEC_4FS687T52V0", '_');
+        InvalidFormat("CDZ6ZZEC14FS687T52V/", '/');//47
+        InvalidFormat("CDZ6ZZEC_4FS687T52V0", '_');//95
+        InvalidFormat("CDZ6{ZEC14FS687T52V0", '{');//123
 
         //Base58
-        InvalidFormat("2su1\0C5sA8ji2ZrSo", '\0');
-        InvalidFormat("2{u1yC5sA8ji2ZrSo", '{');
-        InvalidFormat("2su1yC5sA8ji_ZrSo", '_');
+        InvalidFormat("2su1/C5sA8ji2ZrSo", '/');//47
+        InvalidFormat("2su1yC5sA8ji_ZrSo", '_');//95
+        InvalidFormat("2{u1yC5sA8ji2ZrSo", '{');//123
+
+        //Base64 -> YqhPZ0Ax541HT+I/
+        InvalidFormat("Y*hPZ0Ax541HT+I/", '*');//42
+        InvalidFormat("YqhPZ0Ax541HT+^/", '^');//94
+        InvalidFormat("YqhPZ0Ax5{1HT+I/", '{');//123
+
+        //Base85 -> v{IV^PiNKcFO_~|
+        InvalidFormat("v{IV^PiNK FO_~|", ' ');//32
+        InvalidFormat("v{I,^PiNKcFO_~|", ',');//44
+        InvalidFormat("v{IV^PiNKcFO_~;", ';');//59
+        InvalidFormat("v{IV^\u007fiNKcFO_~|", '\u007f');//127
     }
 
     [Test]
@@ -68,6 +86,8 @@ public class IdParseTest
     {
         var ex = Assert.Throws<FormatException>(() => Id.Parse(str));
 
-        Assert.That(ex.Message, Contains.Substring($"'{invalid}'"));
+        var format = Id.GetFormat(str.Length);
+
+        Assert.That(ex.Message, Is.EqualTo($"Char '{invalid}' not found {format}"));
     }
 }

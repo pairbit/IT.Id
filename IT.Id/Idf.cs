@@ -44,7 +44,7 @@ public enum Idf
     /// RFC 9285 <br/>
     /// https://datatracker.ietf.org/doc/html/rfc9285
     /// </summary>
-    Base45 = 45,
+    //Base45 = 45,
 
     /// <summary>
     /// Base58 Bitcoin Fixed

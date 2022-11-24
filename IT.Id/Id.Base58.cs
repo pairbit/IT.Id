@@ -1,4 +1,5 @@
 ﻿using Internal;
+using System.Runtime.CompilerServices;
 
 namespace System;
 
@@ -811,11 +812,11 @@ public readonly partial struct Id
         {
             char ch = chars[i];
 
-            if (ch < Base58.Min || ch > Base58.Max) throw new FormatException($"Invalid character: '{ch}' ({(int)ch}) Base58 1");
+            if (ch < Base58.Min || ch > Base58.Max) throw NewFormatException(ch, Idf.Base58);
 
             int carry = map[ch];
 
-            if (carry == -1) throw new FormatException($"Invalid character: '{ch}' ({(int)ch}) Base58 2");
+            if (carry == -1) throw NewFormatException(ch, Idf.Base58);
 
             //1
             carry += 58 * b11;
@@ -885,11 +886,11 @@ public readonly partial struct Id
         {
             byte ch = bytes[i];
 
-            if (ch < Base58.Min || ch > Base58.Max) throw new FormatException($"Invalid character: '{(char)ch}' ({ch}) Base58 1");
+            if (ch < Base58.Min || ch > Base58.Max) throw NewFormatException((char)ch, Idf.Base58);
 
             int carry = map[ch];
 
-            if (carry == -1) throw new FormatException($"Invalid character: '{(char)ch}' ({ch}) Base58 2");
+            if (carry == -1) throw NewFormatException((char)ch, Idf.Base58);
 
             //1
             carry += 58 * b11;

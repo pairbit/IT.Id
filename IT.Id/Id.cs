@@ -807,5 +807,8 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         }
     }
 
+    private static Exception NewFormatException(Char ch, Idf format) 
+        => new FormatException($"Char '{ch}' not found {format}");
+
     #endregion Private Methods
 }

@@ -6,6 +6,9 @@ namespace Internal;
 
 internal static class Base64
 {
+    public const int Min = 43;
+    public const int Max = 122;
+
     internal static readonly Char[] table = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
                                               'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd',
                                               'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
@@ -28,8 +31,133 @@ internal static class Base64
 
     internal static readonly Byte[] bytesUrl = Encoding.UTF8.GetBytes(tableUrl);
 
-    // Pre-computing this table using a custom string(s_characters) and GenerateDecodingMapAndVerify (found in tests)
-    internal static readonly sbyte[] _decodingMap = new sbyte[] // rely on C# compiler optimization to reference static data
+    internal static readonly sbyte[] DecodeMap = new sbyte[] {
+    -1, //0
+    -1, //1
+    -1, //2
+    -1, //3
+    -1, //4
+    -1, //5
+    -1, //6
+    -1, //7
+    -1, //8
+    -1, //9
+    -1, //10
+    -1, //11
+    -1, //12
+    -1, //13
+    -1, //14
+    -1, //15
+    -1, //16
+    -1, //17
+    -1, //18
+    -1, //19
+    -1, //20
+    -1, //21
+    -1, //22
+    -1, //23
+    -1, //24
+    -1, //25
+    -1, //26
+    -1, //27
+    -1, //28
+    -1, //29
+    -1, //30
+    -1, //31
+    -1, //32
+    -1, //33
+    -1, //34
+    -1, //35
+    -1, //36
+    -1, //37
+    -1, //38
+    -1, //39
+    -1, //40
+    -1, //41
+    -1, //42
+    62, //43 -> +
+    -1, //44
+    62, //45 -> -
+    -1, //46
+    63, //47 -> /
+    52, //48 -> 0
+    53, //49 -> 1
+    54, //50 -> 2
+    55, //51 -> 3
+    56, //52 -> 4
+    57, //53 -> 5
+    58, //54 -> 6
+    59, //55 -> 7
+    60, //56 -> 8
+    61, //57 -> 9
+    -1, //58
+    -1, //59
+    -1, //60
+    -1, //61
+    -1, //62
+    -1, //63
+    -1, //64
+     0, //65 -> A
+     1, //66 -> B
+     2, //67 -> C
+     3, //68 -> D
+     4, //69 -> E
+     5, //70 -> F
+     6, //71 -> G
+     7, //72 -> H
+     8, //73 -> I
+     9, //74 -> J
+    10, //75 -> K
+    11, //76 -> L
+    12, //77 -> M
+    13, //78 -> N
+    14, //79 -> O
+    15, //80 -> P
+    16, //81 -> Q
+    17, //82 -> R
+    18, //83 -> S
+    19, //84 -> T
+    20, //85 -> U
+    21, //86 -> V
+    22, //87 -> W
+    23, //88 -> X
+    24, //89 -> Y
+    25, //90 -> Z
+    -1, //91
+    -1, //92
+    -1, //93
+    -1, //94
+    63, //95 -> _
+    -1, //96
+    26, //97 -> a
+    27, //98 -> b
+    28, //99 -> c
+    29, //100 -> d
+    30, //101 -> e
+    31, //102 -> f
+    32, //103 -> g
+    33, //104 -> h
+    34, //105 -> i
+    35, //106 -> j
+    36, //107 -> k
+    37, //108 -> l
+    38, //109 -> m
+    39, //110 -> n
+    40, //111 -> o
+    41, //112 -> p
+    42, //113 -> q
+    43, //114 -> r
+    44, //115 -> s
+    45, //116 -> t
+    46, //117 -> u
+    47, //118 -> v
+    48, //119 -> w
+    49, //120 -> x
+    50, //121 -> y
+    51, //122 -> z
+    };
+
+    internal static readonly sbyte[] _decodingMap = new sbyte[]
     {
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -48,6 +176,21 @@ internal static class Base64
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
     };
+
+    //static Base64()
+    //{
+    //    Console.WriteLine("{");
+    //    for (int i = 0; i < _decodingMap.Length; i++)
+    //    {
+    //        if (i == 123) break;
+    //        var code = _decodingMap[i];
+    //        if (code == -1)
+    //            Console.WriteLine($"{code,2}, //{i}");
+    //        else
+    //            Console.WriteLine($"{code,2}, //{i} -> {(char)i}");
+    //    }
+    //    Console.WriteLine("};");
+    //}
 
     #region Numbers
 

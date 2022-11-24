@@ -16,7 +16,7 @@ public readonly partial struct Id
         unsafe
         {
             fixed (char* dest = base85)
-            fixed (char* map = Base85._byte2Char)
+            fixed (char* map = Base85.Alphabet)
             {
                 uint value0 = (uint)_timestamp;
 
@@ -49,7 +49,7 @@ public readonly partial struct Id
     private unsafe void ToBase85(Span<Char> chars)
     {
         fixed (char* dest = chars)
-        fixed (char* map = Base85._byte2Char)
+        fixed (char* map = Base85.Alphabet)
         {
             uint value0 = (uint)_timestamp;
 
@@ -80,7 +80,7 @@ public readonly partial struct Id
     private unsafe void ToBase85(Span<Byte> bytes)
     {
         fixed (byte* dest = bytes)
-        fixed (byte* map = Base85._byte2Byte)
+        fixed (byte* map = Base85.EncodeMap)
         {
             uint value0 = (uint)_timestamp;
 
@@ -113,26 +113,26 @@ public readonly partial struct Id
         if (chars.Length != 15) throw new ArgumentException("The id must be 15 characters long", nameof(chars));
 
         fixed (char* src = chars)
-        fixed (byte* map = Base85._char2Byte)
+        fixed (sbyte* map = Base85.DecodeMap)
         {
-            var timestamp = Decode1(map, *src) * U85P4 +
-                            Decode1(map, *(src + 1)) * U85P3 +
-                            Decode1(map, *(src + 2)) * U85P2 +
-                            Decode1(map, *(src + 3)) * U85P1 +
-                            Decode1(map, *(src + 4));
+            var timestamp = Map85(map, *src) * U85P4 +
+                            Map85(map, *(src + 1)) * U85P3 +
+                            Map85(map, *(src + 2)) * U85P2 +
+                            Map85(map, *(src + 3)) * U85P1 +
+                            Map85(map, *(src + 4));
 
-            var b = Decode1(map, *(src + 5)) * U85P4 +
-                    Decode1(map, *(src + 6)) * U85P3 +
-                    Decode1(map, *(src + 7)) * U85P2 +
-                    Decode1(map, *(src + 8)) * U85P1 +
-                    Decode1(map, *(src + 9));
+            var b = Map85(map, *(src + 5)) * U85P4 +
+                    Map85(map, *(src + 6)) * U85P3 +
+                    Map85(map, *(src + 7)) * U85P2 +
+                    Map85(map, *(src + 8)) * U85P1 +
+                    Map85(map, *(src + 9));
 
 
-            var c = Decode1(map, *(src + 10)) * U85P4 +
-                    Decode1(map, *(src + 11)) * U85P3 +
-                    Decode1(map, *(src + 12)) * U85P2 +
-                    Decode1(map, *(src + 13)) * U85P1 +
-                    Decode1(map, *(src + 14));
+            var c = Map85(map, *(src + 10)) * U85P4 +
+                    Map85(map, *(src + 11)) * U85P3 +
+                    Map85(map, *(src + 12)) * U85P2 +
+                    Map85(map, *(src + 13)) * U85P1 +
+                    Map85(map, *(src + 14));
 
             return new Id((int)timestamp, (int)b, (int)c);
         }
@@ -143,32 +143,41 @@ public readonly partial struct Id
         if (bytes.Length != 15) throw new ArgumentException("The id must be 15 bytes long", nameof(bytes));
 
         fixed (byte* src = bytes)
-        fixed (byte* map = Base85._char2Byte)
+        fixed (sbyte* map = Base85.DecodeMap)
         {
-            var timestamp = *(map + *src) * U85P4 +
-                            *(map + *(src + 1)) * U85P3 +
-                            *(map + *(src + 2)) * U85P2 +
-                            *(map + *(src + 3)) * U85P1 +
-                            *(map + *(src + 4));
+            var timestamp = Map85(map, *src) * U85P4 +
+                            Map85(map, *(src + 1)) * U85P3 +
+                            Map85(map, *(src + 2)) * U85P2 +
+                            Map85(map, *(src + 3)) * U85P1 +
+                            Map85(map, *(src + 4));
 
-            var b = *(map + *(src + 5)) * U85P4 +
-                    *(map + *(src + 6)) * U85P3 +
-                    *(map + *(src + 7)) * U85P2 +
-                    *(map + *(src + 8)) * U85P1 +
-                    *(map + *(src + 9));
+            var b = Map85(map, *(src + 5)) * U85P4 +
+                    Map85(map, *(src + 6)) * U85P3 +
+                    Map85(map, *(src + 7)) * U85P2 +
+                    Map85(map, *(src + 8)) * U85P1 +
+                    Map85(map, *(src + 9));
 
-            var c = *(map + *(src + 10)) * U85P4 +
-                    *(map + *(src + 11)) * U85P3 +
-                    *(map + *(src + 12)) * U85P2 +
-                    *(map + *(src + 13)) * U85P1 +
-                    *(map + *(src + 14));
+            var c = Map85(map, *(src + 10)) * U85P4 +
+                    Map85(map, *(src + 11)) * U85P3 +
+                    Map85(map, *(src + 12)) * U85P2 +
+                    Map85(map, *(src + 13)) * U85P1 +
+                    Map85(map, *(src + 14));
 
             return new Id((int)timestamp, (int)b, (int)c);
         }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static unsafe byte Decode1(byte* map, char c) => *(map + (byte)c);
+    private static unsafe byte Map85(sbyte* map, int c)
+    {
+        if (c < Base85.Min || c > Base85.Max) throw NewFormatException((char)c, Idf.Base85);
+
+        var value = *(map + (byte)c);
+
+        if (value == -1) throw NewFormatException((char)c, Idf.Base85);
+
+        return (byte)value;
+    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint Mod85(uint value) => value - (uint)((value * 3233857729uL) >> 38) * 85;

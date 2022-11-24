@@ -155,36 +155,36 @@ public readonly partial struct Id
 
         fixed (char* src = chars)
         {
-            ulong v = Decode(src[0]);
-            v = (v << 5) | Decode(src[1]);
-            v = (v << 5) | Decode(src[2]);
-            v = (v << 5) | Decode(src[3]);
-            v = (v << 5) | Decode(src[4]);
-            v = (v << 5) | Decode(src[5]);
-            v = (v << 5) | Decode(src[6]);
-            v = (v << 5) | Decode(src[7]);
+            ulong v = Map32(src[0]);
+            v = (v << 5) | Map32(src[1]);
+            v = (v << 5) | Map32(src[2]);
+            v = (v << 5) | Map32(src[3]);
+            v = (v << 5) | Map32(src[4]);
+            v = (v << 5) | Map32(src[5]);
+            v = (v << 5) | Map32(src[6]);
+            v = (v << 5) | Map32(src[7]);
 
             var timestamp = (byte)(v >> 32) << 24 | (byte)(v >> 24) << 16 | (byte)(v >> 16) << 8 | (byte)(v >> 8);
 
             var b = (int)(byte)v;
 
-            v = (v << 5) | Decode(src[8]);
-            v = (v << 5) | Decode(src[9]);
-            v = (v << 5) | Decode(src[10]);
-            v = (v << 5) | Decode(src[11]);
-            v = (v << 5) | Decode(src[12]);
-            v = (v << 5) | Decode(src[13]);
-            v = (v << 5) | Decode(src[14]);
-            v = (v << 5) | Decode(src[15]);
+            v = (v << 5) | Map32(src[8]);
+            v = (v << 5) | Map32(src[9]);
+            v = (v << 5) | Map32(src[10]);
+            v = (v << 5) | Map32(src[11]);
+            v = (v << 5) | Map32(src[12]);
+            v = (v << 5) | Map32(src[13]);
+            v = (v << 5) | Map32(src[14]);
+            v = (v << 5) | Map32(src[15]);
 
             b = b << 24 | (byte)(v >> 32) << 16 | (byte)(v >> 24) << 8 | (byte)(v >> 16);
 
             var c = (byte)(v >> 8) << 24 | (byte)v << 16;
 
-            v = Decode(src[16]);
-            v = (v << 5) | Decode(src[17]);
-            v = (v << 5) | Decode(src[18]);
-            v = (v << 5) | Decode(src[19]);
+            v = Map32(src[16]);
+            v = (v << 5) | Map32(src[17]);
+            v = (v << 5) | Map32(src[18]);
+            v = (v << 5) | Map32(src[19]);
 
             c |= (byte)(v >> 12) << 8 | (byte)(v >> 4);
 
@@ -198,36 +198,36 @@ public readonly partial struct Id
 
         fixed (byte* src = bytes)
         {
-            ulong v = Decode(src[0]);
-            v = (v << 5) | Decode(src[1]);
-            v = (v << 5) | Decode(src[2]);
-            v = (v << 5) | Decode(src[3]);
-            v = (v << 5) | Decode(src[4]);
-            v = (v << 5) | Decode(src[5]);
-            v = (v << 5) | Decode(src[6]);
-            v = (v << 5) | Decode(src[7]);
+            ulong v = Map32(src[0]);
+            v = (v << 5) | Map32(src[1]);
+            v = (v << 5) | Map32(src[2]);
+            v = (v << 5) | Map32(src[3]);
+            v = (v << 5) | Map32(src[4]);
+            v = (v << 5) | Map32(src[5]);
+            v = (v << 5) | Map32(src[6]);
+            v = (v << 5) | Map32(src[7]);
 
             var timestamp = (byte)(v >> 32) << 24 | (byte)(v >> 24) << 16 | (byte)(v >> 16) << 8 | (byte)(v >> 8);
 
             var b = (int)(byte)v;
 
-            v = (v << 5) | Decode(src[8]);
-            v = (v << 5) | Decode(src[9]);
-            v = (v << 5) | Decode(src[10]);
-            v = (v << 5) | Decode(src[11]);
-            v = (v << 5) | Decode(src[12]);
-            v = (v << 5) | Decode(src[13]);
-            v = (v << 5) | Decode(src[14]);
-            v = (v << 5) | Decode(src[15]);
+            v = (v << 5) | Map32(src[8]);
+            v = (v << 5) | Map32(src[9]);
+            v = (v << 5) | Map32(src[10]);
+            v = (v << 5) | Map32(src[11]);
+            v = (v << 5) | Map32(src[12]);
+            v = (v << 5) | Map32(src[13]);
+            v = (v << 5) | Map32(src[14]);
+            v = (v << 5) | Map32(src[15]);
 
             b = b << 24 | (byte)(v >> 32) << 16 | (byte)(v >> 24) << 8 | (byte)(v >> 16);
 
             var c = (byte)(v >> 8) << 24 | (byte)v << 16;
 
-            v = Decode(src[16]);
-            v = (v << 5) | Decode(src[17]);
-            v = (v << 5) | Decode(src[18]);
-            v = (v << 5) | Decode(src[19]);
+            v = Map32(src[16]);
+            v = (v << 5) | Map32(src[17]);
+            v = (v << 5) | Map32(src[18]);
+            v = (v << 5) | Map32(src[19]);
 
             c |= (byte)(v >> 12) << 8 | (byte)(v >> 4);
 
@@ -236,14 +236,14 @@ public readonly partial struct Id
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Byte Decode(int c)
+    private static Byte Map32(int c)
     {
-        if (c < Base32.Min || c > Base32.Max) throw new FormatException($"Char '{(char)c}' not found Base32 1");
+        if (c < Base32.Min || c > Base32.Max) throw NewFormatException((char)c, Idf.Base32);
 
-        var item = Base32.DecodeMap[c];
+        var value = Base32.DecodeMap[c];
 
-        if (item == -1) throw new FormatException($"Char '{(char)c}' not found Base32 2");
+        if (value == -1) throw NewFormatException((char)c, Idf.Base32);
 
-        return (byte)item;
+        return (byte)value;
     }
 }
