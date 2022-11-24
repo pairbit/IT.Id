@@ -100,7 +100,7 @@ public readonly partial struct Id
     {
         if (chars.Length != 24) throw new ArgumentException("The id must be 24 characters long", nameof(chars));
 
-        var map = Hex._charToHex;
+        var map = Hex.DecodeMap;
 
         var b0 = (byte)((map[chars[0]] << 4) | map[chars[1]]);
         var b1 = (byte)((map[chars[2]] << 4) | map[chars[3]]);
@@ -126,7 +126,7 @@ public readonly partial struct Id
     {
         if (bytes.Length != 24) throw new ArgumentException("The id must be 24 bytes long", nameof(bytes));
 
-        var map = Hex._charToHex;
+        var map = Hex.DecodeMap;
 
         var b0 = (byte)((map[bytes[0]] << 4) | map[bytes[1]]);
         var b1 = (byte)((map[bytes[2]] << 4) | map[bytes[3]]);
