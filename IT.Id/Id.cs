@@ -12,7 +12,7 @@ namespace System;
 [Serializable]
 [StructLayout(LayoutKind.Explicit, Size = 12)]
 [DebuggerDisplay("{ToString(),nq}")]
-[Text.Json.Serialization.JsonConverter(typeof(Text.Json.Serialization.IdJsonConverter))]
+[Text.Json.Serialization.JsonConverter(typeof(Text.Json.Serialization.JsonIdConverter))]
 public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattable
 #if NET6_0_OR_GREATER
 , ISpanFormattable
@@ -464,7 +464,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         {
             unsafe
             {
-                ToHex(bytes, Hex._lowerLookup16UnsafeP);
+                ToHex(bytes, Hex.Lower16.Map);
             }
             written = 24;
             return true;
@@ -474,7 +474,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         {
             unsafe
             {
-                ToHex(bytes, Hex._upperLookup16UnsafeP);
+                ToHex(bytes, Hex.Upper16.Map);
             }
             written = 24;
             return true;
@@ -539,7 +539,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         {
             unsafe
             {
-                ToHex(chars, Hex._lowerLookup32UnsafeP);
+                ToHex(chars, Hex.Lower32.Map);
             }
             written = 24;
             return true;
@@ -549,7 +549,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         {
             unsafe
             {
-                ToHex(chars, Hex._upperLookup32UnsafeP);
+                ToHex(chars, Hex.Upper32.Map);
             }
             written = 24;
             return true;
@@ -629,7 +629,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             written = 24;
             unsafe
             {
-                ToHex(chars, Hex._lowerLookup32UnsafeP);
+                ToHex(chars, Hex.Lower32.Map);
             }
 
             return true;
@@ -640,7 +640,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             written = 24;
             unsafe
             {
-                ToHex(chars, Hex._upperLookup32UnsafeP);
+                ToHex(chars, Hex.Upper32.Map);
             }
 
             return true;

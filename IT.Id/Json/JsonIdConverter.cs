@@ -2,7 +2,7 @@
 
 namespace System.Text.Json.Serialization;
 
-public class IdJsonConverter : JsonConverter<Id>
+public class JsonIdConverter : JsonConverter<Id>
 {
     private Idf _format = Idf.Base64Url;
 

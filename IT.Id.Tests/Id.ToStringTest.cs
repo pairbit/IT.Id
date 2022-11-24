@@ -1,3 +1,6 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 namespace Tests;
 
 public class IdToStringTest
@@ -6,6 +9,33 @@ public class IdToStringTest
     public void Setup()
     {
 
+    }
+
+    [Test]
+    public void TestLazyHex()
+    {
+        //Console.WriteLine($"HasUpper16 : {Internal.Hex.HasUpper16}");
+        //Console.WriteLine($"HasUpper32 : {Internal.Hex.HasUpper32}");
+        //Console.WriteLine($"HasLower16 : {Internal.Hex.HasLower16}");
+        //Console.WriteLine($"HasLower32 : {Internal.Hex.HasLower32}");
+        //Console.WriteLine("---------");
+
+        var id = Id.Parse("62a84f674031e78d474fe23f");
+
+        //Assert.That(id.ToString(Idf.Hex), Is.EqualTo("62a84f674031e78d474fe23f"));
+
+        //Assert.That(id.ToString(Idf.HexUpper), Is.EqualTo("62A84F674031E78D474FE23F"));
+
+        var serializerOptions = new JsonSerializerOptions();
+        serializerOptions.Converters.Add(new JsonIdConverter { Format = Idf.Hex });
+        serializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+
+        var seri = JsonSerializer.Serialize(id, serializerOptions);
+
+        //Console.WriteLine($"HasUpper16 : {Internal.Hex.HasUpper16}");
+        //Console.WriteLine($"HasUpper32 : {Internal.Hex.HasUpper32}");
+        //Console.WriteLine($"HasLower16 : {Internal.Hex.HasLower16}");
+        //Console.WriteLine($"HasLower32 : {Internal.Hex.HasLower32}");
     }
 
     [Test]

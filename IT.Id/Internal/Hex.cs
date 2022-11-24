@@ -5,20 +5,1123 @@ using System.Runtime.InteropServices;
 
 namespace Internal;
 
+//https://stackoverflow.com/questions/311165/how-do-you-convert-a-byte-array-to-a-hexadecimal-string-and-vice-versa/24343727#24343727
 internal static class Hex
 {
-    //https://stackoverflow.com/questions/311165/how-do-you-convert-a-byte-array-to-a-hexadecimal-string-and-vice-versa/24343727#24343727
-    private static readonly uint[] _lowerLookup32Unsafe = CreateLookup32Unsafe("x2");
-    private static readonly uint[] _upperLookup32Unsafe = CreateLookup32Unsafe("X2");
+#if DEBUG
 
-    private static readonly ushort[] _lowerLookup16Unsafe = CreateLookup16Unsafe("x2");
-    private static readonly ushort[] _upperLookup16Unsafe = CreateLookup16Unsafe("X2");
+    public static Boolean HasLower16;
+    public static Boolean HasLower32;
 
-    internal static readonly unsafe uint* _lowerLookup32UnsafeP = (uint*)GCHandle.Alloc(_lowerLookup32Unsafe, GCHandleType.Pinned).AddrOfPinnedObject();
-    internal static readonly unsafe uint* _upperLookup32UnsafeP = (uint*)GCHandle.Alloc(_upperLookup32Unsafe, GCHandleType.Pinned).AddrOfPinnedObject();
+    public static Boolean HasUpper16;
+    public static Boolean HasUpper32;
 
-    internal static readonly unsafe ushort* _lowerLookup16UnsafeP = (ushort*)GCHandle.Alloc(_lowerLookup16Unsafe, GCHandleType.Pinned).AddrOfPinnedObject();
-    internal static readonly unsafe ushort* _upperLookup16UnsafeP = (ushort*)GCHandle.Alloc(_upperLookup16Unsafe, GCHandleType.Pinned).AddrOfPinnedObject();
+#endif
+
+    public static class Lower16
+    {
+        internal static readonly ushort[] _map = new ushort[] {
+        12336, //0
+        12592, //1
+        12848, //2
+        13104, //3
+        13360, //4
+        13616, //5
+        13872, //6
+        14128, //7
+        14384, //8
+        14640, //9
+        24880, //10
+        25136, //11
+        25392, //12
+        25648, //13
+        25904, //14
+        26160, //15
+        12337, //16
+        12593, //17
+        12849, //18
+        13105, //19
+        13361, //20
+        13617, //21
+        13873, //22
+        14129, //23
+        14385, //24
+        14641, //25
+        24881, //26
+        25137, //27
+        25393, //28
+        25649, //29
+        25905, //30
+        26161, //31
+        12338, //32
+        12594, //33
+        12850, //34
+        13106, //35
+        13362, //36
+        13618, //37
+        13874, //38
+        14130, //39
+        14386, //40
+        14642, //41
+        24882, //42
+        25138, //43
+        25394, //44
+        25650, //45
+        25906, //46
+        26162, //47
+        12339, //48
+        12595, //49
+        12851, //50
+        13107, //51
+        13363, //52
+        13619, //53
+        13875, //54
+        14131, //55
+        14387, //56
+        14643, //57
+        24883, //58
+        25139, //59
+        25395, //60
+        25651, //61
+        25907, //62
+        26163, //63
+        12340, //64
+        12596, //65
+        12852, //66
+        13108, //67
+        13364, //68
+        13620, //69
+        13876, //70
+        14132, //71
+        14388, //72
+        14644, //73
+        24884, //74
+        25140, //75
+        25396, //76
+        25652, //77
+        25908, //78
+        26164, //79
+        12341, //80
+        12597, //81
+        12853, //82
+        13109, //83
+        13365, //84
+        13621, //85
+        13877, //86
+        14133, //87
+        14389, //88
+        14645, //89
+        24885, //90
+        25141, //91
+        25397, //92
+        25653, //93
+        25909, //94
+        26165, //95
+        12342, //96
+        12598, //97
+        12854, //98
+        13110, //99
+        13366, //100
+        13622, //101
+        13878, //102
+        14134, //103
+        14390, //104
+        14646, //105
+        24886, //106
+        25142, //107
+        25398, //108
+        25654, //109
+        25910, //110
+        26166, //111
+        12343, //112
+        12599, //113
+        12855, //114
+        13111, //115
+        13367, //116
+        13623, //117
+        13879, //118
+        14135, //119
+        14391, //120
+        14647, //121
+        24887, //122
+        25143, //123
+        25399, //124
+        25655, //125
+        25911, //126
+        26167, //127
+        12344, //128
+        12600, //129
+        12856, //130
+        13112, //131
+        13368, //132
+        13624, //133
+        13880, //134
+        14136, //135
+        14392, //136
+        14648, //137
+        24888, //138
+        25144, //139
+        25400, //140
+        25656, //141
+        25912, //142
+        26168, //143
+        12345, //144
+        12601, //145
+        12857, //146
+        13113, //147
+        13369, //148
+        13625, //149
+        13881, //150
+        14137, //151
+        14393, //152
+        14649, //153
+        24889, //154
+        25145, //155
+        25401, //156
+        25657, //157
+        25913, //158
+        26169, //159
+        12385, //160
+        12641, //161
+        12897, //162
+        13153, //163
+        13409, //164
+        13665, //165
+        13921, //166
+        14177, //167
+        14433, //168
+        14689, //169
+        24929, //170
+        25185, //171
+        25441, //172
+        25697, //173
+        25953, //174
+        26209, //175
+        12386, //176
+        12642, //177
+        12898, //178
+        13154, //179
+        13410, //180
+        13666, //181
+        13922, //182
+        14178, //183
+        14434, //184
+        14690, //185
+        24930, //186
+        25186, //187
+        25442, //188
+        25698, //189
+        25954, //190
+        26210, //191
+        12387, //192
+        12643, //193
+        12899, //194
+        13155, //195
+        13411, //196
+        13667, //197
+        13923, //198
+        14179, //199
+        14435, //200
+        14691, //201
+        24931, //202
+        25187, //203
+        25443, //204
+        25699, //205
+        25955, //206
+        26211, //207
+        12388, //208
+        12644, //209
+        12900, //210
+        13156, //211
+        13412, //212
+        13668, //213
+        13924, //214
+        14180, //215
+        14436, //216
+        14692, //217
+        24932, //218
+        25188, //219
+        25444, //220
+        25700, //221
+        25956, //222
+        26212, //223
+        12389, //224
+        12645, //225
+        12901, //226
+        13157, //227
+        13413, //228
+        13669, //229
+        13925, //230
+        14181, //231
+        14437, //232
+        14693, //233
+        24933, //234
+        25189, //235
+        25445, //236
+        25701, //237
+        25957, //238
+        26213, //239
+        12390, //240
+        12646, //241
+        12902, //242
+        13158, //243
+        13414, //244
+        13670, //245
+        13926, //246
+        14182, //247
+        14438, //248
+        14694, //249
+        24934, //250
+        25190, //251
+        25446, //252
+        25702, //253
+        25958, //254
+        26214, //255
+        };
+
+        public static readonly unsafe ushort* Map = (ushort*)GCHandle.Alloc(_map, GCHandleType.Pinned).AddrOfPinnedObject();
+
+#if DEBUG
+        static Lower16()
+        {
+            HasLower16 = true;
+        }
+#endif
+    }
+
+    public static class Lower32
+    {
+        internal static readonly uint[] _map = new uint[] {
+        3145776, //0
+        3211312, //1
+        3276848, //2
+        3342384, //3
+        3407920, //4
+        3473456, //5
+        3538992, //6
+        3604528, //7
+        3670064, //8
+        3735600, //9
+        6357040, //10
+        6422576, //11
+        6488112, //12
+        6553648, //13
+        6619184, //14
+        6684720, //15
+        3145777, //16
+        3211313, //17
+        3276849, //18
+        3342385, //19
+        3407921, //20
+        3473457, //21
+        3538993, //22
+        3604529, //23
+        3670065, //24
+        3735601, //25
+        6357041, //26
+        6422577, //27
+        6488113, //28
+        6553649, //29
+        6619185, //30
+        6684721, //31
+        3145778, //32
+        3211314, //33
+        3276850, //34
+        3342386, //35
+        3407922, //36
+        3473458, //37
+        3538994, //38
+        3604530, //39
+        3670066, //40
+        3735602, //41
+        6357042, //42
+        6422578, //43
+        6488114, //44
+        6553650, //45
+        6619186, //46
+        6684722, //47
+        3145779, //48
+        3211315, //49
+        3276851, //50
+        3342387, //51
+        3407923, //52
+        3473459, //53
+        3538995, //54
+        3604531, //55
+        3670067, //56
+        3735603, //57
+        6357043, //58
+        6422579, //59
+        6488115, //60
+        6553651, //61
+        6619187, //62
+        6684723, //63
+        3145780, //64
+        3211316, //65
+        3276852, //66
+        3342388, //67
+        3407924, //68
+        3473460, //69
+        3538996, //70
+        3604532, //71
+        3670068, //72
+        3735604, //73
+        6357044, //74
+        6422580, //75
+        6488116, //76
+        6553652, //77
+        6619188, //78
+        6684724, //79
+        3145781, //80
+        3211317, //81
+        3276853, //82
+        3342389, //83
+        3407925, //84
+        3473461, //85
+        3538997, //86
+        3604533, //87
+        3670069, //88
+        3735605, //89
+        6357045, //90
+        6422581, //91
+        6488117, //92
+        6553653, //93
+        6619189, //94
+        6684725, //95
+        3145782, //96
+        3211318, //97
+        3276854, //98
+        3342390, //99
+        3407926, //100
+        3473462, //101
+        3538998, //102
+        3604534, //103
+        3670070, //104
+        3735606, //105
+        6357046, //106
+        6422582, //107
+        6488118, //108
+        6553654, //109
+        6619190, //110
+        6684726, //111
+        3145783, //112
+        3211319, //113
+        3276855, //114
+        3342391, //115
+        3407927, //116
+        3473463, //117
+        3538999, //118
+        3604535, //119
+        3670071, //120
+        3735607, //121
+        6357047, //122
+        6422583, //123
+        6488119, //124
+        6553655, //125
+        6619191, //126
+        6684727, //127
+        3145784, //128
+        3211320, //129
+        3276856, //130
+        3342392, //131
+        3407928, //132
+        3473464, //133
+        3539000, //134
+        3604536, //135
+        3670072, //136
+        3735608, //137
+        6357048, //138
+        6422584, //139
+        6488120, //140
+        6553656, //141
+        6619192, //142
+        6684728, //143
+        3145785, //144
+        3211321, //145
+        3276857, //146
+        3342393, //147
+        3407929, //148
+        3473465, //149
+        3539001, //150
+        3604537, //151
+        3670073, //152
+        3735609, //153
+        6357049, //154
+        6422585, //155
+        6488121, //156
+        6553657, //157
+        6619193, //158
+        6684729, //159
+        3145825, //160
+        3211361, //161
+        3276897, //162
+        3342433, //163
+        3407969, //164
+        3473505, //165
+        3539041, //166
+        3604577, //167
+        3670113, //168
+        3735649, //169
+        6357089, //170
+        6422625, //171
+        6488161, //172
+        6553697, //173
+        6619233, //174
+        6684769, //175
+        3145826, //176
+        3211362, //177
+        3276898, //178
+        3342434, //179
+        3407970, //180
+        3473506, //181
+        3539042, //182
+        3604578, //183
+        3670114, //184
+        3735650, //185
+        6357090, //186
+        6422626, //187
+        6488162, //188
+        6553698, //189
+        6619234, //190
+        6684770, //191
+        3145827, //192
+        3211363, //193
+        3276899, //194
+        3342435, //195
+        3407971, //196
+        3473507, //197
+        3539043, //198
+        3604579, //199
+        3670115, //200
+        3735651, //201
+        6357091, //202
+        6422627, //203
+        6488163, //204
+        6553699, //205
+        6619235, //206
+        6684771, //207
+        3145828, //208
+        3211364, //209
+        3276900, //210
+        3342436, //211
+        3407972, //212
+        3473508, //213
+        3539044, //214
+        3604580, //215
+        3670116, //216
+        3735652, //217
+        6357092, //218
+        6422628, //219
+        6488164, //220
+        6553700, //221
+        6619236, //222
+        6684772, //223
+        3145829, //224
+        3211365, //225
+        3276901, //226
+        3342437, //227
+        3407973, //228
+        3473509, //229
+        3539045, //230
+        3604581, //231
+        3670117, //232
+        3735653, //233
+        6357093, //234
+        6422629, //235
+        6488165, //236
+        6553701, //237
+        6619237, //238
+        6684773, //239
+        3145830, //240
+        3211366, //241
+        3276902, //242
+        3342438, //243
+        3407974, //244
+        3473510, //245
+        3539046, //246
+        3604582, //247
+        3670118, //248
+        3735654, //249
+        6357094, //250
+        6422630, //251
+        6488166, //252
+        6553702, //253
+        6619238, //254
+        6684774, //255
+        };
+
+        public static readonly unsafe uint* Map = (uint*)GCHandle.Alloc(_map, GCHandleType.Pinned).AddrOfPinnedObject();
+
+#if DEBUG
+        static Lower32()
+        {
+            HasLower32 = true;
+        }
+#endif
+    }
+
+    public static class Upper16
+    {
+        internal static readonly ushort[] _map = new ushort[] {
+        12336, //0
+        12592, //1
+        12848, //2
+        13104, //3
+        13360, //4
+        13616, //5
+        13872, //6
+        14128, //7
+        14384, //8
+        14640, //9
+        16688, //10
+        16944, //11
+        17200, //12
+        17456, //13
+        17712, //14
+        17968, //15
+        12337, //16
+        12593, //17
+        12849, //18
+        13105, //19
+        13361, //20
+        13617, //21
+        13873, //22
+        14129, //23
+        14385, //24
+        14641, //25
+        16689, //26
+        16945, //27
+        17201, //28
+        17457, //29
+        17713, //30
+        17969, //31
+        12338, //32
+        12594, //33
+        12850, //34
+        13106, //35
+        13362, //36
+        13618, //37
+        13874, //38
+        14130, //39
+        14386, //40
+        14642, //41
+        16690, //42
+        16946, //43
+        17202, //44
+        17458, //45
+        17714, //46
+        17970, //47
+        12339, //48
+        12595, //49
+        12851, //50
+        13107, //51
+        13363, //52
+        13619, //53
+        13875, //54
+        14131, //55
+        14387, //56
+        14643, //57
+        16691, //58
+        16947, //59
+        17203, //60
+        17459, //61
+        17715, //62
+        17971, //63
+        12340, //64
+        12596, //65
+        12852, //66
+        13108, //67
+        13364, //68
+        13620, //69
+        13876, //70
+        14132, //71
+        14388, //72
+        14644, //73
+        16692, //74
+        16948, //75
+        17204, //76
+        17460, //77
+        17716, //78
+        17972, //79
+        12341, //80
+        12597, //81
+        12853, //82
+        13109, //83
+        13365, //84
+        13621, //85
+        13877, //86
+        14133, //87
+        14389, //88
+        14645, //89
+        16693, //90
+        16949, //91
+        17205, //92
+        17461, //93
+        17717, //94
+        17973, //95
+        12342, //96
+        12598, //97
+        12854, //98
+        13110, //99
+        13366, //100
+        13622, //101
+        13878, //102
+        14134, //103
+        14390, //104
+        14646, //105
+        16694, //106
+        16950, //107
+        17206, //108
+        17462, //109
+        17718, //110
+        17974, //111
+        12343, //112
+        12599, //113
+        12855, //114
+        13111, //115
+        13367, //116
+        13623, //117
+        13879, //118
+        14135, //119
+        14391, //120
+        14647, //121
+        16695, //122
+        16951, //123
+        17207, //124
+        17463, //125
+        17719, //126
+        17975, //127
+        12344, //128
+        12600, //129
+        12856, //130
+        13112, //131
+        13368, //132
+        13624, //133
+        13880, //134
+        14136, //135
+        14392, //136
+        14648, //137
+        16696, //138
+        16952, //139
+        17208, //140
+        17464, //141
+        17720, //142
+        17976, //143
+        12345, //144
+        12601, //145
+        12857, //146
+        13113, //147
+        13369, //148
+        13625, //149
+        13881, //150
+        14137, //151
+        14393, //152
+        14649, //153
+        16697, //154
+        16953, //155
+        17209, //156
+        17465, //157
+        17721, //158
+        17977, //159
+        12353, //160
+        12609, //161
+        12865, //162
+        13121, //163
+        13377, //164
+        13633, //165
+        13889, //166
+        14145, //167
+        14401, //168
+        14657, //169
+        16705, //170
+        16961, //171
+        17217, //172
+        17473, //173
+        17729, //174
+        17985, //175
+        12354, //176
+        12610, //177
+        12866, //178
+        13122, //179
+        13378, //180
+        13634, //181
+        13890, //182
+        14146, //183
+        14402, //184
+        14658, //185
+        16706, //186
+        16962, //187
+        17218, //188
+        17474, //189
+        17730, //190
+        17986, //191
+        12355, //192
+        12611, //193
+        12867, //194
+        13123, //195
+        13379, //196
+        13635, //197
+        13891, //198
+        14147, //199
+        14403, //200
+        14659, //201
+        16707, //202
+        16963, //203
+        17219, //204
+        17475, //205
+        17731, //206
+        17987, //207
+        12356, //208
+        12612, //209
+        12868, //210
+        13124, //211
+        13380, //212
+        13636, //213
+        13892, //214
+        14148, //215
+        14404, //216
+        14660, //217
+        16708, //218
+        16964, //219
+        17220, //220
+        17476, //221
+        17732, //222
+        17988, //223
+        12357, //224
+        12613, //225
+        12869, //226
+        13125, //227
+        13381, //228
+        13637, //229
+        13893, //230
+        14149, //231
+        14405, //232
+        14661, //233
+        16709, //234
+        16965, //235
+        17221, //236
+        17477, //237
+        17733, //238
+        17989, //239
+        12358, //240
+        12614, //241
+        12870, //242
+        13126, //243
+        13382, //244
+        13638, //245
+        13894, //246
+        14150, //247
+        14406, //248
+        14662, //249
+        16710, //250
+        16966, //251
+        17222, //252
+        17478, //253
+        17734, //254
+        17990, //255
+        };
+
+        public static readonly unsafe ushort* Map = (ushort*)GCHandle.Alloc(_map, GCHandleType.Pinned).AddrOfPinnedObject();
+
+#if DEBUG
+        static Upper16()
+        {
+            HasUpper16 = true;
+        }
+#endif
+    }
+
+    public static class Upper32
+    {
+        internal static readonly uint[] _map = new uint[] {
+        3145776, //0
+        3211312, //1
+        3276848, //2
+        3342384, //3
+        3407920, //4
+        3473456, //5
+        3538992, //6
+        3604528, //7
+        3670064, //8
+        3735600, //9
+        4259888, //10
+        4325424, //11
+        4390960, //12
+        4456496, //13
+        4522032, //14
+        4587568, //15
+        3145777, //16
+        3211313, //17
+        3276849, //18
+        3342385, //19
+        3407921, //20
+        3473457, //21
+        3538993, //22
+        3604529, //23
+        3670065, //24
+        3735601, //25
+        4259889, //26
+        4325425, //27
+        4390961, //28
+        4456497, //29
+        4522033, //30
+        4587569, //31
+        3145778, //32
+        3211314, //33
+        3276850, //34
+        3342386, //35
+        3407922, //36
+        3473458, //37
+        3538994, //38
+        3604530, //39
+        3670066, //40
+        3735602, //41
+        4259890, //42
+        4325426, //43
+        4390962, //44
+        4456498, //45
+        4522034, //46
+        4587570, //47
+        3145779, //48
+        3211315, //49
+        3276851, //50
+        3342387, //51
+        3407923, //52
+        3473459, //53
+        3538995, //54
+        3604531, //55
+        3670067, //56
+        3735603, //57
+        4259891, //58
+        4325427, //59
+        4390963, //60
+        4456499, //61
+        4522035, //62
+        4587571, //63
+        3145780, //64
+        3211316, //65
+        3276852, //66
+        3342388, //67
+        3407924, //68
+        3473460, //69
+        3538996, //70
+        3604532, //71
+        3670068, //72
+        3735604, //73
+        4259892, //74
+        4325428, //75
+        4390964, //76
+        4456500, //77
+        4522036, //78
+        4587572, //79
+        3145781, //80
+        3211317, //81
+        3276853, //82
+        3342389, //83
+        3407925, //84
+        3473461, //85
+        3538997, //86
+        3604533, //87
+        3670069, //88
+        3735605, //89
+        4259893, //90
+        4325429, //91
+        4390965, //92
+        4456501, //93
+        4522037, //94
+        4587573, //95
+        3145782, //96
+        3211318, //97
+        3276854, //98
+        3342390, //99
+        3407926, //100
+        3473462, //101
+        3538998, //102
+        3604534, //103
+        3670070, //104
+        3735606, //105
+        4259894, //106
+        4325430, //107
+        4390966, //108
+        4456502, //109
+        4522038, //110
+        4587574, //111
+        3145783, //112
+        3211319, //113
+        3276855, //114
+        3342391, //115
+        3407927, //116
+        3473463, //117
+        3538999, //118
+        3604535, //119
+        3670071, //120
+        3735607, //121
+        4259895, //122
+        4325431, //123
+        4390967, //124
+        4456503, //125
+        4522039, //126
+        4587575, //127
+        3145784, //128
+        3211320, //129
+        3276856, //130
+        3342392, //131
+        3407928, //132
+        3473464, //133
+        3539000, //134
+        3604536, //135
+        3670072, //136
+        3735608, //137
+        4259896, //138
+        4325432, //139
+        4390968, //140
+        4456504, //141
+        4522040, //142
+        4587576, //143
+        3145785, //144
+        3211321, //145
+        3276857, //146
+        3342393, //147
+        3407929, //148
+        3473465, //149
+        3539001, //150
+        3604537, //151
+        3670073, //152
+        3735609, //153
+        4259897, //154
+        4325433, //155
+        4390969, //156
+        4456505, //157
+        4522041, //158
+        4587577, //159
+        3145793, //160
+        3211329, //161
+        3276865, //162
+        3342401, //163
+        3407937, //164
+        3473473, //165
+        3539009, //166
+        3604545, //167
+        3670081, //168
+        3735617, //169
+        4259905, //170
+        4325441, //171
+        4390977, //172
+        4456513, //173
+        4522049, //174
+        4587585, //175
+        3145794, //176
+        3211330, //177
+        3276866, //178
+        3342402, //179
+        3407938, //180
+        3473474, //181
+        3539010, //182
+        3604546, //183
+        3670082, //184
+        3735618, //185
+        4259906, //186
+        4325442, //187
+        4390978, //188
+        4456514, //189
+        4522050, //190
+        4587586, //191
+        3145795, //192
+        3211331, //193
+        3276867, //194
+        3342403, //195
+        3407939, //196
+        3473475, //197
+        3539011, //198
+        3604547, //199
+        3670083, //200
+        3735619, //201
+        4259907, //202
+        4325443, //203
+        4390979, //204
+        4456515, //205
+        4522051, //206
+        4587587, //207
+        3145796, //208
+        3211332, //209
+        3276868, //210
+        3342404, //211
+        3407940, //212
+        3473476, //213
+        3539012, //214
+        3604548, //215
+        3670084, //216
+        3735620, //217
+        4259908, //218
+        4325444, //219
+        4390980, //220
+        4456516, //221
+        4522052, //222
+        4587588, //223
+        3145797, //224
+        3211333, //225
+        3276869, //226
+        3342405, //227
+        3407941, //228
+        3473477, //229
+        3539013, //230
+        3604549, //231
+        3670085, //232
+        3735621, //233
+        4259909, //234
+        4325445, //235
+        4390981, //236
+        4456517, //237
+        4522053, //238
+        4587589, //239
+        3145798, //240
+        3211334, //241
+        3276870, //242
+        3342406, //243
+        3407942, //244
+        3473478, //245
+        3539014, //246
+        3604550, //247
+        3670086, //248
+        3735622, //249
+        4259910, //250
+        4325446, //251
+        4390982, //252
+        4456518, //253
+        4522054, //254
+        4587590, //255
+        };
+
+        public static readonly unsafe uint* Map = (uint*)GCHandle.Alloc(_map, GCHandleType.Pinned).AddrOfPinnedObject();
+
+#if DEBUG
+        static Upper32()
+        {
+            HasUpper32 = true;
+        }
+#endif
+    }
+
+    /// <summary>Map from an ASCII char to its hex value, e.g. arr['b'] == 11. 0xFF means it's not a hex digit.</summary>
+    internal static readonly byte[] _charToHex = new byte[]
+    {
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 15
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 31
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 47
+            0x0,  0x1,  0x2,  0x3,  0x4,  0x5,  0x6,  0x7,  0x8,  0x9,  0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 63
+            0xFF, 0xA,  0xB,  0xC,  0xD,  0xE,  0xF,  0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 79
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 95
+            0xFF, 0xa,  0xb,  0xc,  0xd,  0xe,  0xf,  0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 111
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 127
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 143
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 159
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 175
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 191
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 207
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 223
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 239
+            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF  // 255
+    };
 
     #region Number
 
@@ -260,6 +1363,19 @@ internal static class Hex
 
     #endregion
 
+    //static Hex()
+    //{
+    //    var map = CreateLookup16Unsafe("X2");
+
+    //    Console.WriteLine("new uint[] {");
+    //    for (int i = 0; i < map.Length; i++)
+    //    {
+    //        var code = map[i];
+    //        Console.WriteLine($"{code,2}, //{i}");
+    //    }
+    //    Console.WriteLine("}");
+    //}
+
     private static uint[] CreateLookup32Unsafe(string format)
     {
         var result = new uint[256];
@@ -288,151 +1404,130 @@ internal static class Hex
         return result;
     }
 
-    public static void Decode(ReadOnlySpan<char> chars, Span<byte> bytes)
-    {
-        bytes[0] = (byte)((_charToHex[chars[0]] << 4) | _charToHex[chars[1]]);
-        bytes[1] = (byte)((_charToHex[chars[2]] << 4) | _charToHex[chars[3]]);
-        bytes[2] = (byte)((_charToHex[chars[4]] << 4) | _charToHex[chars[5]]);
-        bytes[3] = (byte)((_charToHex[chars[6]] << 4) | _charToHex[chars[7]]);
-        bytes[4] = (byte)((_charToHex[chars[8]] << 4) | _charToHex[chars[9]]);
-        bytes[5] = (byte)((_charToHex[chars[10]] << 4) | _charToHex[chars[11]]);
-        bytes[6] = (byte)((_charToHex[chars[12]] << 4) | _charToHex[chars[13]]);
-        bytes[7] = (byte)((_charToHex[chars[14]] << 4) | _charToHex[chars[15]]);
-        bytes[8] = (byte)((_charToHex[chars[16]] << 4) | _charToHex[chars[17]]);
-        bytes[9] = (byte)((_charToHex[chars[18]] << 4) | _charToHex[chars[19]]);
-        bytes[10] = (byte)((_charToHex[chars[20]] << 4) | _charToHex[chars[21]]);
-        bytes[11] = (byte)((_charToHex[chars[22]] << 4) | _charToHex[chars[23]]);
-    }
+    //public static void Decode(ReadOnlySpan<char> chars, Span<byte> bytes)
+    //{
+    //    bytes[0] = (byte)((_charToHex[chars[0]] << 4) | _charToHex[chars[1]]);
+    //    bytes[1] = (byte)((_charToHex[chars[2]] << 4) | _charToHex[chars[3]]);
+    //    bytes[2] = (byte)((_charToHex[chars[4]] << 4) | _charToHex[chars[5]]);
+    //    bytes[3] = (byte)((_charToHex[chars[6]] << 4) | _charToHex[chars[7]]);
+    //    bytes[4] = (byte)((_charToHex[chars[8]] << 4) | _charToHex[chars[9]]);
+    //    bytes[5] = (byte)((_charToHex[chars[10]] << 4) | _charToHex[chars[11]]);
+    //    bytes[6] = (byte)((_charToHex[chars[12]] << 4) | _charToHex[chars[13]]);
+    //    bytes[7] = (byte)((_charToHex[chars[14]] << 4) | _charToHex[chars[15]]);
+    //    bytes[8] = (byte)((_charToHex[chars[16]] << 4) | _charToHex[chars[17]]);
+    //    bytes[9] = (byte)((_charToHex[chars[18]] << 4) | _charToHex[chars[19]]);
+    //    bytes[10] = (byte)((_charToHex[chars[20]] << 4) | _charToHex[chars[21]]);
+    //    bytes[11] = (byte)((_charToHex[chars[22]] << 4) | _charToHex[chars[23]]);
+    //}
 
-    public static void Decode(ReadOnlySpan<byte> chars, Span<byte> bytes)
-    {
-        bytes[0] = (byte)((_charToHex[chars[0]] << 4) | _charToHex[chars[1]]);
-        bytes[1] = (byte)((_charToHex[chars[2]] << 4) | _charToHex[chars[3]]);
-        bytes[2] = (byte)((_charToHex[chars[4]] << 4) | _charToHex[chars[5]]);
-        bytes[3] = (byte)((_charToHex[chars[6]] << 4) | _charToHex[chars[7]]);
-        bytes[4] = (byte)((_charToHex[chars[8]] << 4) | _charToHex[chars[9]]);
-        bytes[5] = (byte)((_charToHex[chars[10]] << 4) | _charToHex[chars[11]]);
-        bytes[6] = (byte)((_charToHex[chars[12]] << 4) | _charToHex[chars[13]]);
-        bytes[7] = (byte)((_charToHex[chars[14]] << 4) | _charToHex[chars[15]]);
-        bytes[8] = (byte)((_charToHex[chars[16]] << 4) | _charToHex[chars[17]]);
-        bytes[9] = (byte)((_charToHex[chars[18]] << 4) | _charToHex[chars[19]]);
-        bytes[10] = (byte)((_charToHex[chars[20]] << 4) | _charToHex[chars[21]]);
-        bytes[11] = (byte)((_charToHex[chars[22]] << 4) | _charToHex[chars[23]]);
-    }
+    //public static void Decode(ReadOnlySpan<byte> chars, Span<byte> bytes)
+    //{
+    //    bytes[0] = (byte)((_charToHex[chars[0]] << 4) | _charToHex[chars[1]]);
+    //    bytes[1] = (byte)((_charToHex[chars[2]] << 4) | _charToHex[chars[3]]);
+    //    bytes[2] = (byte)((_charToHex[chars[4]] << 4) | _charToHex[chars[5]]);
+    //    bytes[3] = (byte)((_charToHex[chars[6]] << 4) | _charToHex[chars[7]]);
+    //    bytes[4] = (byte)((_charToHex[chars[8]] << 4) | _charToHex[chars[9]]);
+    //    bytes[5] = (byte)((_charToHex[chars[10]] << 4) | _charToHex[chars[11]]);
+    //    bytes[6] = (byte)((_charToHex[chars[12]] << 4) | _charToHex[chars[13]]);
+    //    bytes[7] = (byte)((_charToHex[chars[14]] << 4) | _charToHex[chars[15]]);
+    //    bytes[8] = (byte)((_charToHex[chars[16]] << 4) | _charToHex[chars[17]]);
+    //    bytes[9] = (byte)((_charToHex[chars[18]] << 4) | _charToHex[chars[19]]);
+    //    bytes[10] = (byte)((_charToHex[chars[20]] << 4) | _charToHex[chars[21]]);
+    //    bytes[11] = (byte)((_charToHex[chars[22]] << 4) | _charToHex[chars[23]]);
+    //}
 
-    public static bool TryDecodeFromUtf16(ReadOnlySpan<char> chars, Span<byte> bytes)
-    {
-        var byteHi = FromChar(chars[0]);
-        var byteLo = FromChar(chars[1]);
+    //public static bool TryDecodeFromUtf16(ReadOnlySpan<char> chars, Span<byte> bytes)
+    //{
+    //    var byteHi = FromChar(chars[0]);
+    //    var byteLo = FromChar(chars[1]);
 
-        if ((byteLo | byteHi) == 0xFF) return false;
+    //    if ((byteLo | byteHi) == 0xFF) return false;
 
-        bytes[0] = (byte)((byteHi << 4) | byteLo);
+    //    bytes[0] = (byte)((byteHi << 4) | byteLo);
 
-        byteHi = FromChar(chars[2]);
-        byteLo = FromChar(chars[3]);
+    //    byteHi = FromChar(chars[2]);
+    //    byteLo = FromChar(chars[3]);
 
-        if ((byteLo | byteHi) == 0xFF) return false;
+    //    if ((byteLo | byteHi) == 0xFF) return false;
 
-        bytes[1] = (byte)((byteHi << 4) | byteLo);
+    //    bytes[1] = (byte)((byteHi << 4) | byteLo);
 
-        byteHi = FromChar(chars[4]);
-        byteLo = FromChar(chars[5]);
+    //    byteHi = FromChar(chars[4]);
+    //    byteLo = FromChar(chars[5]);
 
-        if ((byteLo | byteHi) == 0xFF) return false;
+    //    if ((byteLo | byteHi) == 0xFF) return false;
 
-        bytes[2] = (byte)((byteHi << 4) | byteLo);
+    //    bytes[2] = (byte)((byteHi << 4) | byteLo);
 
-        byteHi = FromChar(chars[6]);
-        byteLo = FromChar(chars[7]);
+    //    byteHi = FromChar(chars[6]);
+    //    byteLo = FromChar(chars[7]);
 
-        if ((byteLo | byteHi) == 0xFF) return false;
+    //    if ((byteLo | byteHi) == 0xFF) return false;
 
-        bytes[3] = (byte)((byteHi << 4) | byteLo);
+    //    bytes[3] = (byte)((byteHi << 4) | byteLo);
 
-        byteHi = FromChar(chars[8]);
-        byteLo = FromChar(chars[9]);
+    //    byteHi = FromChar(chars[8]);
+    //    byteLo = FromChar(chars[9]);
 
-        if ((byteLo | byteHi) == 0xFF) return false;
+    //    if ((byteLo | byteHi) == 0xFF) return false;
 
-        bytes[4] = (byte)((byteHi << 4) | byteLo);
+    //    bytes[4] = (byte)((byteHi << 4) | byteLo);
 
-        byteHi = FromChar(chars[10]);
-        byteLo = FromChar(chars[11]);
+    //    byteHi = FromChar(chars[10]);
+    //    byteLo = FromChar(chars[11]);
 
-        if ((byteLo | byteHi) == 0xFF) return false;
+    //    if ((byteLo | byteHi) == 0xFF) return false;
 
-        bytes[5] = (byte)((byteHi << 4) | byteLo);
+    //    bytes[5] = (byte)((byteHi << 4) | byteLo);
 
-        byteHi = FromChar(chars[12]);
-        byteLo = FromChar(chars[13]);
+    //    byteHi = FromChar(chars[12]);
+    //    byteLo = FromChar(chars[13]);
 
-        if ((byteLo | byteHi) == 0xFF) return false;
+    //    if ((byteLo | byteHi) == 0xFF) return false;
 
-        bytes[6] = (byte)((byteHi << 4) | byteLo);
+    //    bytes[6] = (byte)((byteHi << 4) | byteLo);
 
-        byteHi = FromChar(chars[14]);
-        byteLo = FromChar(chars[15]);
+    //    byteHi = FromChar(chars[14]);
+    //    byteLo = FromChar(chars[15]);
 
-        if ((byteLo | byteHi) == 0xFF) return false;
+    //    if ((byteLo | byteHi) == 0xFF) return false;
 
-        bytes[7] = (byte)((byteHi << 4) | byteLo);
+    //    bytes[7] = (byte)((byteHi << 4) | byteLo);
 
-        byteHi = FromChar(chars[16]);
-        byteLo = FromChar(chars[17]);
+    //    byteHi = FromChar(chars[16]);
+    //    byteLo = FromChar(chars[17]);
 
-        if ((byteLo | byteHi) == 0xFF) return false;
+    //    if ((byteLo | byteHi) == 0xFF) return false;
 
-        bytes[8] = (byte)((byteHi << 4) | byteLo);
+    //    bytes[8] = (byte)((byteHi << 4) | byteLo);
 
-        byteHi = FromChar(chars[18]);
-        byteLo = FromChar(chars[19]);
+    //    byteHi = FromChar(chars[18]);
+    //    byteLo = FromChar(chars[19]);
 
-        if ((byteLo | byteHi) == 0xFF) return false;
+    //    if ((byteLo | byteHi) == 0xFF) return false;
 
-        bytes[9] = (byte)((byteHi << 4) | byteLo);
+    //    bytes[9] = (byte)((byteHi << 4) | byteLo);
 
-        byteHi = FromChar(chars[20]);
-        byteLo = FromChar(chars[21]);
+    //    byteHi = FromChar(chars[20]);
+    //    byteLo = FromChar(chars[21]);
 
-        if ((byteLo | byteHi) == 0xFF) return false;
+    //    if ((byteLo | byteHi) == 0xFF) return false;
 
-        bytes[10] = (byte)((byteHi << 4) | byteLo);
+    //    bytes[10] = (byte)((byteHi << 4) | byteLo);
 
-        byteHi = FromChar(chars[22]);
-        byteLo = FromChar(chars[23]);
+    //    byteHi = FromChar(chars[22]);
+    //    byteLo = FromChar(chars[23]);
 
-        if ((byteLo | byteHi) == 0xFF) return false;
+    //    if ((byteLo | byteHi) == 0xFF) return false;
 
-        bytes[11] = (byte)((byteHi << 4) | byteLo);
+    //    bytes[11] = (byte)((byteHi << 4) | byteLo);
 
-        return true;
-    }
+    //    return true;
+    //}
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int FromChar(int c)
-    {
-        return c >= _charToHex.Length ? 0xFF : _charToHex[c];
-    }
-
-    /// <summary>Map from an ASCII char to its hex value, e.g. arr['b'] == 11. 0xFF means it's not a hex digit.</summary>
-    internal static readonly byte[] _charToHex = new byte[]
-    {
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 15
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 31
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 47
-            0x0,  0x1,  0x2,  0x3,  0x4,  0x5,  0x6,  0x7,  0x8,  0x9,  0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 63
-            0xFF, 0xA,  0xB,  0xC,  0xD,  0xE,  0xF,  0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 79
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 95
-            0xFF, 0xa,  0xb,  0xc,  0xd,  0xe,  0xf,  0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 111
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 127
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 143
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 159
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 175
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 191
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 207
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 223
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // 239
-            0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF  // 255
-    };
+    //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+    //public static int FromChar(int c)
+    //{
+    //    return c >= _charToHex.Length ? 0xFF : _charToHex[c];
+    //}
 }

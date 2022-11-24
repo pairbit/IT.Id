@@ -9,7 +9,7 @@ public readonly partial struct Id
         var hexLower = new string((char)0, 24);
         unsafe
         {
-            var map = Hex._lowerLookup32UnsafeP;
+            var map = Hex.Lower32.Map;
             fixed (char* hexLowerP = hexLower)
             {
                 uint* dest = (uint*)hexLowerP;
@@ -35,7 +35,7 @@ public readonly partial struct Id
         var hexUpper = new string((char)0, 24);
         unsafe
         {
-            var map = Hex._upperLookup32UnsafeP;
+            var map = Hex.Upper32.Map;
             fixed (char* hexUpperP = hexUpper)
             {
                 uint* dest = (uint*)hexUpperP;
