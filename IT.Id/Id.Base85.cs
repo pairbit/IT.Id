@@ -12,100 +12,99 @@ public readonly partial struct Id
 
     private String ToBase85()
     {
-        var result = new string((char)0, 15);
+        var base85 = new string((char)0, 15);
         unsafe
         {
-            fixed (char* resultP = result)
+            fixed (char* dest = base85)
             fixed (char* map = Base85._byte2Char)
             {
                 uint value0 = (uint)_timestamp;
 
-                resultP[0] = map[Mod85(value0 / U85P4)];
-                resultP[1] = map[Mod85(value0 / U85P3)];
-                resultP[2] = map[Mod85(value0 / U85P2)];
-                resultP[3] = map[Mod85(value0 / U85P1)];
-                resultP[4] = map[Mod85(value0)];
+                dest[0] = map[Mod85(value0 / U85P4)];
+                dest[1] = map[Mod85(value0 / U85P3)];
+                dest[2] = map[Mod85(value0 / U85P2)];
+                dest[3] = map[Mod85(value0 / U85P1)];
+                dest[4] = map[Mod85(value0)];
 
                 var value1 = (uint)_b;
 
-                resultP[5] = map[Mod85(value1 / U85P4)];
-                resultP[6] = map[Mod85(value1 / U85P3)];
-                resultP[7] = map[Mod85(value1 / U85P2)];
-                resultP[8] = map[Mod85(value1 / U85P1)];
-                resultP[9] = map[Mod85(value1)];
+                dest[5] = map[Mod85(value1 / U85P4)];
+                dest[6] = map[Mod85(value1 / U85P3)];
+                dest[7] = map[Mod85(value1 / U85P2)];
+                dest[8] = map[Mod85(value1 / U85P1)];
+                dest[9] = map[Mod85(value1)];
 
                 var value2 = (uint)_c;
 
-                resultP[10] = map[Mod85(value2 / U85P4)];
-                resultP[11] = map[Mod85(value2 / U85P3)];
-                resultP[12] = map[Mod85(value2 / U85P2)];
-                resultP[13] = map[Mod85(value2 / U85P1)];
-                resultP[14] = map[Mod85(value2)];
+                dest[10] = map[Mod85(value2 / U85P4)];
+                dest[11] = map[Mod85(value2 / U85P3)];
+                dest[12] = map[Mod85(value2 / U85P2)];
+                dest[13] = map[Mod85(value2 / U85P1)];
+                dest[14] = map[Mod85(value2)];
             }
         }
-
-        return result;
+        return base85;
     }
 
-    private unsafe void ToBase85(Span<Char> destination)
+    private unsafe void ToBase85(Span<Char> chars)
     {
-        fixed (char* resultP = destination)
+        fixed (char* dest = chars)
         fixed (char* map = Base85._byte2Char)
         {
             uint value0 = (uint)_timestamp;
 
-            resultP[0] = map[Mod85(value0 / U85P4)];
-            resultP[1] = map[Mod85(value0 / U85P3)];
-            resultP[2] = map[Mod85(value0 / U85P2)];
-            resultP[3] = map[Mod85(value0 / U85P1)];
-            resultP[4] = map[Mod85(value0)];
+            dest[0] = map[Mod85(value0 / U85P4)];
+            dest[1] = map[Mod85(value0 / U85P3)];
+            dest[2] = map[Mod85(value0 / U85P2)];
+            dest[3] = map[Mod85(value0 / U85P1)];
+            dest[4] = map[Mod85(value0)];
 
             var value1 = (uint)_b;
 
-            resultP[5] = map[Mod85(value1 / U85P4)];
-            resultP[6] = map[Mod85(value1 / U85P3)];
-            resultP[7] = map[Mod85(value1 / U85P2)];
-            resultP[8] = map[Mod85(value1 / U85P1)];
-            resultP[9] = map[Mod85(value1)];
+            dest[5] = map[Mod85(value1 / U85P4)];
+            dest[6] = map[Mod85(value1 / U85P3)];
+            dest[7] = map[Mod85(value1 / U85P2)];
+            dest[8] = map[Mod85(value1 / U85P1)];
+            dest[9] = map[Mod85(value1)];
 
             var value2 = (uint)_c;
 
-            resultP[10] = map[Mod85(value2 / U85P4)];
-            resultP[11] = map[Mod85(value2 / U85P3)];
-            resultP[12] = map[Mod85(value2 / U85P2)];
-            resultP[13] = map[Mod85(value2 / U85P1)];
-            resultP[14] = map[Mod85(value2)];
+            dest[10] = map[Mod85(value2 / U85P4)];
+            dest[11] = map[Mod85(value2 / U85P3)];
+            dest[12] = map[Mod85(value2 / U85P2)];
+            dest[13] = map[Mod85(value2 / U85P1)];
+            dest[14] = map[Mod85(value2)];
         }
     }
 
-    private unsafe void ToBase85(Span<Byte> destination)
+    private unsafe void ToBase85(Span<Byte> bytes)
     {
-        fixed (byte* resultP = destination)
+        fixed (byte* dest = bytes)
         fixed (byte* map = Base85._byte2Byte)
         {
             uint value0 = (uint)_timestamp;
 
-            resultP[0] = map[Mod85(value0 / U85P4)];
-            resultP[1] = map[Mod85(value0 / U85P3)];
-            resultP[2] = map[Mod85(value0 / U85P2)];
-            resultP[3] = map[Mod85(value0 / U85P1)];
-            resultP[4] = map[Mod85(value0)];
+            dest[0] = map[Mod85(value0 / U85P4)];
+            dest[1] = map[Mod85(value0 / U85P3)];
+            dest[2] = map[Mod85(value0 / U85P2)];
+            dest[3] = map[Mod85(value0 / U85P1)];
+            dest[4] = map[Mod85(value0)];
 
             var value1 = (uint)_b;
 
-            resultP[5] = map[Mod85(value1 / U85P4)];
-            resultP[6] = map[Mod85(value1 / U85P3)];
-            resultP[7] = map[Mod85(value1 / U85P2)];
-            resultP[8] = map[Mod85(value1 / U85P1)];
-            resultP[9] = map[Mod85(value1)];
+            dest[5] = map[Mod85(value1 / U85P4)];
+            dest[6] = map[Mod85(value1 / U85P3)];
+            dest[7] = map[Mod85(value1 / U85P2)];
+            dest[8] = map[Mod85(value1 / U85P1)];
+            dest[9] = map[Mod85(value1)];
 
             var value2 = (uint)_c;
 
-            resultP[10] = map[Mod85(value2 / U85P4)];
-            resultP[11] = map[Mod85(value2 / U85P3)];
-            resultP[12] = map[Mod85(value2 / U85P2)];
-            resultP[13] = map[Mod85(value2 / U85P1)];
-            resultP[14] = map[Mod85(value2)];
+            dest[10] = map[Mod85(value2 / U85P4)];
+            dest[11] = map[Mod85(value2 / U85P3)];
+            dest[12] = map[Mod85(value2 / U85P2)];
+            dest[13] = map[Mod85(value2 / U85P1)];
+            dest[14] = map[Mod85(value2)];
         }
     }
 

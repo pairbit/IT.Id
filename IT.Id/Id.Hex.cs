@@ -6,93 +6,93 @@ public readonly partial struct Id
 {
     private String ToHexLower()
     {
-        var result = new string((char)0, 24);
+        var hexLower = new string((char)0, 24);
         unsafe
         {
-            var lookupP = Hex._lowerLookup32UnsafeP;
-            fixed (char* resultP = result)
+            var map = Hex._lowerLookup32UnsafeP;
+            fixed (char* hexLowerP = hexLower)
             {
-                uint* resultP2 = (uint*)resultP;
-                resultP2[0] = lookupP[(byte)(_timestamp >> 24)];
-                resultP2[1] = lookupP[(byte)(_timestamp >> 16)];
-                resultP2[2] = lookupP[(byte)(_timestamp >> 8)];
-                resultP2[3] = lookupP[(byte)(_timestamp)];
-                resultP2[4] = lookupP[(byte)(_b >> 24)];
-                resultP2[5] = lookupP[(byte)(_b >> 16)];
-                resultP2[6] = lookupP[(byte)(_b >> 8)];
-                resultP2[7] = lookupP[(byte)(_b)];
-                resultP2[8] = lookupP[(byte)(_c >> 24)];
-                resultP2[9] = lookupP[(byte)(_c >> 16)];
-                resultP2[10] = lookupP[(byte)(_c >> 8)];
-                resultP2[11] = lookupP[(byte)(_c)];
+                uint* dest = (uint*)hexLowerP;
+                dest[0] = map[(byte)(_timestamp >> 24)];
+                dest[1] = map[(byte)(_timestamp >> 16)];
+                dest[2] = map[(byte)(_timestamp >> 8)];
+                dest[3] = map[(byte)(_timestamp)];
+                dest[4] = map[(byte)(_b >> 24)];
+                dest[5] = map[(byte)(_b >> 16)];
+                dest[6] = map[(byte)(_b >> 8)];
+                dest[7] = map[(byte)(_b)];
+                dest[8] = map[(byte)(_c >> 24)];
+                dest[9] = map[(byte)(_c >> 16)];
+                dest[10] = map[(byte)(_c >> 8)];
+                dest[11] = map[(byte)(_c)];
             }
         }
-        return result;
+        return hexLower;
     }
 
     private String ToHexUpper()
     {
-        var result = new string((char)0, 24);
+        var hexUpper = new string((char)0, 24);
         unsafe
         {
-            var lookupP = Hex._upperLookup32UnsafeP;
-            fixed (char* resultP = result)
+            var map = Hex._upperLookup32UnsafeP;
+            fixed (char* hexUpperP = hexUpper)
             {
-                uint* resultP2 = (uint*)resultP;
-                resultP2[0] = lookupP[(byte)(_timestamp >> 24)];
-                resultP2[1] = lookupP[(byte)(_timestamp >> 16)];
-                resultP2[2] = lookupP[(byte)(_timestamp >> 8)];
-                resultP2[3] = lookupP[(byte)(_timestamp)];
-                resultP2[4] = lookupP[(byte)(_b >> 24)];
-                resultP2[5] = lookupP[(byte)(_b >> 16)];
-                resultP2[6] = lookupP[(byte)(_b >> 8)];
-                resultP2[7] = lookupP[(byte)(_b)];
-                resultP2[8] = lookupP[(byte)(_c >> 24)];
-                resultP2[9] = lookupP[(byte)(_c >> 16)];
-                resultP2[10] = lookupP[(byte)(_c >> 8)];
-                resultP2[11] = lookupP[(byte)(_c)];
+                uint* dest = (uint*)hexUpperP;
+                dest[0] = map[(byte)(_timestamp >> 24)];
+                dest[1] = map[(byte)(_timestamp >> 16)];
+                dest[2] = map[(byte)(_timestamp >> 8)];
+                dest[3] = map[(byte)(_timestamp)];
+                dest[4] = map[(byte)(_b >> 24)];
+                dest[5] = map[(byte)(_b >> 16)];
+                dest[6] = map[(byte)(_b >> 8)];
+                dest[7] = map[(byte)(_b)];
+                dest[8] = map[(byte)(_c >> 24)];
+                dest[9] = map[(byte)(_c >> 16)];
+                dest[10] = map[(byte)(_c >> 8)];
+                dest[11] = map[(byte)(_c)];
             }
         }
-        return result;
+        return hexUpper;
     }
 
-    private unsafe void ToHex(Span<Char> destination, uint* lookupP)
+    private unsafe void ToHex(Span<Char> chars, uint* map)
     {
-        fixed (char* resultP = destination)
+        fixed (char* charsP = chars)
         {
-            uint* resultP2 = (uint*)resultP;
-            resultP2[0] = lookupP[(byte)(_timestamp >> 24)];
-            resultP2[1] = lookupP[(byte)(_timestamp >> 16)];
-            resultP2[2] = lookupP[(byte)(_timestamp >> 8)];
-            resultP2[3] = lookupP[(byte)(_timestamp)];
-            resultP2[4] = lookupP[(byte)(_b >> 24)];
-            resultP2[5] = lookupP[(byte)(_b >> 16)];
-            resultP2[6] = lookupP[(byte)(_b >> 8)];
-            resultP2[7] = lookupP[(byte)(_b)];
-            resultP2[8] = lookupP[(byte)(_c >> 24)];
-            resultP2[9] = lookupP[(byte)(_c >> 16)];
-            resultP2[10] = lookupP[(byte)(_c >> 8)];
-            resultP2[11] = lookupP[(byte)(_c)];
+            uint* dest = (uint*)charsP;
+            dest[0] = map[(byte)(_timestamp >> 24)];
+            dest[1] = map[(byte)(_timestamp >> 16)];
+            dest[2] = map[(byte)(_timestamp >> 8)];
+            dest[3] = map[(byte)_timestamp];
+            dest[4] = map[(byte)(_b >> 24)];
+            dest[5] = map[(byte)(_b >> 16)];
+            dest[6] = map[(byte)(_b >> 8)];
+            dest[7] = map[(byte)_b];
+            dest[8] = map[(byte)(_c >> 24)];
+            dest[9] = map[(byte)(_c >> 16)];
+            dest[10] = map[(byte)(_c >> 8)];
+            dest[11] = map[(byte)_c];
         }
     }
 
-    private unsafe void ToHex(Span<Byte> destination, ushort* lookupP)
+    private unsafe void ToHex(Span<Byte> bytes, ushort* map)
     {
-        fixed (byte* resultP = destination)
+        fixed (byte* bytesP = bytes)
         {
-            ushort* resultP2 = (ushort*)resultP;
-            resultP2[0] = lookupP[(byte)(_timestamp >> 24)];
-            resultP2[1] = lookupP[(byte)(_timestamp >> 16)];
-            resultP2[2] = lookupP[(byte)(_timestamp >> 8)];
-            resultP2[3] = lookupP[(byte)(_timestamp)];
-            resultP2[4] = lookupP[(byte)(_b >> 24)];
-            resultP2[5] = lookupP[(byte)(_b >> 16)];
-            resultP2[6] = lookupP[(byte)(_b >> 8)];
-            resultP2[7] = lookupP[(byte)(_b)];
-            resultP2[8] = lookupP[(byte)(_c >> 24)];
-            resultP2[9] = lookupP[(byte)(_c >> 16)];
-            resultP2[10] = lookupP[(byte)(_c >> 8)];
-            resultP2[11] = lookupP[(byte)(_c)];
+            ushort* dest = (ushort*)bytesP;
+            dest[0] = map[(byte)(_timestamp >> 24)];
+            dest[1] = map[(byte)(_timestamp >> 16)];
+            dest[2] = map[(byte)(_timestamp >> 8)];
+            dest[3] = map[(byte)_timestamp];
+            dest[4] = map[(byte)(_b >> 24)];
+            dest[5] = map[(byte)(_b >> 16)];
+            dest[6] = map[(byte)(_b >> 8)];
+            dest[7] = map[(byte)_b];
+            dest[8] = map[(byte)(_c >> 24)];
+            dest[9] = map[(byte)(_c >> 16)];
+            dest[10] = map[(byte)(_c >> 8)];
+            dest[11] = map[(byte)_c];
         }
     }
 

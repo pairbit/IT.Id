@@ -6,31 +6,31 @@ public readonly partial struct Id
 {
     private String ToBase58()
     {
-        var result = new string('\0', 17);
+        var base58 = new string('\0', 17);
 
         unsafe
         {
-            fixed (char* output = result)
+            fixed (char* dest = base58)
             {
-                ToBase58(output);
+                ToBase58(dest);
             }
         }
 
-        return result;
+        return base58;
     }
 
-    private unsafe void ToBase58(Span<Char> destination)
+    private unsafe void ToBase58(Span<Char> chars)
     {
-        fixed (char* output = destination)
+        fixed (char* dest = chars)
         {
-            ToBase58(output);
+            ToBase58(dest);
         }
     }
 
-    private unsafe void ToBase58(Span<Byte> destination)
+    private unsafe void ToBase58(Span<Byte> bytes)
     {
-        fixed (byte* output = destination)
-        fixed (byte* alphabetPtr = Base58.EncodeMap)
+        fixed (byte* dest = bytes)
+        fixed (byte* map = Base58.EncodeMap)
         {
             int length = 0;
 
@@ -778,23 +778,23 @@ public readonly partial struct Id
                 else length = 1;
             }
 
-            *output = alphabetPtr[r0];
-            *(output + 1) = alphabetPtr[r1];
-            *(output + 2) = alphabetPtr[r2];
-            *(output + 3) = alphabetPtr[r3];
-            *(output + 4) = alphabetPtr[r4];
-            *(output + 5) = alphabetPtr[r5];
-            *(output + 6) = alphabetPtr[r6];
-            *(output + 7) = alphabetPtr[r7];
-            *(output + 8) = alphabetPtr[r8];
-            *(output + 9) = alphabetPtr[r9];
-            *(output + 10) = alphabetPtr[r10];
-            *(output + 11) = alphabetPtr[r11];
-            *(output + 12) = alphabetPtr[r12];
-            *(output + 13) = alphabetPtr[r13];
-            *(output + 14) = alphabetPtr[r14];
-            *(output + 15) = alphabetPtr[r15];
-            *(output + 16) = alphabetPtr[r16];
+            *dest = map[r0];
+            *(dest + 1) = map[r1];
+            *(dest + 2) = map[r2];
+            *(dest + 3) = map[r3];
+            *(dest + 4) = map[r4];
+            *(dest + 5) = map[r5];
+            *(dest + 6) = map[r6];
+            *(dest + 7) = map[r7];
+            *(dest + 8) = map[r8];
+            *(dest + 9) = map[r9];
+            *(dest + 10) = map[r10];
+            *(dest + 11) = map[r11];
+            *(dest + 12) = map[r12];
+            *(dest + 13) = map[r13];
+            *(dest + 14) = map[r14];
+            *(dest + 15) = map[r15];
+            *(dest + 16) = map[r16];
         }
     }
 
@@ -946,9 +946,9 @@ public readonly partial struct Id
         return new Id(timestamp, b, c);
     }
 
-    private unsafe void ToBase58(char* output)
+    private unsafe void ToBase58(char* dest)
     {
-        fixed (char* alphabetPtr = Base58.Alphabet)
+        fixed (char* map = Base58.Alphabet)
         {
             int length = 0;
 
@@ -1696,23 +1696,23 @@ public readonly partial struct Id
                 else length = 1;
             }
 
-            *output = alphabetPtr[r0];
-            *(output + 1) = alphabetPtr[r1];
-            *(output + 2) = alphabetPtr[r2];
-            *(output + 3) = alphabetPtr[r3];
-            *(output + 4) = alphabetPtr[r4];
-            *(output + 5) = alphabetPtr[r5];
-            *(output + 6) = alphabetPtr[r6];
-            *(output + 7) = alphabetPtr[r7];
-            *(output + 8) = alphabetPtr[r8];
-            *(output + 9) = alphabetPtr[r9];
-            *(output + 10) = alphabetPtr[r10];
-            *(output + 11) = alphabetPtr[r11];
-            *(output + 12) = alphabetPtr[r12];
-            *(output + 13) = alphabetPtr[r13];
-            *(output + 14) = alphabetPtr[r14];
-            *(output + 15) = alphabetPtr[r15];
-            *(output + 16) = alphabetPtr[r16];
+            *dest = map[r0];
+            *(dest + 1) = map[r1];
+            *(dest + 2) = map[r2];
+            *(dest + 3) = map[r3];
+            *(dest + 4) = map[r4];
+            *(dest + 5) = map[r5];
+            *(dest + 6) = map[r6];
+            *(dest + 7) = map[r7];
+            *(dest + 8) = map[r8];
+            *(dest + 9) = map[r9];
+            *(dest + 10) = map[r10];
+            *(dest + 11) = map[r11];
+            *(dest + 12) = map[r12];
+            *(dest + 13) = map[r13];
+            *(dest + 14) = map[r14];
+            *(dest + 15) = map[r15];
+            *(dest + 16) = map[r16];
         }
     }
 

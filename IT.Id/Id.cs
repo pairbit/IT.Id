@@ -610,8 +610,6 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     public Boolean TryFormat(Span<Char> chars, out Int32 written, ReadOnlySpan<Char> format, IFormatProvider? provider)
     {
-        //check destination.Length
-
         if (format.IsEmpty && chars.Length >= 16)
         {
             written = 16;
