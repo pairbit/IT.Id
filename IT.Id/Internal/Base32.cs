@@ -1,11 +1,16 @@
-﻿using System.Runtime.CompilerServices;
-using System.Text;
+﻿using System.Text;
 
-namespace System;
+namespace Internal;
 
 internal static class Base32
 {
-    private static readonly sbyte[] _map = new sbyte[] {
+    public const int Min = 48;
+    public const int Max = 122;
+
+    public static readonly string Alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+    public static readonly char[] Chars = Alphabet.ToCharArray();
+    public static readonly byte[] EncodeMap = Encoding.UTF8.GetBytes(Alphabet);
+    public static readonly sbyte[] DecodeMap = new sbyte[] {
     -1, //0
     -1, //1
     -1, //2
@@ -130,188 +135,172 @@ internal static class Base32
     30, //121 -> y
     31, //122 -> z
     };
-
-    internal static readonly string ALPHABET = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
-    internal static readonly char[] Chars = ALPHABET.ToCharArray();
-    internal static readonly byte[] Bytes = Encoding.UTF8.GetBytes(ALPHABET);
-
-    //static Base32()
-    //{
-    //    var table = new sbyte[123];
-
-    //    for (int i = 0; i < table.Length; i++)
-    //        table[i] = LookupTableNullItem;
-
-    //    for (sbyte i = 0; i < Chars.Length; i++)
-    //    {
-    //        var ch = Chars[i];
-
-    //        var chlower = Char.ToLowerInvariant(ch);
-
-    //        table[ch] = i;
-
-    //        table[chlower] = i;
-
-    //        if (ch == '0')
-    //        {
-    //            table['o'] = i;
-    //            table['O'] = i;
-    //        }
-
-    //        if (ch == 'V')
-    //        {
-    //            table['u'] = i;
-    //            table['U'] = i;
-    //        }
-
-    //        if (ch == '1')
-    //        {
-    //            table['i'] = i;
-    //            table['I'] = i;
-    //            table['l'] = i;
-    //            table['L'] = i;
-    //        }
-    //    }
-    //    Console.WriteLine("new sbyte[] {");
-    //    for (int i = 0; i < table.Length; i++)
-    //    {
-    //        var code = table[i];
-    //        if (code == -1)
-    //            Console.WriteLine($"-1, //{i}");
-    //        else
-    //            Console.WriteLine($"{code,2}, //{i} -> {(char)i}");
-    //    }
-    //    Console.WriteLine("}");
-    //    _lookupValues = table;
-    //}
-
-    //    public static String Encode6(ReadOnlySpan<byte> bytes)
-    //    {
-    //#if NETSTANDARD2_0
-    //        throw new NotImplementedException();
-    //#else
-    //        unsafe
-    //        {
-    //            fixed (byte* dataPtr = bytes)
-    //            {
-    //                return String.Create(20, (IntPtr)dataPtr, (encoded, state) =>
-    //                {
-    //                    Encode(new ReadOnlySpan<Byte>((Byte*)state, 12), encoded);
-    //                });
-    //            }
-    //        }
-    //#endif
-    //    }
-
-    public static unsafe void Encode(ReadOnlySpan<byte> input, Span<char> output)
-    {
-        fixed (byte* pInput = input)
-        fixed (char* pOutput = output)
-        fixed (char* pAlphabet = ALPHABET)
-        {
-            ToBase32GroupsUnsafe(pInput, pOutput, pAlphabet);
-        }
-    }
-
-    private static unsafe void ToBase32GroupsUnsafe(byte* pInput, char* pOutput, char* pAlphabet)
-    {
-        ulong value = *pInput++;
-        value = (value << 8) | (*pInput++);
-        value = (value << 8) | (*pInput++);
-        value = (value << 8) | (*pInput++);
-        value = (value << 8) | (*pInput++);
-
-        *pOutput++ = pAlphabet[value >> 35];
-        *pOutput++ = pAlphabet[(value >> 30) & 0x1F];
-        *pOutput++ = pAlphabet[(value >> 25) & 0x1F];
-        *pOutput++ = pAlphabet[(value >> 20) & 0x1F];
-        *pOutput++ = pAlphabet[(value >> 15) & 0x1F];
-        *pOutput++ = pAlphabet[(value >> 10) & 0x1F];
-        *pOutput++ = pAlphabet[(value >> 5) & 0x1F];
-        *pOutput++ = pAlphabet[value & 0x1F];
-
-        value = *pInput++;
-        value = (value << 8) | (*pInput++);
-        value = (value << 8) | (*pInput++);
-        value = (value << 8) | (*pInput++);
-        value = (value << 8) | (*pInput++);
-
-        *pOutput++ = pAlphabet[value >> 35];
-        *pOutput++ = pAlphabet[(value >> 30) & 0x1F];
-        *pOutput++ = pAlphabet[(value >> 25) & 0x1F];
-        *pOutput++ = pAlphabet[(value >> 20) & 0x1F];
-        *pOutput++ = pAlphabet[(value >> 15) & 0x1F];
-        *pOutput++ = pAlphabet[(value >> 10) & 0x1F];
-        *pOutput++ = pAlphabet[(value >> 5) & 0x1F];
-        *pOutput++ = pAlphabet[value & 0x1F];
-
-        value = (((ulong)(*pInput++) << 8) | *pInput) << 4;
-
-        *pOutput++ = pAlphabet[value >> 15];
-        *pOutput++ = pAlphabet[(value >> 10) & 0x1F];
-        *pOutput++ = pAlphabet[(value >> 5) & 0x1F];
-        *pOutput = pAlphabet[value & 0x1F];
-    }
-
-    public static unsafe void Decode(ReadOnlySpan<char> encoded, Span<byte> output)
-    {
-        fixed (char* pEncoded = encoded)
-        fixed (byte* pOutput = output)
-        {
-            ToBytesGroupsUnsafe(pEncoded, pOutput);
-        }
-    }
-
-    private static unsafe void ToBytesGroupsUnsafe(char* pEncoded, byte* pOutput)
-    {
-        ulong value = GetByte(*pEncoded++);
-        value = (value << 5) | GetByte(*pEncoded++);
-        value = (value << 5) | GetByte(*pEncoded++);
-        value = (value << 5) | GetByte(*pEncoded++);
-        value = (value << 5) | GetByte(*pEncoded++);
-        value = (value << 5) | GetByte(*pEncoded++);
-        value = (value << 5) | GetByte(*pEncoded++);
-        value = (value << 5) | GetByte(*pEncoded++);
-
-        *pOutput++ = (byte)(value >> 32);
-        *pOutput++ = (byte)(value >> 24);
-        *pOutput++ = (byte)(value >> 16);
-        *pOutput++ = (byte)(value >> 8);
-        *pOutput++ = (byte)value;
-
-        value = (value << 5) | GetByte(*pEncoded++);
-        value = (value << 5) | GetByte(*pEncoded++);
-        value = (value << 5) | GetByte(*pEncoded++);
-        value = (value << 5) | GetByte(*pEncoded++);
-        value = (value << 5) | GetByte(*pEncoded++);
-        value = (value << 5) | GetByte(*pEncoded++);
-        value = (value << 5) | GetByte(*pEncoded++);
-        value = (value << 5) | GetByte(*pEncoded++);
-
-        *pOutput++ = (byte)(value >> 32);
-        *pOutput++ = (byte)(value >> 24);
-        *pOutput++ = (byte)(value >> 16);
-        *pOutput++ = (byte)(value >> 8);
-        *pOutput++ = (byte)value;
-
-        value = GetByte(*pEncoded++);
-        value = (value << 5) | GetByte(*pEncoded++);
-        value = (value << 5) | GetByte(*pEncoded++);
-        value = (value << 5) | GetByte(*pEncoded);
-
-        *pOutput++ = (byte)(value >> 12);
-        *pOutput = (byte)(value >> 4);
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static Byte GetByte(int ch)
-    {
-        if (ch < 0 || ch >= 123) throw new FormatException($"Char '{(char)ch}' not found");
-
-        var item = _map[ch];
-
-        if (item == -1) throw new FormatException($"Char '{(char)ch}' not found");
-
-        return (byte)item;
-    }
 }
+
+//static Base32()
+//{
+//    var table = new sbyte[123];
+
+//    for (int i = 0; i < table.Length; i++)
+//        table[i] = LookupTableNullItem;
+
+//    for (sbyte i = 0; i < Chars.Length; i++)
+//    {
+//        var ch = Chars[i];
+
+//        var chlower = Char.ToLowerInvariant(ch);
+
+//        table[ch] = i;
+
+//        table[chlower] = i;
+
+//        if (ch == '0')
+//        {
+//            table['o'] = i;
+//            table['O'] = i;
+//        }
+
+//        if (ch == 'V')
+//        {
+//            table['u'] = i;
+//            table['U'] = i;
+//        }
+
+//        if (ch == '1')
+//        {
+//            table['i'] = i;
+//            table['I'] = i;
+//            table['l'] = i;
+//            table['L'] = i;
+//        }
+//    }
+//    Console.WriteLine("new sbyte[] {");
+//    for (int i = 0; i < table.Length; i++)
+//    {
+//        var code = table[i];
+//        if (code == -1)
+//            Console.WriteLine($"-1, //{i}");
+//        else
+//            Console.WriteLine($"{code,2}, //{i} -> {(char)i}");
+//    }
+//    Console.WriteLine("}");
+//    _lookupValues = table;
+//}
+
+//    public static String Encode6(ReadOnlySpan<byte> bytes)
+//    {
+//#if NETSTANDARD2_0
+//        throw new NotImplementedException();
+//#else
+//        unsafe
+//        {
+//            fixed (byte* dataPtr = bytes)
+//            {
+//                return String.Create(20, (IntPtr)dataPtr, (encoded, state) =>
+//                {
+//                    Encode(new ReadOnlySpan<Byte>((Byte*)state, 12), encoded);
+//                });
+//            }
+//        }
+//#endif
+//    }
+
+//public static unsafe void Encode(ReadOnlySpan<byte> input, Span<char> output)
+//{
+//    fixed (byte* pInput = input)
+//    fixed (char* pOutput = output)
+//    fixed (char* pAlphabet = Alphabet)
+//    {
+//        ToBase32GroupsUnsafe(pInput, pOutput, pAlphabet);
+//    }
+//}
+
+//private static unsafe void ToBase32GroupsUnsafe(byte* pInput, char* pOutput, char* pAlphabet)
+//{
+//    ulong value = *pInput++;
+//    value = (value << 8) | (*pInput++);
+//    value = (value << 8) | (*pInput++);
+//    value = (value << 8) | (*pInput++);
+//    value = (value << 8) | (*pInput++);
+
+//    *pOutput++ = pAlphabet[value >> 35];
+//    *pOutput++ = pAlphabet[(value >> 30) & 0x1F];
+//    *pOutput++ = pAlphabet[(value >> 25) & 0x1F];
+//    *pOutput++ = pAlphabet[(value >> 20) & 0x1F];
+//    *pOutput++ = pAlphabet[(value >> 15) & 0x1F];
+//    *pOutput++ = pAlphabet[(value >> 10) & 0x1F];
+//    *pOutput++ = pAlphabet[(value >> 5) & 0x1F];
+//    *pOutput++ = pAlphabet[value & 0x1F];
+
+//    value = *pInput++;
+//    value = (value << 8) | (*pInput++);
+//    value = (value << 8) | (*pInput++);
+//    value = (value << 8) | (*pInput++);
+//    value = (value << 8) | (*pInput++);
+
+//    *pOutput++ = pAlphabet[value >> 35];
+//    *pOutput++ = pAlphabet[(value >> 30) & 0x1F];
+//    *pOutput++ = pAlphabet[(value >> 25) & 0x1F];
+//    *pOutput++ = pAlphabet[(value >> 20) & 0x1F];
+//    *pOutput++ = pAlphabet[(value >> 15) & 0x1F];
+//    *pOutput++ = pAlphabet[(value >> 10) & 0x1F];
+//    *pOutput++ = pAlphabet[(value >> 5) & 0x1F];
+//    *pOutput++ = pAlphabet[value & 0x1F];
+
+//    value = (((ulong)(*pInput++) << 8) | *pInput) << 4;
+
+//    *pOutput++ = pAlphabet[value >> 15];
+//    *pOutput++ = pAlphabet[(value >> 10) & 0x1F];
+//    *pOutput++ = pAlphabet[(value >> 5) & 0x1F];
+//    *pOutput = pAlphabet[value & 0x1F];
+//}
+
+//public static unsafe void Decode(ReadOnlySpan<char> encoded, Span<byte> output)
+//{
+//    fixed (char* pEncoded = encoded)
+//    fixed (byte* pOutput = output)
+//    {
+//        ToBytesGroupsUnsafe(pEncoded, pOutput);
+//    }
+//}
+
+//private static unsafe void ToBytesGroupsUnsafe(char* pEncoded, byte* pOutput)
+//{
+//    ulong value = GetByte(*pEncoded++);
+//    value = (value << 5) | GetByte(*pEncoded++);
+//    value = (value << 5) | GetByte(*pEncoded++);
+//    value = (value << 5) | GetByte(*pEncoded++);
+//    value = (value << 5) | GetByte(*pEncoded++);
+//    value = (value << 5) | GetByte(*pEncoded++);
+//    value = (value << 5) | GetByte(*pEncoded++);
+//    value = (value << 5) | GetByte(*pEncoded++);
+
+//    *pOutput++ = (byte)(value >> 32);
+//    *pOutput++ = (byte)(value >> 24);
+//    *pOutput++ = (byte)(value >> 16);
+//    *pOutput++ = (byte)(value >> 8);
+//    *pOutput++ = (byte)value;
+
+//    value = (value << 5) | GetByte(*pEncoded++);
+//    value = (value << 5) | GetByte(*pEncoded++);
+//    value = (value << 5) | GetByte(*pEncoded++);
+//    value = (value << 5) | GetByte(*pEncoded++);
+//    value = (value << 5) | GetByte(*pEncoded++);
+//    value = (value << 5) | GetByte(*pEncoded++);
+//    value = (value << 5) | GetByte(*pEncoded++);
+//    value = (value << 5) | GetByte(*pEncoded++);
+
+//    *pOutput++ = (byte)(value >> 32);
+//    *pOutput++ = (byte)(value >> 24);
+//    *pOutput++ = (byte)(value >> 16);
+//    *pOutput++ = (byte)(value >> 8);
+//    *pOutput++ = (byte)value;
+
+//    value = GetByte(*pEncoded++);
+//    value = (value << 5) | GetByte(*pEncoded++);
+//    value = (value << 5) | GetByte(*pEncoded++);
+//    value = (value << 5) | GetByte(*pEncoded);
+
+//    *pOutput++ = (byte)(value >> 12);
+//    *pOutput = (byte)(value >> 4);
+//}

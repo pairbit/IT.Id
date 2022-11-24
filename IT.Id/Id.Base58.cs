@@ -1,4 +1,6 @@
-﻿namespace System;
+﻿using Internal;
+
+namespace System;
 
 public readonly partial struct Id
 {
@@ -28,7 +30,7 @@ public readonly partial struct Id
     private unsafe void ToBase58(Span<Byte> destination)
     {
         fixed (byte* output = destination)
-        fixed (byte* alphabetPtr = Base58._bytes)
+        fixed (byte* alphabetPtr = Base58.EncodeMap)
         {
             int length = 0;
 
@@ -801,7 +803,7 @@ public readonly partial struct Id
         var len = chars.Length;
         if (len < 12 || len > 17) throw new ArgumentOutOfRangeException(nameof(chars), len, "The id must be between 12 to 17 characters long");
 
-        var table = Base58._lookupTable;
+        var map = Base58.DecodeMap;
 
         byte b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, b7 = 0, b8 = 0, b9 = 0, b10 = 0, b11 = 0;
 
@@ -809,9 +811,11 @@ public readonly partial struct Id
         {
             char ch = chars[i];
 
-            int carry = table[ch] - 1;
+            if (ch < Base58.Min || ch > Base58.Max) throw new FormatException($"Invalid character: '{ch}' ({(int)ch}) Base58 1");
 
-            if (carry < 0) throw new ArgumentException($"Invalid character: {ch}");
+            int carry = map[ch];
+
+            if (carry == -1) throw new FormatException($"Invalid character: '{ch}' ({(int)ch}) Base58 2");
 
             //1
             carry += 58 * b11;
@@ -873,17 +877,19 @@ public readonly partial struct Id
         var len = bytes.Length;
         if (len < 12 || len > 17) throw new ArgumentOutOfRangeException(nameof(bytes), len, "The id must be between 12 to 17 bytes long");
 
-        var table = Base58._lookupTable;
+        var map = Base58.DecodeMap;
 
         byte b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, b7 = 0, b8 = 0, b9 = 0, b10 = 0, b11 = 0;
 
         for (int i = 0; i < bytes.Length; i++)
         {
-            byte byt = bytes[i];
+            byte ch = bytes[i];
 
-            int carry = table[byt] - 1;
+            if (ch < Base58.Min || ch > Base58.Max) throw new FormatException($"Invalid character: '{(char)ch}' ({ch}) Base58 1");
 
-            if (carry < 0) throw new ArgumentException($"Invalid byte: {byt}");
+            int carry = map[ch];
+
+            if (carry == -1) throw new FormatException($"Invalid character: '{(char)ch}' ({ch}) Base58 2");
 
             //1
             carry += 58 * b11;
@@ -942,7 +948,7 @@ public readonly partial struct Id
 
     private unsafe void ToBase58(char* output)
     {
-        fixed (char* alphabetPtr = Base58._alphabet)
+        fixed (char* alphabetPtr = Base58.Alphabet)
         {
             int length = 0;
 

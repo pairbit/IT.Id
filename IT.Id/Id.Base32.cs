@@ -1,4 +1,7 @@
-﻿namespace System;
+﻿using Internal;
+using System.Runtime.CompilerServices;
+
+namespace System;
 
 public readonly partial struct Id
 {
@@ -8,7 +11,7 @@ public readonly partial struct Id
         unsafe
         {
             fixed (char* resultP = result)
-            fixed (char* map = Base32.ALPHABET)
+            fixed (char* map = Base32.Alphabet)
             {
                 ulong value = (byte)(_timestamp >> 24);
                 value = (value << 8) | (byte)(_timestamp >> 16);
@@ -57,7 +60,7 @@ public readonly partial struct Id
     private unsafe void ToBase32(Span<Char> destination)
     {
         fixed (char* resultP = destination)
-        fixed (char* map = Base32.ALPHABET)
+        fixed (char* map = Base32.Alphabet)
         {
             ulong value = (byte)(_timestamp >> 24);
             value = (value << 8) | (byte)(_timestamp >> 16);
@@ -103,7 +106,7 @@ public readonly partial struct Id
     private unsafe void ToBase32(Span<Byte> destination)
     {
         fixed (byte* resultP = destination)
-        fixed (byte* map = Base32.Bytes)
+        fixed (byte* map = Base32.EncodeMap)
         {
             ulong value = (byte)(_timestamp >> 24);
             value = (value << 8) | (byte)(_timestamp >> 16);
@@ -152,36 +155,36 @@ public readonly partial struct Id
 
         fixed (char* src = chars)
         {
-            ulong v = Base32.GetByte(src[0]);
-            v = (v << 5) | Base32.GetByte(src[1]);
-            v = (v << 5) | Base32.GetByte(src[2]);
-            v = (v << 5) | Base32.GetByte(src[3]);
-            v = (v << 5) | Base32.GetByte(src[4]);
-            v = (v << 5) | Base32.GetByte(src[5]);
-            v = (v << 5) | Base32.GetByte(src[6]);
-            v = (v << 5) | Base32.GetByte(src[7]);
+            ulong v = Decode(src[0]);
+            v = (v << 5) | Decode(src[1]);
+            v = (v << 5) | Decode(src[2]);
+            v = (v << 5) | Decode(src[3]);
+            v = (v << 5) | Decode(src[4]);
+            v = (v << 5) | Decode(src[5]);
+            v = (v << 5) | Decode(src[6]);
+            v = (v << 5) | Decode(src[7]);
 
             var timestamp = (byte)(v >> 32) << 24 | (byte)(v >> 24) << 16 | (byte)(v >> 16) << 8 | (byte)(v >> 8);
 
             var b = (int)(byte)v;
 
-            v = (v << 5) | Base32.GetByte(src[8]);
-            v = (v << 5) | Base32.GetByte(src[9]);
-            v = (v << 5) | Base32.GetByte(src[10]);
-            v = (v << 5) | Base32.GetByte(src[11]);
-            v = (v << 5) | Base32.GetByte(src[12]);
-            v = (v << 5) | Base32.GetByte(src[13]);
-            v = (v << 5) | Base32.GetByte(src[14]);
-            v = (v << 5) | Base32.GetByte(src[15]);
+            v = (v << 5) | Decode(src[8]);
+            v = (v << 5) | Decode(src[9]);
+            v = (v << 5) | Decode(src[10]);
+            v = (v << 5) | Decode(src[11]);
+            v = (v << 5) | Decode(src[12]);
+            v = (v << 5) | Decode(src[13]);
+            v = (v << 5) | Decode(src[14]);
+            v = (v << 5) | Decode(src[15]);
 
             b = b << 24 | (byte)(v >> 32) << 16 | (byte)(v >> 24) << 8 | (byte)(v >> 16);
 
             var c = (byte)(v >> 8) << 24 | (byte)v << 16;
 
-            v = Base32.GetByte(src[16]);
-            v = (v << 5) | Base32.GetByte(src[17]);
-            v = (v << 5) | Base32.GetByte(src[18]);
-            v = (v << 5) | Base32.GetByte(src[19]);
+            v = Decode(src[16]);
+            v = (v << 5) | Decode(src[17]);
+            v = (v << 5) | Decode(src[18]);
+            v = (v << 5) | Decode(src[19]);
 
             c |= (byte)(v >> 12) << 8 | (byte)(v >> 4);
 
@@ -195,40 +198,52 @@ public readonly partial struct Id
 
         fixed (byte* src = bytes)
         {
-            ulong v = Base32.GetByte(src[0]);
-            v = (v << 5) | Base32.GetByte(src[1]);
-            v = (v << 5) | Base32.GetByte(src[2]);
-            v = (v << 5) | Base32.GetByte(src[3]);
-            v = (v << 5) | Base32.GetByte(src[4]);
-            v = (v << 5) | Base32.GetByte(src[5]);
-            v = (v << 5) | Base32.GetByte(src[6]);
-            v = (v << 5) | Base32.GetByte(src[7]);
+            ulong v = Decode(src[0]);
+            v = (v << 5) | Decode(src[1]);
+            v = (v << 5) | Decode(src[2]);
+            v = (v << 5) | Decode(src[3]);
+            v = (v << 5) | Decode(src[4]);
+            v = (v << 5) | Decode(src[5]);
+            v = (v << 5) | Decode(src[6]);
+            v = (v << 5) | Decode(src[7]);
 
             var timestamp = (byte)(v >> 32) << 24 | (byte)(v >> 24) << 16 | (byte)(v >> 16) << 8 | (byte)(v >> 8);
 
             var b = (int)(byte)v;
 
-            v = (v << 5) | Base32.GetByte(src[8]);
-            v = (v << 5) | Base32.GetByte(src[9]);
-            v = (v << 5) | Base32.GetByte(src[10]);
-            v = (v << 5) | Base32.GetByte(src[11]);
-            v = (v << 5) | Base32.GetByte(src[12]);
-            v = (v << 5) | Base32.GetByte(src[13]);
-            v = (v << 5) | Base32.GetByte(src[14]);
-            v = (v << 5) | Base32.GetByte(src[15]);
+            v = (v << 5) | Decode(src[8]);
+            v = (v << 5) | Decode(src[9]);
+            v = (v << 5) | Decode(src[10]);
+            v = (v << 5) | Decode(src[11]);
+            v = (v << 5) | Decode(src[12]);
+            v = (v << 5) | Decode(src[13]);
+            v = (v << 5) | Decode(src[14]);
+            v = (v << 5) | Decode(src[15]);
 
             b = b << 24 | (byte)(v >> 32) << 16 | (byte)(v >> 24) << 8 | (byte)(v >> 16);
 
             var c = (byte)(v >> 8) << 24 | (byte)v << 16;
 
-            v = Base32.GetByte(src[16]);
-            v = (v << 5) | Base32.GetByte(src[17]);
-            v = (v << 5) | Base32.GetByte(src[18]);
-            v = (v << 5) | Base32.GetByte(src[19]);
+            v = Decode(src[16]);
+            v = (v << 5) | Decode(src[17]);
+            v = (v << 5) | Decode(src[18]);
+            v = (v << 5) | Decode(src[19]);
 
             c |= (byte)(v >> 12) << 8 | (byte)(v >> 4);
 
             return new Id(timestamp, b, c);
         }
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static Byte Decode(int ch)
+    {
+        if (ch < Base32.Min || ch > Base32.Max) throw new FormatException($"Char '{(char)ch}' not found Base32 1");
+
+        var item = Base32.DecodeMap[ch];
+
+        if (item == -1) throw new FormatException($"Char '{(char)ch}' not found Base32 2");
+
+        return (byte)item;
     }
 }
