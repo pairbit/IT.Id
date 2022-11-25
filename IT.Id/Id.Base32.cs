@@ -1,5 +1,6 @@
 ﻿using Internal;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System;
 
@@ -153,38 +154,41 @@ public readonly partial struct Id
     {
         if (chars.Length != 20) throw new ArgumentException("The id must be 20 characters long", nameof(chars));
 
+        ReadOnlySpan<sbyte> mapSpan = Base32.DecodeMap;
+        ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
+
         fixed (char* src = chars)
         {
-            ulong v = Map32(src[0]);
-            v = (v << 5) | Map32(src[1]);
-            v = (v << 5) | Map32(src[2]);
-            v = (v << 5) | Map32(src[3]);
-            v = (v << 5) | Map32(src[4]);
-            v = (v << 5) | Map32(src[5]);
-            v = (v << 5) | Map32(src[6]);
-            v = (v << 5) | Map32(src[7]);
+            ulong v = Map32(ref map, src[0]);
+            v = (v << 5) | Map32(ref map, src[1]);
+            v = (v << 5) | Map32(ref map, src[2]);
+            v = (v << 5) | Map32(ref map, src[3]);
+            v = (v << 5) | Map32(ref map, src[4]);
+            v = (v << 5) | Map32(ref map, src[5]);
+            v = (v << 5) | Map32(ref map, src[6]);
+            v = (v << 5) | Map32(ref map, src[7]);
 
             var timestamp = (byte)(v >> 32) << 24 | (byte)(v >> 24) << 16 | (byte)(v >> 16) << 8 | (byte)(v >> 8);
 
             var b = (int)(byte)v;
 
-            v = (v << 5) | Map32(src[8]);
-            v = (v << 5) | Map32(src[9]);
-            v = (v << 5) | Map32(src[10]);
-            v = (v << 5) | Map32(src[11]);
-            v = (v << 5) | Map32(src[12]);
-            v = (v << 5) | Map32(src[13]);
-            v = (v << 5) | Map32(src[14]);
-            v = (v << 5) | Map32(src[15]);
+            v = (v << 5) | Map32(ref map, src[8]);
+            v = (v << 5) | Map32(ref map, src[9]);
+            v = (v << 5) | Map32(ref map, src[10]);
+            v = (v << 5) | Map32(ref map, src[11]);
+            v = (v << 5) | Map32(ref map, src[12]);
+            v = (v << 5) | Map32(ref map, src[13]);
+            v = (v << 5) | Map32(ref map, src[14]);
+            v = (v << 5) | Map32(ref map, src[15]);
 
             b = b << 24 | (byte)(v >> 32) << 16 | (byte)(v >> 24) << 8 | (byte)(v >> 16);
 
             var c = (byte)(v >> 8) << 24 | (byte)v << 16;
 
-            v = Map32(src[16]);
-            v = (v << 5) | Map32(src[17]);
-            v = (v << 5) | Map32(src[18]);
-            v = (v << 5) | Map32(src[19]);
+            v = Map32(ref map, src[16]);
+            v = (v << 5) | Map32(ref map, src[17]);
+            v = (v << 5) | Map32(ref map, src[18]);
+            v = (v << 5) | Map32(ref map, src[19]);
 
             c |= (byte)(v >> 12) << 8 | (byte)(v >> 4);
 
@@ -196,38 +200,41 @@ public readonly partial struct Id
     {
         if (bytes.Length != 20) throw new ArgumentException("The id must be 20 bytes long", nameof(bytes));
 
+        ReadOnlySpan<sbyte> mapSpan = Base32.DecodeMap;
+        ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
+
         fixed (byte* src = bytes)
         {
-            ulong v = Map32(src[0]);
-            v = (v << 5) | Map32(src[1]);
-            v = (v << 5) | Map32(src[2]);
-            v = (v << 5) | Map32(src[3]);
-            v = (v << 5) | Map32(src[4]);
-            v = (v << 5) | Map32(src[5]);
-            v = (v << 5) | Map32(src[6]);
-            v = (v << 5) | Map32(src[7]);
+            ulong v = Map32(ref map, src[0]);
+            v = (v << 5) | Map32(ref map, src[1]);
+            v = (v << 5) | Map32(ref map, src[2]);
+            v = (v << 5) | Map32(ref map, src[3]);
+            v = (v << 5) | Map32(ref map, src[4]);
+            v = (v << 5) | Map32(ref map, src[5]);
+            v = (v << 5) | Map32(ref map, src[6]);
+            v = (v << 5) | Map32(ref map, src[7]);
 
             var timestamp = (byte)(v >> 32) << 24 | (byte)(v >> 24) << 16 | (byte)(v >> 16) << 8 | (byte)(v >> 8);
 
             var b = (int)(byte)v;
 
-            v = (v << 5) | Map32(src[8]);
-            v = (v << 5) | Map32(src[9]);
-            v = (v << 5) | Map32(src[10]);
-            v = (v << 5) | Map32(src[11]);
-            v = (v << 5) | Map32(src[12]);
-            v = (v << 5) | Map32(src[13]);
-            v = (v << 5) | Map32(src[14]);
-            v = (v << 5) | Map32(src[15]);
+            v = (v << 5) | Map32(ref map, src[8]);
+            v = (v << 5) | Map32(ref map, src[9]);
+            v = (v << 5) | Map32(ref map, src[10]);
+            v = (v << 5) | Map32(ref map, src[11]);
+            v = (v << 5) | Map32(ref map, src[12]);
+            v = (v << 5) | Map32(ref map, src[13]);
+            v = (v << 5) | Map32(ref map, src[14]);
+            v = (v << 5) | Map32(ref map, src[15]);
 
             b = b << 24 | (byte)(v >> 32) << 16 | (byte)(v >> 24) << 8 | (byte)(v >> 16);
 
             var c = (byte)(v >> 8) << 24 | (byte)v << 16;
 
-            v = Map32(src[16]);
-            v = (v << 5) | Map32(src[17]);
-            v = (v << 5) | Map32(src[18]);
-            v = (v << 5) | Map32(src[19]);
+            v = Map32(ref map, src[16]);
+            v = (v << 5) | Map32(ref map, src[17]);
+            v = (v << 5) | Map32(ref map, src[18]);
+            v = (v << 5) | Map32(ref map, src[19]);
 
             c |= (byte)(v >> 12) << 8 | (byte)(v >> 4);
 
@@ -236,11 +243,11 @@ public readonly partial struct Id
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Byte Map32(int c)
+    private static Byte Map32(ref sbyte map, int c)
     {
         if (c < Base32.Min || c > Base32.Max) throw NewFormatException((char)c, Idf.Base32);
 
-        var value = Base32.DecodeMap[c];
+        var value = Unsafe.Add(ref map, c);
 
         if (value == -1) throw NewFormatException((char)c, Idf.Base32);
 

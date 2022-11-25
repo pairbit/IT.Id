@@ -65,7 +65,7 @@ public class IdBenchmark
     //[Benchmark]
     public String Id_Encode_Base58_SimpleBase() => SimpleBase.Base58.Bitcoin.Encode(_id.ToByteArray());
 
-    [Benchmark]
+    //[Benchmark]
     public System.Id Id_Decode_Base58() => System.Id.Parse(_idBase58);
 
     //[Benchmark]
@@ -74,30 +74,30 @@ public class IdBenchmark
     //[Benchmark]
     public String Id_Encode_Base64Url() => _id.ToString();
 
-    [Benchmark]
+    //[Benchmark]
     public System.Id Id_Decode_Base64() => System.Id.Parse(_idBase64Url);
 
     //[Benchmark]
     public String Id_Encode_Base85() => _id.ToString(Idf.Base85);
 
-    [Benchmark]
+    //[Benchmark]
     public System.Id Id_Decode_Base85() => System.Id.Parse(_idBase85);
 
     //[Benchmark]
     public String Id_Encode_Path2() => _id.ToString(Idf.Path2);
 
-    [Benchmark]
+    //[Benchmark]
     public System.Id Id_Decode_Path2() => System.Id.Parse(_idPath2);
 
     //[Benchmark]
     public String Id_Encode_Path3() => _id.ToString(Idf.Path3);
 
-    [Benchmark]
+    //[Benchmark]
     public System.Id Id_Decode_Path3() => System.Id.Parse(_idPath3);
 
     //[Benchmark]
     public String Ulid_Encode() => _ulid.ToString();
 
-    [Benchmark]
+    //[Benchmark]
     public Ulid Ulid_Decode() => Ulid.Parse(_ulidString);
 }
