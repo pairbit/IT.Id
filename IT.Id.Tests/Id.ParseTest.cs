@@ -13,28 +13,33 @@ public class IdParseTest
     public void Invalid()
     {
         //Base16 -> 62a84f674031e78d474fe23f
-        InvalidFormat("62a84f674031e/8d474fe23f", '/');//47
-        InvalidFormat("62a84f674031e78d474fe23G", 'G');//71
+        InvalidFormat("62a84F674031e/8d474fe23f", '/');//47
+        InvalidFormat("62A84f674031e78d474fe23G", 'G');//71
         InvalidFormat("g2a84f674031e78d474fe23f", 'g');//103
-        InvalidFormat("62a84憨674031e78d474fe23f", '憨');//25000
+        InvalidFormat("62A84憨674031e78d474fe23f", '憨');//25000
+        InvalidFormat("62a84f674031e78d4￼4fe23f", '￼');//65532
+        InvalidFormat("6􀀀84f674031e78d474fe23f", '\udbc0');//56256
 
         //Base32 -> CDZ6ZZEC14FS687T52V0
-        InvalidFormat("CDZ6ZZEC14FS687T52V/", '/');//47
-        InvalidFormat("CDZ6ZZEC_4FS687T52V0", '_');//95
-        InvalidFormat("CDZ6{ZEC14FS687T52V0", '{');//123
-        InvalidFormat("CDZ6ZZEC14F憨687T52V0", '憨');//25000
+        InvalidFormat("CdZ6ZZEC14FS687T52V/", '/');//47
+        InvalidFormat("cDZ6ZZEC_4FS687T52V0", '_');//95
+        InvalidFormat("Cdz6{ZEC14FS687T52V0", '{');//123
+        InvalidFormat("cdZ6ZZEC14F憨687T52V0", '憨');//25000
+        InvalidFormat("CD￼6ZZEC14FS687T52V0", '￼');//65532
 
         //Base58 -> 2su1yC5sA8ji2ZrSo
         InvalidFormat("2su1/C5sA8ji2ZrSo", '/');//47
         InvalidFormat("2su1yC5sA8ji_ZrSo", '_');//95
         InvalidFormat("2{u1yC5sA8ji2ZrSo", '{');//123
         InvalidFormat("2su憨yC5sA8ji2ZrSo", '憨');//25000
+        InvalidFormat("2su1yC5sA8ji2ZrS￼", '￼');//65532
 
         //Base64 -> YqhPZ0Ax541HT+I/
         InvalidFormat("Y*hPZ0Ax541HT+I/", '*');//42
         InvalidFormat("YqhPZ0Ax541HT+^/", '^');//94
         InvalidFormat("YqhPZ0Ax5{1HT+I/", '{');//123
         InvalidFormat("YqhP憨0Ax541HT+I/", '憨');//25000
+        InvalidFormat("YqhPZ0Ax541HT+I￼", '￼');//65532
 
         //Base85 -> v{IV^PiNKcFO_~|
         InvalidFormat("v{IV^PiNK FO_~|", ' ');//32
@@ -42,12 +47,14 @@ public class IdParseTest
         InvalidFormat("v{IV^PiNKcFO_~;", ';');//59
         InvalidFormat("v{IV^\u007fiNKcFO_~|", '\u007f');//127
         InvalidFormat("v{IV^PiNKcFO憨~|", '憨');//25000
+        InvalidFormat("v￼IV^PiNKcFO_~|", '￼');//65532
 
         //Path2 -> _/I/-TH145xA0ZPhqY
         InvalidFormat("_/*/-TH145xA0ZPhqY", '*');//42
         InvalidFormat("_/I/-T^145xA0ZPhqY", '^');//94
         InvalidFormat("_/I/-TH145xA0ZP{qY", '{');//123
         InvalidFormat("_/I/-TH145憨A0ZPhqY", '憨');//25000
+        InvalidFormat("￼/I/-TH145xA0ZPhqY", '￼');//65532
 
         //Path3 -> _/I/-/TH145xA0ZPhqY
         InvalidFormat("_/I/-/TH*45xA0ZPhqY", '*');//42
@@ -55,11 +62,19 @@ public class IdParseTest
         InvalidFormat("_/{/-/TH145xA0ZPhqY", '{');//123
         InvalidFormat("_/I/-/TH145xA0ZPhĀY", 'Ā');//256
         InvalidFormat("_/I/-/TH145xA0憨PhqY", '憨');//25000
+        InvalidFormat("_/I/￼/TH145xA0ZPhqY", '￼');//65532
     }
 
     [Test]
     public void Valid()
     {
+        var base16 = "62a84f674031e78d474fe23f";
+
+        //Upper == Lower
+
+        Assert.That(Id.Parse("62a84f674031e78d474fe23f").ToString(Idf.Hex), Is.EqualTo(base16));
+        Assert.That(Id.Parse("62A84F674031E78D474FE23F").ToString(Idf.Hex), Is.EqualTo(base16));
+
         var base32 = "CDZ6ZZEC14FS687T52V0";
 
         //Upper == Lower
