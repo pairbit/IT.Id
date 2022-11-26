@@ -56,9 +56,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     public Id(ReadOnlySpan<Byte> bytes)
     {
-        if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-
-        if (bytes.Length != 12) throw new ArgumentException("Byte array must be 12 bytes long", nameof(bytes));
+        if (bytes.Length != 12) throw new ArgumentException("The byte array must be 12 bytes long.", nameof(bytes));
 
         _timestamp = (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3];
         _b = (bytes[4] << 24) | (bytes[5] << 16) | (bytes[6] << 8) | bytes[7];
@@ -469,22 +467,22 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         (byte)(_c)
     };
 
-    public void ToByteArray(Span<Byte> bytes, Int32 offset)
+    public void ToByteArray(Span<Byte> bytes)
     {
-        if (offset + 12 > bytes.Length) throw new ArgumentException("Not enough room in destination buffer.", nameof(offset));
+        if (bytes.Length < 12) throw new ArgumentException("There is not enough space in the destination buffer. A minimum of 12 bytes is required.", nameof(bytes));
 
-        bytes[offset + 0] = (byte)(_timestamp >> 24);
-        bytes[offset + 1] = (byte)(_timestamp >> 16);
-        bytes[offset + 2] = (byte)(_timestamp >> 8);
-        bytes[offset + 3] = (byte)(_timestamp);
-        bytes[offset + 4] = (byte)(_b >> 24);
-        bytes[offset + 5] = (byte)(_b >> 16);
-        bytes[offset + 6] = (byte)(_b >> 8);
-        bytes[offset + 7] = (byte)(_b);
-        bytes[offset + 8] = (byte)(_c >> 24);
-        bytes[offset + 9] = (byte)(_c >> 16);
-        bytes[offset + 10] = (byte)(_c >> 8);
-        bytes[offset + 11] = (byte)(_c);
+        bytes[0] = (byte)(_timestamp >> 24);
+        bytes[1] = (byte)(_timestamp >> 16);
+        bytes[2] = (byte)(_timestamp >> 8);
+        bytes[3] = (byte)_timestamp;
+        bytes[4] = (byte)(_b >> 24);
+        bytes[5] = (byte)(_b >> 16);
+        bytes[6] = (byte)(_b >> 8);
+        bytes[7] = (byte)_b;
+        bytes[8] = (byte)(_c >> 24);
+        bytes[9] = (byte)(_c >> 16);
+        bytes[10] = (byte)(_c >> 8);
+        bytes[11] = (byte)_c;
     }
 
     public Int32 CompareTo(Id other)

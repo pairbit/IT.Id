@@ -154,10 +154,11 @@ public readonly partial struct Id
 
     private static Id ParsePath2(ReadOnlySpan<Char> chars)
     {
-        var c1 = chars[1];
-        var c3 = chars[3];
+        var sep = chars[1];
+        if (sep != '\\' && sep != '/') throw new FormatException();
 
-        if ((c1 != '\\' && c1 != '/') || (c3 != '\\' && c3 != '/')) throw new FormatException();
+        sep = chars[3];
+        if (sep != '\\' && sep != '/') throw new FormatException();
 
         //_\I\-TH145xA0ZPhqY
 

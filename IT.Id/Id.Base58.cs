@@ -1712,5 +1712,5 @@ public readonly partial struct Id
     }
 
     private static Exception CarryException(Int32 bytes, Int32 length, Int32 carry)
-        => new InvalidOperationException($"{bytes} bytes, {length} length, carry ({carry}) != 0");
+        => new NotImplementedException($"{bytes} bytes, {length} length, carry ({carry}) != 0");
 }
