@@ -880,11 +880,11 @@ public readonly partial struct Id
         {
             byte ch = bytes[i];
 
-            if (ch < Base58.Min || ch > Base58.Max) throw Ex.InvalidChar(Idf.Base58, ch);
+            if (ch < Base58.Min || ch > Base58.Max) throw Ex.InvalidByte(Idf.Base58, ch);
 
             int carry = map[ch];
 
-            if (carry == -1) throw Ex.InvalidChar(Idf.Base58, ch);
+            if (carry == -1) throw Ex.InvalidByte(Idf.Base58, ch);
 
             //1
             carry += 58 * b11;

@@ -164,7 +164,19 @@ public readonly partial struct Id
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static unsafe byte Map85(sbyte* map, int c)
+    private static unsafe byte Map85(sbyte* map, byte c)
+    {
+        if (c < Base85.Min || c > Base85.Max) throw Ex.InvalidByte(Idf.Base85, c);
+
+        var value = *(map + c);
+
+        if (value == -1) throw Ex.InvalidByte(Idf.Base85, c);
+
+        return (byte)value;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static unsafe byte Map85(sbyte* map, char c)
     {
         if (c < Base85.Min || c > Base85.Max) throw Ex.InvalidChar(Idf.Base85, c);
 

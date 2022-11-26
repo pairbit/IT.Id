@@ -41,10 +41,10 @@ public class IdParseTest
         InvalidLength(Idf.Base85, "abc憨");
 
         FormatException(() => Id.Parse("abc", Idf.Base58),
-            $"The length of System.Id in format Base58 cannot be 3 characters. It must be between 12 to 17 characters long.");
+            $"The length of System.Id in Base58 format cannot be 3 characters. It must be between 12 to 17 characters long.");
 
         FormatException(() => Id.Parse(new byte[] { 1, 2, 3, 4 }, Idf.Base58),
-            $"The length of System.Id in format Base58 cannot be 4 bytes. It must be between 12 to 17 bytes long.");
+            $"The length of System.Id in Base58 format cannot be 4 bytes. It must be between 12 to 17 bytes long.");
 
         var format = (Idf)123123;
 
@@ -202,7 +202,7 @@ public class IdParseTest
     {
         var format = Id.GetFormat(str.Length);
 
-        var message = $"The System.Id in format {format} cannot contain character code {(int)code}.";
+        var message = $"The System.Id in {format} format cannot contain character code {(int)code}.";
 
         var ex = Assert.Throws<FormatException>(() => Id.Parse(str));
         Assert.That(ex.Message, Is.EqualTo(message));
@@ -214,6 +214,8 @@ public class IdParseTest
 
         if (codeBytes.Length == 1)
         {
+            message = $"The System.Id in {format} format cannot contain byte {(int)code}.";
+
             var bytes = Encoding.UTF8.GetBytes(str);
             Assert.That(bytes, Has.Length.EqualTo(str.Length));
 
@@ -228,12 +230,12 @@ public class IdParseTest
     private void InvalidLength(Idf format, string str)
     {
         FormatException(() => Id.Parse(str, format),
-            $"The length of System.Id in format {format} cannot be {str.Length} characters. It must be {Id.GetLength(format)} characters long.");
+            $"The length of System.Id in {format} format cannot be {str.Length} characters. It must be {Id.GetLength(format)} characters long.");
 
         var bytes = Encoding.UTF8.GetBytes(str);
 
         FormatException(() => Id.Parse(bytes, format),
-            $"The length of System.Id in format {format} cannot be {bytes.Length} bytes. It must be {Id.GetLength(format)} bytes long.");
+            $"The length of System.Id in {format} format cannot be {bytes.Length} bytes. It must be {Id.GetLength(format)} bytes long.");
     }
 
     private void InvalidFormat<T>(string format, Func<T> func)
@@ -243,12 +245,12 @@ public class IdParseTest
 
     private void RequiredChars<T>(Func<T> func, string format, int code, int index)
     {
-        FormatException(() => func(), $"The System.Id in format {format} cannot contain character code {code} at position {index}. It must contain one of characters '/', '\\'.");
+        FormatException(() => func(), $"The System.Id in {format} format cannot contain character code {code} at position {index}. It must contain one of characters '/', '\\'.");
     }
 
     private void RequiredBytes<T>(Func<T> func, string format, int code, int index)
     {
-        FormatException(() => func(), $"The System.Id in format {format} cannot contain byte {code} at position {index}. It must contain one of bytes 47, 92.");
+        FormatException(() => func(), $"The System.Id in {format} format cannot contain byte {code} at position {index}. It must contain one of bytes 47, 92.");
     }
 
     private void FormatException<T>(Func<T> func, string message)

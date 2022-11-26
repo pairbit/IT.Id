@@ -239,7 +239,19 @@ public readonly partial struct Id
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Byte Map32(ref sbyte map, int c)
+    private static byte Map32(ref sbyte map, byte c)
+    {
+        if (c < Base32.Min || c > Base32.Max) throw Ex.InvalidByte(Idf.Base32, c);
+
+        var value = Unsafe.Add(ref map, c);
+
+        if (value == -1) throw Ex.InvalidByte(Idf.Base32, c);
+
+        return (byte)value;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static byte Map32(ref sbyte map, char c)
     {
         if (c < Base32.Min || c > Base32.Max) throw Ex.InvalidChar(Idf.Base32, c);
 
