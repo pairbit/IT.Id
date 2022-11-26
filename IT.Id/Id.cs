@@ -1,7 +1,6 @@
 ﻿using Internal;
 using System.Buffers;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -203,7 +202,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         Idf.Path3 => 19,
         Idf.Base32 or Idf.Base32Upper => 20,
         Idf.Hex or Idf.HexUpper => 24,
-        _ => throw Ex.FormatInvalid(format)
+        _ => throw Ex.InvalidFormat(format)
     };
 
     public static Idf GetFormat(Int32 length) => length switch
@@ -449,21 +448,21 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 #if NET7_0_OR_GREATER
         //[StringSyntax(StringSyntaxAttribute.GuidFormat)] 
 #endif
-        String? format, 
+        String? format,
         IFormatProvider? provider = null) => format switch
-    {
-        null or "_" => ToBase64Url(),
-        "h" => ToHexLower(),
-        "H" => ToHexUpper(),
-        "v" => ToBase32(Base32.LowerAlphabet),
-        "V" => ToBase32(Base32.UpperAlphabet),
-        "i" => ToBase58(),
-        "/" => ToBase64(),
-        "//" => ToPath2(),
-        "///" => ToPath3(),
-        "|" => ToBase85(),
-        _ => throw Ex.FormatInvalid(format),
-    };
+        {
+            null or "_" => ToBase64Url(),
+            "h" => ToHexLower(),
+            "H" => ToHexUpper(),
+            "v" => ToBase32(Base32.LowerAlphabet),
+            "V" => ToBase32(Base32.UpperAlphabet),
+            "i" => ToBase58(),
+            "/" => ToBase64(),
+            "//" => ToPath2(),
+            "///" => ToPath3(),
+            "|" => ToBase85(),
+            _ => throw Ex.InvalidFormat(format),
+        };
 
     /// <exception cref="FormatException"/>
     public String ToString(Idf format) => format switch
@@ -478,7 +477,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         Idf.Base85 => ToBase85(),
         Idf.Path2 => ToPath2(),
         Idf.Path3 => ToPath3(),
-        _ => throw Ex.FormatInvalid(format),
+        _ => throw Ex.InvalidFormat(format),
     };
 
     public OperationStatus TryFormat(Span<Byte> bytes, out Int32 written, Idf format)
@@ -609,7 +608,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             return OperationStatus.Done;
         }
 
-        throw Ex.FormatInvalid(format.ToString());
+        throw Ex.InvalidFormat(format.ToString());
     }
 
     public OperationStatus TryFormat(Span<Char> chars, out Int32 written, Idf format)
@@ -740,7 +739,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             return OperationStatus.Done;
         }
 
-        throw Ex.FormatInvalid(format.ToString());
+        throw Ex.InvalidFormat(format.ToString());
     }
 
     /// <param name="format">
@@ -760,7 +759,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 #if NET7_0_OR_GREATER
         //[StringSyntax("/")] 
 #endif
-        ReadOnlySpan<Char> format = default, 
+        ReadOnlySpan<Char> format = default,
         IFormatProvider? provider = null)
     {
         var len = format.Length;
@@ -914,7 +913,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             }
         }
 
-        throw Ex.FormatInvalid(format.ToString());
+        throw Ex.InvalidFormat(format.ToString());
     }
 
     public override Boolean Equals(Object? obj) => obj is Id id && Equals(id);
@@ -1035,60 +1034,6 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             return dateTime.ToUniversalTime();
         }
     }
-
-    private static Exception NewFormatException(Idf format, params int[] codes)
-    {
-        var min = GetMin(format);
-        var max = GetMax(format);
-        var map = GetMap(format);
-
-        foreach (var code in codes)
-        {
-            if (code < min || code > max || map[code] == -1)
-                return NewFormatException((char)code, format);
-        }
-
-        return new FormatException();
-    }
-
-    private static Exception NewFormatException(Char ch, Idf format)
-        => new FormatException($"Char '{ch}' not found {format}");
-
-    private static int GetMin(Idf format) => format switch
-    {
-        Idf.Base85 => Base85.Min,
-        Idf.Base64 => Base64.Min,
-        Idf.Base58 => Base58.Min,
-        Idf.Path2 => Base64.Min,
-        Idf.Path3 => Base64.Min,
-        Idf.Base32 => Base32.Min,
-        Idf.Hex => Hex.Min,
-        _ => throw new NotImplementedException()
-    };
-
-    private static int GetMax(Idf format) => format switch
-    {
-        Idf.Base85 => Base85.Max,
-        Idf.Base64 => Base64.Max,
-        Idf.Base58 => Base58.Max,
-        Idf.Path2 => Base64.Max,
-        Idf.Path3 => Base64.Max,
-        Idf.Base32 => Base32.Max,
-        Idf.Hex => Hex.Max,
-        _ => throw new NotImplementedException()
-    };
-
-    private static sbyte[] GetMap(Idf format) => format switch
-    {
-        Idf.Base85 => Base85.DecodeMap,
-        Idf.Base64 => Base64.DecodeMap,
-        Idf.Base58 => Base58.DecodeMap,
-        Idf.Path2 => Base64.DecodeMap,
-        Idf.Path3 => Base64.DecodeMap,
-        Idf.Base32 => Base32.DecodeMap,
-        Idf.Hex => Hex.DecodeMap,
-        _ => throw new NotImplementedException()
-    };
 
     #endregion Private Methods
 }

@@ -812,11 +812,11 @@ public readonly partial struct Id
         {
             char ch = chars[i];
 
-            if (ch < Base58.Min || ch > Base58.Max) throw NewFormatException(ch, Idf.Base58);
+            if (ch < Base58.Min || ch > Base58.Max) throw Ex.InvalidChar(Idf.Base58, ch);
 
             int carry = map[ch];
 
-            if (carry == -1) throw NewFormatException(ch, Idf.Base58);
+            if (carry == -1) throw Ex.InvalidChar(Idf.Base58, ch);
 
             //1
             carry += 58 * b11;
@@ -886,11 +886,11 @@ public readonly partial struct Id
         {
             byte ch = bytes[i];
 
-            if (ch < Base58.Min || ch > Base58.Max) throw NewFormatException((char)ch, Idf.Base58);
+            if (ch < Base58.Min || ch > Base58.Max) throw Ex.InvalidChar(Idf.Base58, ch);
 
             int carry = map[ch];
 
-            if (carry == -1) throw NewFormatException((char)ch, Idf.Base58);
+            if (carry == -1) throw Ex.InvalidChar(Idf.Base58, ch);
 
             //1
             carry += 58 * b11;

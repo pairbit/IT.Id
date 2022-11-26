@@ -155,11 +155,11 @@ public readonly partial struct Id
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static byte Map16(ref sbyte map, int c)
     {
-        if (c < Hex.Min || c > Hex.Max) throw NewFormatException((char)c, Idf.Hex);
+        if (c < Hex.Min || c > Hex.Max) throw Ex.InvalidChar(Idf.Hex, c);
 
         var value = Unsafe.Add(ref map, c);
 
-        if (value == -1) throw NewFormatException((char)c, Idf.Hex);
+        if (value == -1) throw Ex.InvalidChar(Idf.Hex, c);
 
         return (byte)value;
     }

@@ -134,12 +134,12 @@ public class IdParseTest
         Assert.That(Id.Parse("v{IV^PiNKcFO_~|").ToString(Idf.Base85), Is.EqualTo(base85));
     }
 
-    private void InvalidFormat(string str, char invalid)
+    private void InvalidFormat(string str, int code)
     {
         var ex = Assert.Throws<FormatException>(() => Id.Parse(str));
 
         var format = Id.GetFormat(str.Length);
 
-        Assert.That(ex.Message, Is.EqualTo($"Char '{invalid}' not found {format}"));
+        Assert.That(ex.Message, Is.EqualTo($"Invalid System.Id format. {format} does not contain a character with code {code}."));
     }
 }

@@ -73,7 +73,7 @@ public readonly struct Id8 : IComparable<Id8>, IEquatable<Id8>
         Idf.Hex => ToHex(format),
         Idf.HexUpper => ToHex(format),
         Idf.Base64Url => ToBase64(),
-        _ => throw Ex.FormatInvalid(format),
+        _ => throw Ex.InvalidFormat(format, nameof(Id8)),
     };
 
     public static Id8 Parse(ReadOnlySpan<Char> chars)

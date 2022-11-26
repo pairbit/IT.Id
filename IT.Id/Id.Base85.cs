@@ -170,11 +170,11 @@ public readonly partial struct Id
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe byte Map85(sbyte* map, int c)
     {
-        if (c < Base85.Min || c > Base85.Max) throw NewFormatException((char)c, Idf.Base85);
+        if (c < Base85.Min || c > Base85.Max) throw Ex.InvalidChar(Idf.Base85, c);
 
         var value = *(map + (byte)c);
 
-        if (value == -1) throw NewFormatException((char)c, Idf.Base85);
+        if (value == -1) throw Ex.InvalidChar(Idf.Base85, c);
 
         return (byte)value;
     }

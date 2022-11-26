@@ -4,11 +4,11 @@ namespace Internal;
 
 internal static class Ex
 {
-    public static Exception FormatInvalid(Idf format) => new FormatException($"System.Id does not support '{format}' format string.");
+    public static Exception InvalidFormat(Idf format, String type = "Id") => new FormatException($"System.{type} does not contain '{format}' format string.");
 
-    public static Exception FormatInvalid(String format) => new FormatException($"System.Id does not support '{format}' format string.");
+    public static Exception InvalidFormat(String format, String type = "Id") => new FormatException($"System.{type} does not contain '{format}' format string.");
 
-    public static Exception Format(Idf format, params int[] codes)
+    public static Exception InvalidChars(Idf format, params int[] codes)
     {
         var min = GetMin(format);
         var max = GetMax(format);
@@ -17,22 +17,14 @@ internal static class Ex
         foreach (var code in codes)
         {
             if (code < min || code > max || map[code] == -1)
-                return Format(format, code);
+                return InvalidChar(format, code);
         }
 
         return new FormatException();
     }
 
-    //public static Exception Format32(Idf format, uint chars)
-    //{
-    //    var char1 = (char)chars;
-    //    var char2 = (char)(chars >> 16);
-        
-    //    return Format(format, char1, char2);
-    //}
-
-    public static Exception Format(Idf format, int code)
-        => new FormatException($"Char '{(char)code}' not found {format}");
+    public static Exception InvalidChar(Idf format, int code)
+        => new FormatException($"Invalid System.Id format. {format} does not contain a character with code {code}.");
 
     private static int GetMin(Idf format) => format switch
     {
