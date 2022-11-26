@@ -25,9 +25,9 @@ internal static class Ex
     public static Exception InvalidLengthBytes(Idf format, int length, int min, int max)
         => new FormatException($"The length of System.Id in format {format} cannot be {length} bytes. It must be between {min} to {max} bytes long.");
 
-    public static Exception InvalidFormat(Idf format, String type = "Id") => new FormatException($"System.{type} does not contain '{format}' format string.");
+    public static Exception InvalidFormat(Idf format, String type = "Id") => InvalidFormat(format.ToString(), type);
 
-    public static Exception InvalidFormat(String format, String type = "Id") => new FormatException($"System.{type} does not contain '{format}' format string.");
+    public static Exception InvalidFormat(String format, String type = "Id") => new FormatException($"The System.{type} does not contain '{format}' format.");
 
     public static Exception InvalidChars(Idf format, params int[] codes)
     {

@@ -14,19 +14,19 @@ public class IdParseTest
     [Test]
     public void InvalidLength()
     {
-        InvalidLength(() => Id.GetFormat(1),
+        FormatException(() => Id.GetFormat(1),
             $"The length of System.Id cannot be 1. It must be 24 or between 15 and 20.");
 
-        InvalidLength(() => Id.Parse(default(ReadOnlySpan<char>)), 
+        FormatException(() => Id.Parse(default(ReadOnlySpan<char>)), 
             $"The length of System.Id cannot be 0 characters. It must be 24 or between 15 and 20 characters.");
 
-        InvalidLength(() => Id.Parse("1234"),
+        FormatException(() => Id.Parse("1234"),
             $"The length of System.Id cannot be 4 characters. It must be 24 or between 15 and 20 characters.");
 
-        InvalidLength(() => Id.Parse(default(ReadOnlySpan<byte>)), 
+        FormatException(() => Id.Parse(default(ReadOnlySpan<byte>)), 
             $"The length of System.Id cannot be 0 bytes. It must be 24 or between 15 and 20 bytes.");
 
-        InvalidLength(() => Id.Parse(new byte[] { 1, 2, 3, 4, 5 }),
+        FormatException(() => Id.Parse(new byte[] { 1, 2, 3, 4, 5 }),
             $"The length of System.Id cannot be 5 bytes. It must be 24 or between 15 and 20 bytes.");
 
         InvalidLength(Idf.Hex, "abc憨");
@@ -39,67 +39,81 @@ public class IdParseTest
         InvalidLength(Idf.Path3, "abc憨");
         InvalidLength(Idf.Base85, "abc憨");
 
-        InvalidLength(() => Id.Parse("abc", Idf.Base58),
+        FormatException(() => Id.Parse("abc", Idf.Base58),
             $"The length of System.Id in format Base58 cannot be 3 characters. It must be between 12 to 17 characters long.");
 
-        InvalidLength(() => Id.Parse(new byte[] { 1, 2, 3, 4 }, Idf.Base58),
+        FormatException(() => Id.Parse(new byte[] { 1, 2, 3, 4 }, Idf.Base58),
             $"The length of System.Id in format Base58 cannot be 4 bytes. It must be between 12 to 17 bytes long.");
+
+        FormatException(() => Id.Parse(new byte[] { 1, 2, 3, 4 }, Idf.Base58),
+            $"The length of System.Id in format Base58 cannot be 4 bytes. It must be between 12 to 17 bytes long.");
+
+        var format = (Idf)123123;
+
+        InvalidFormat(format.ToString(), () => Id.Parse(Array.Empty<char>(), format));
+        InvalidFormat(format.ToString(), () => Id.Parse(Array.Empty<byte>(), format));
+        InvalidFormat(format.ToString(), () => Id.GetLength(format));
+        InvalidFormat(format.ToString(), () => Id.New().ToString(format));
+        InvalidFormat(format.ToString(), () => Id.New().TryFormat(Array.Empty<char>(), out _, format));
+        InvalidFormat(format.ToString(), () => Id.New().TryFormat(Array.Empty<byte>(), out _, format));
+        InvalidFormat("nf", () => Id.New().ToString("nf"));
+        InvalidFormat("nf", () => Id.New().TryFormat(Array.Empty<char>(), out _, "nf"));
     }
 
     [Test]
-    public void Invalid()
+    public void InvalidChar()
     {
         //Base16 -> 62a84f674031e78d474fe23f
-        InvalidFormat("62a84F674031e/8d474fe23f", '/');//47
-        InvalidFormat("62A84f674031e78d474fe23G", 'G');//71
-        InvalidFormat("g2a84f674031e78d474fe23f", 'g');//103
-        InvalidFormat("62A84憨674031e78d474fe23f", '憨');//25000
-        InvalidFormat("62a84f674031e78d4￼4fe23f", '￼');//65532
-        InvalidFormat("6􀀀84f674031e78d474fe23f", '\udbc0');//56256
+        InvalidChar("62a84F674031e/8d474fe23f", '/');//47
+        InvalidChar("62A84f674031e78d474fe23G", 'G');//71
+        InvalidChar("g2a84f674031e78d474fe23f", 'g');//103
+        InvalidChar("62A84憨674031e78d474fe23f", '憨');//25000
+        InvalidChar("62a84f674031e78d4￼4fe23f", '￼');//65532
+        InvalidChar("6􀀀84f674031e78d474fe23f", '\udbc0');//56256
 
         //Base32 -> CDZ6ZZEC14FS687T52V0
-        InvalidFormat("CdZ6ZZEC14FS687T52V/", '/');//47
-        InvalidFormat("cDZ6ZZEC_4FS687T52V0", '_');//95
-        InvalidFormat("Cdz6{ZEC14FS687T52V0", '{');//123
-        InvalidFormat("cdZ6ZZEC14F憨687T52V0", '憨');//25000
-        InvalidFormat("CD￼6ZZEC14FS687T52V0", '￼');//65532
+        InvalidChar("CdZ6ZZEC14FS687T52V/", '/');//47
+        InvalidChar("cDZ6ZZEC_4FS687T52V0", '_');//95
+        InvalidChar("Cdz6{ZEC14FS687T52V0", '{');//123
+        InvalidChar("cdZ6ZZEC14F憨687T52V0", '憨');//25000
+        InvalidChar("CD￼6ZZEC14FS687T52V0", '￼');//65532
 
         //Base58 -> 2su1yC5sA8ji2ZrSo
-        InvalidFormat("2su1/C5sA8ji2ZrSo", '/');//47
-        InvalidFormat("2su1yC5sA8ji_ZrSo", '_');//95
-        InvalidFormat("2{u1yC5sA8ji2ZrSo", '{');//123
-        InvalidFormat("2su憨yC5sA8ji2ZrSo", '憨');//25000
-        InvalidFormat("2su1yC5sA8ji2ZrS￼", '￼');//65532
+        InvalidChar("2su1/C5sA8ji2ZrSo", '/');//47
+        InvalidChar("2su1yC5sA8ji_ZrSo", '_');//95
+        InvalidChar("2{u1yC5sA8ji2ZrSo", '{');//123
+        InvalidChar("2su憨yC5sA8ji2ZrSo", '憨');//25000
+        InvalidChar("2su1yC5sA8ji2ZrS￼", '￼');//65532
 
         //Base64 -> YqhPZ0Ax541HT+I/
-        InvalidFormat("Y*hPZ0Ax541HT+I/", '*');//42
-        InvalidFormat("YqhPZ0Ax541HT+^/", '^');//94
-        InvalidFormat("YqhPZ0Ax5{1HT+I/", '{');//123
-        InvalidFormat("YqhP憨0Ax541HT+I/", '憨');//25000
-        InvalidFormat("YqhPZ0Ax541HT+I￼", '￼');//65532
+        InvalidChar("Y*hPZ0Ax541HT+I/", '*');//42
+        InvalidChar("YqhPZ0Ax541HT+^/", '^');//94
+        InvalidChar("YqhPZ0Ax5{1HT+I/", '{');//123
+        InvalidChar("YqhP憨0Ax541HT+I/", '憨');//25000
+        InvalidChar("YqhPZ0Ax541HT+I￼", '￼');//65532
 
         //Base85 -> v{IV^PiNKcFO_~|
-        InvalidFormat("v{IV^PiNK FO_~|", ' ');//32
-        InvalidFormat("v{I,^PiNKcFO_~|", ',');//44
-        InvalidFormat("v{IV^PiNKcFO_~;", ';');//59
-        InvalidFormat("v{IV^\u007fiNKcFO_~|", '\u007f');//127
-        InvalidFormat("v{IV^PiNKcFO憨~|", '憨');//25000
-        InvalidFormat("v￼IV^PiNKcFO_~|", '￼');//65532
+        InvalidChar("v{IV^PiNK FO_~|", ' ');//32
+        InvalidChar("v{I,^PiNKcFO_~|", ',');//44
+        InvalidChar("v{IV^PiNKcFO_~;", ';');//59
+        InvalidChar("v{IV^\u007fiNKcFO_~|", '\u007f');//127
+        InvalidChar("v{IV^PiNKcFO憨~|", '憨');//25000
+        InvalidChar("v￼IV^PiNKcFO_~|", '￼');//65532
 
         //Path2 -> _/I/-TH145xA0ZPhqY
-        InvalidFormat("_/*/-TH145xA0ZPhqY", '*');//42
-        InvalidFormat("_/I/-T^145xA0ZPhqY", '^');//94
-        InvalidFormat("_/I/-TH145xA0ZP{qY", '{');//123
-        InvalidFormat("_/I/-TH145憨A0ZPhqY", '憨');//25000
-        InvalidFormat("￼/I/-TH145xA0ZPhqY", '￼');//65532
+        InvalidChar("_/*/-TH145xA0ZPhqY", '*');//42
+        InvalidChar("_/I/-T^145xA0ZPhqY", '^');//94
+        InvalidChar("_/I/-TH145xA0ZP{qY", '{');//123
+        InvalidChar("_/I/-TH145憨A0ZPhqY", '憨');//25000
+        InvalidChar("￼/I/-TH145xA0ZPhqY", '￼');//65532
 
         //Path3 -> _/I/-/TH145xA0ZPhqY
-        InvalidFormat("_/I/-/TH*45xA0ZPhqY", '*');//42
-        InvalidFormat("_/I/-/TH145xA^ZPhqY", '^');//94
-        InvalidFormat("_/{/-/TH145xA0ZPhqY", '{');//123
-        InvalidFormat("_/I/-/TH145xA0ZPhĀY", 'Ā');//256
-        InvalidFormat("_/I/-/TH145xA0憨PhqY", '憨');//25000
-        InvalidFormat("_/I/￼/TH145xA0ZPhqY", '￼');//65532
+        InvalidChar("_/I/-/TH*45xA0ZPhqY", '*');//42
+        InvalidChar("_/I/-/TH145xA^ZPhqY", '^');//94
+        InvalidChar("_/{/-/TH145xA0ZPhqY", '{');//123
+        InvalidChar("_/I/-/TH145xA0ZPhĀY", 'Ā');//256
+        InvalidChar("_/I/-/TH145xA0憨PhqY", '憨');//25000
+        InvalidChar("_/I/￼/TH145xA0ZPhqY", '￼');//65532
     }
 
     [Test]
@@ -171,7 +185,7 @@ public class IdParseTest
         Assert.That(Id.Parse("v{IV^PiNKcFO_~|").ToString(Idf.Base85), Is.EqualTo(base85));
     }
 
-    private void InvalidFormat(string str, char code)
+    private void InvalidChar(string str, char code)
     {
         var format = Id.GetFormat(str.Length);
 
@@ -200,18 +214,24 @@ public class IdParseTest
 
     private void InvalidLength(Idf format, string str)
     {
-        InvalidLength(() => Id.Parse(str, format),
+        FormatException(() => Id.Parse(str, format),
             $"The length of System.Id in format {format} cannot be {str.Length} characters. It must be {Id.GetLength(format)} characters long.");
 
         var bytes = Encoding.UTF8.GetBytes(str);
 
-        InvalidLength(() => Id.Parse(bytes, format),
+        FormatException(() => Id.Parse(bytes, format),
             $"The length of System.Id in format {format} cannot be {bytes.Length} bytes. It must be {Id.GetLength(format)} bytes long.");
     }
 
-    private void InvalidLength<T>(Func<T> parse, string message)
+    private void InvalidFormat<T>(string format, Func<T> func)
     {
-        var ex = Assert.Throws<FormatException>(() => parse());
+        FormatException(() => func(), $"The System.Id does not contain '{format}' format.");
+    }
+
+    private void FormatException<T>(Func<T> func, string message)
+    {
+        var ex = Assert.Throws<FormatException>(() => func());
+
         Assert.That(ex.Message, Is.EqualTo(message));
     }
 }
