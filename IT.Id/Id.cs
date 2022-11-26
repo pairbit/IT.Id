@@ -267,15 +267,14 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     #region Parse
 
-    /// <exception cref="ArgumentException"/>
-    /// <exception cref="FormatException"/>
-    public static Id Parse(String s, IFormatProvider? provider) => Parse(s.AsSpan());
+#if NET7_0_OR_GREATER
 
-    /// <exception cref="ArgumentException"/>
-    /// <exception cref="FormatException"/>
-    public static Id Parse(ReadOnlySpan<Char> chars, IFormatProvider? provider) => Parse(chars);
+    static Id IParsable<Id>.Parse(String s, IFormatProvider? provider) => Parse(s.AsSpan());
 
-    /// <exception cref="ArgumentException"/>
+    static Id ISpanParsable<Id>.Parse(ReadOnlySpan<Char> chars, IFormatProvider? provider) => Parse(chars);
+
+#endif
+
     /// <exception cref="FormatException"/>
     public static Id Parse(ReadOnlySpan<Char> chars) => chars.Length switch
     {
@@ -289,21 +288,19 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         _ => throw new FormatException($"The id cannot be {chars.Length} characters long. The id must be 24 characters long or between 15 and 20")
     };
 
-    /// <exception cref="ArgumentException"/>
     /// <exception cref="FormatException"/>
     public static Id Parse(ReadOnlySpan<Char> chars, Idf format) => format switch
     {
         Idf.Hex or Idf.HexUpper => ParseHex(chars),
-        Idf.Base32 => ParseBase32(chars),
+        Idf.Base32 or Idf.Base32Upper => ParseBase32(chars),
         Idf.Base58 => ParseBase58(chars),
         Idf.Base64 or Idf.Base64Url => ParseBase64(chars),
         Idf.Base85 => ParseBase85(chars),
         Idf.Path2 => ParsePath2(chars),
         Idf.Path3 => ParsePath3(chars),
-        _ => throw new ArgumentException($"The id does not support the '{format}' format", nameof(format))
+        _ => throw Ex.InvalidFormat(format)
     };
 
-    /// <exception cref="ArgumentException"/>
     /// <exception cref="FormatException"/>
     public static Id Parse(ReadOnlySpan<Byte> bytes) => bytes.Length switch
     {
@@ -317,27 +314,30 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         _ => throw new FormatException($"The id cannot be {bytes.Length} bytes long. The id must be 24 bytes long or between 15 and 20")
     };
 
-    /// <exception cref="ArgumentException"/>
     /// <exception cref="FormatException"/>
     public static Id Parse(ReadOnlySpan<Byte> bytes, Idf format) => format switch
     {
         Idf.Hex or Idf.HexUpper => ParseHex(bytes),
-        Idf.Base32 => ParseBase32(bytes),
+        Idf.Base32 or Idf.Base32Upper => ParseBase32(bytes),
         Idf.Base58 => ParseBase58(bytes),
         Idf.Base64 or Idf.Base64Url => ParseBase64(bytes),
         Idf.Base85 => ParseBase85(bytes),
         Idf.Path2 => ParsePath2(bytes),
         Idf.Path3 => ParsePath3(bytes),
-        _ => throw new ArgumentException($"The id does not support the '{format}' format", nameof(format))
+        _ => throw Ex.InvalidFormat(format)
     };
 
     #endregion Parse
 
     #region TryParse
 
-    public static Boolean TryParse(String? s, IFormatProvider? provider, out Id id) => throw new NotImplementedException("https://github.com/pairbit/IT.Id/issues/1");
+#if NET7_0_OR_GREATER
 
-    public static Boolean TryParse(ReadOnlySpan<Char> chars, IFormatProvider? provider, out Id id) => TryParse(chars, out id);
+    static Boolean IParsable<Id>.TryParse(String? s, IFormatProvider? provider, out Id id) => TryParse(s, out id);
+
+    static Boolean ISpanParsable<Id>.TryParse(ReadOnlySpan<Char> chars, IFormatProvider? provider, out Id id) => TryParse(chars, out id);
+
+#endif
 
     public static Boolean TryParse(ReadOnlySpan<Char> chars, out Id id) => throw new NotImplementedException("https://github.com/pairbit/IT.Id/issues/1");
 

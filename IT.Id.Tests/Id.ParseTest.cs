@@ -1,4 +1,5 @@
 ﻿using SimpleBase;
+using System.Text;
 
 namespace Tests;
 
@@ -134,12 +135,30 @@ public class IdParseTest
         Assert.That(Id.Parse("v{IV^PiNKcFO_~|").ToString(Idf.Base85), Is.EqualTo(base85));
     }
 
-    private void InvalidFormat(string str, int code)
+    private void InvalidFormat(string str, char code)
     {
-        var ex = Assert.Throws<FormatException>(() => Id.Parse(str));
-
         var format = Id.GetFormat(str.Length);
 
-        Assert.That(ex.Message, Is.EqualTo($"Invalid System.Id format. {format} does not contain a character with code {code}."));
+        var message = $"Invalid System.Id format. {format} does not contain a character with code {(int)code}.";
+
+        var ex = Assert.Throws<FormatException>(() => Id.Parse(str));
+        Assert.That(ex.Message, Is.EqualTo(message));
+
+        ex = Assert.Throws<FormatException>(() => Id.Parse(str, format));
+        Assert.That(ex.Message, Is.EqualTo(message));
+
+        var codeBytes = Encoding.UTF8.GetBytes(code.ToString());
+
+        if (codeBytes.Length == 1)
+        {
+            var bytes = Encoding.UTF8.GetBytes(str);
+            Assert.That(bytes, Has.Length.EqualTo(str.Length));
+
+            ex = Assert.Throws<FormatException>(() => Id.Parse(bytes));
+            Assert.That(ex.Message, Is.EqualTo(message));
+
+            ex = Assert.Throws<FormatException>(() => Id.Parse(bytes, format));
+            Assert.That(ex.Message, Is.EqualTo(message));
+        }
     }
 }
