@@ -14,16 +14,16 @@ internal static class Ex
         => new FormatException($"The length of System.Id cannot be {length} bytes. It must be 24 or between 15 and 20 bytes.");
 
     public static Exception InvalidLengthChars(Idf format, int length) 
-        => new FormatException($"Invalid System.Id format. {format} must be {Id.GetLength(format)} characters long. The actual length is {length} characters.");
+        => new FormatException($"The length of System.Id in format {format} cannot be {length} characters. It must be {Id.GetLength(format)} characters long.");
 
     public static Exception InvalidLengthBytes(Idf format, int length)
-        => new FormatException($"Invalid System.Id format. {format} must be {Id.GetLength(format)} bytes long. The actual length is {length} bytes.");
+        => new FormatException($"The length of System.Id in format {format} cannot be {length} bytes. It must be {Id.GetLength(format)} bytes long.");
 
     public static Exception InvalidLengthChars(Idf format, int length, int min, int max) 
-        => new FormatException($"Invalid System.Id format. {format} must be between {min} to {max} characters long. The actual length is {length} characters.");
+        => new FormatException($"The length of System.Id in format {format} cannot be {length} characters. It must be between {min} to {max} characters long.");
 
     public static Exception InvalidLengthBytes(Idf format, int length, int min, int max)
-        => new FormatException($"Invalid System.Id format. {format} must be between {min} to {max} bytes long. The actual length is {length} bytes.");
+        => new FormatException($"The length of System.Id in format {format} cannot be {length} bytes. It must be between {min} to {max} bytes long.");
 
     public static Exception InvalidFormat(Idf format, String type = "Id") => new FormatException($"System.{type} does not contain '{format}' format string.");
 
@@ -45,7 +45,7 @@ internal static class Ex
     }
 
     public static Exception InvalidChar(Idf format, int code)
-        => new FormatException($"Invalid System.Id format. {format} does not contain a character with code {code}.");
+        => new FormatException($"The System.Id in format {format} does not contain a character with code {code}.");
 
     private static int GetMin(Idf format) => format switch
     {

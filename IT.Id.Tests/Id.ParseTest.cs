@@ -40,10 +40,10 @@ public class IdParseTest
         InvalidLength(Idf.Base85, "abc憨");
 
         InvalidLength(() => Id.Parse("abc", Idf.Base58),
-            $"Invalid System.Id format. Base58 must be between 12 to 17 characters long. The actual length is 3 characters.");
+            $"The length of System.Id in format Base58 cannot be 3 characters. It must be between 12 to 17 characters long.");
 
         InvalidLength(() => Id.Parse(new byte[] { 1, 2, 3, 4 }, Idf.Base58),
-            $"Invalid System.Id format. Base58 must be between 12 to 17 bytes long. The actual length is 4 bytes.");
+            $"The length of System.Id in format Base58 cannot be 4 bytes. It must be between 12 to 17 bytes long.");
     }
 
     [Test]
@@ -175,7 +175,7 @@ public class IdParseTest
     {
         var format = Id.GetFormat(str.Length);
 
-        var message = $"Invalid System.Id format. {format} does not contain a character with code {(int)code}.";
+        var message = $"The System.Id in format {format} does not contain a character with code {(int)code}.";
 
         var ex = Assert.Throws<FormatException>(() => Id.Parse(str));
         Assert.That(ex.Message, Is.EqualTo(message));
@@ -200,13 +200,13 @@ public class IdParseTest
 
     private void InvalidLength(Idf format, string str)
     {
-        InvalidLength(() => Id.Parse(str, format), 
-            $"Invalid System.Id format. {format} must be {Id.GetLength(format)} characters long. The actual length is {str.Length} characters.");
+        InvalidLength(() => Id.Parse(str, format),
+            $"The length of System.Id in format {format} cannot be {str.Length} characters. It must be {Id.GetLength(format)} characters long.");
 
         var bytes = Encoding.UTF8.GetBytes(str);
 
         InvalidLength(() => Id.Parse(bytes, format),
-            $"Invalid System.Id format. {format} must be {Id.GetLength(format)} bytes long. The actual length is {bytes.Length} bytes.");
+            $"The length of System.Id in format {format} cannot be {bytes.Length} bytes. It must be {Id.GetLength(format)} bytes long.");
     }
 
     private void InvalidLength<T>(Func<T> parse, string message)
