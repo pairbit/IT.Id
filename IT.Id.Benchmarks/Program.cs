@@ -249,7 +249,7 @@ if (f1.Length != 17) throw new InvalidOperationException();
 
 Console.WriteLine("Ok");
 
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IT.Id.Benchmarks.IdBenchmark));
+BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IT.Id.Benchmarks.IdStringBenchmark));
 
 class MyClass
 {

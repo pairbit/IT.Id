@@ -6,7 +6,7 @@ namespace IT.Id.Benchmarks;
 [MemoryDiagnoser]
 [MinColumn, MaxColumn]
 [Orderer(SummaryOrderPolicy.FastestToSlowest, MethodOrderPolicy.Declared)]
-public class IdBenchmark
+public class IdStringBenchmark
 {
     private readonly Ulid _ulid;
     internal readonly String _ulidString;
@@ -21,7 +21,7 @@ public class IdBenchmark
     private readonly String _idPath2;
     private readonly String _idPath3;
 
-    public IdBenchmark()
+    public IdStringBenchmark()
     {
         //_id = System.Id.Parse("Y14-iRgzgKZclXbw");
         _id = System.Id.NewObjectId();
