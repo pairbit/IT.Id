@@ -152,8 +152,6 @@ public readonly partial struct Id
 
     private static unsafe Id ParseBase32(ReadOnlySpan<Char> chars)
     {
-        if (chars.Length != 20) throw new ArgumentException("The id must be 20 characters long", nameof(chars));
-
         ReadOnlySpan<sbyte> mapSpan = Base32.DecodeMap;
         ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
 
@@ -198,8 +196,6 @@ public readonly partial struct Id
 
     private static unsafe Id ParseBase32(ReadOnlySpan<Byte> bytes)
     {
-        if (bytes.Length != 20) throw new ArgumentException("The id must be 20 bytes long", nameof(bytes));
-
         ReadOnlySpan<sbyte> mapSpan = Base32.DecodeMap;
         ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
 

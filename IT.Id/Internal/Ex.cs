@@ -4,6 +4,27 @@ namespace Internal;
 
 internal static class Ex
 {
+    public static Exception InvalidLength(int length) 
+        => new FormatException($"The length of System.Id cannot be {length}. It must be 24 or between 15 and 20.");
+
+    public static Exception InvalidLengthChars(int length)
+        => new FormatException($"The length of System.Id cannot be {length} characters. It must be 24 or between 15 and 20 characters.");
+
+    public static Exception InvalidLengthBytes(int length)
+        => new FormatException($"The length of System.Id cannot be {length} bytes. It must be 24 or between 15 and 20 bytes.");
+
+    public static Exception InvalidLengthChars(Idf format, int length) 
+        => new FormatException($"Invalid System.Id format. {format} must be {Id.GetLength(format)} characters long. The actual length is {length} characters.");
+
+    public static Exception InvalidLengthBytes(Idf format, int length)
+        => new FormatException($"Invalid System.Id format. {format} must be {Id.GetLength(format)} bytes long. The actual length is {length} bytes.");
+
+    public static Exception InvalidLengthChars(Idf format, int length, int min, int max) 
+        => new FormatException($"Invalid System.Id format. {format} must be between {min} to {max} characters long. The actual length is {length} characters.");
+
+    public static Exception InvalidLengthBytes(Idf format, int length, int min, int max)
+        => new FormatException($"Invalid System.Id format. {format} must be between {min} to {max} bytes long. The actual length is {length} bytes.");
+
     public static Exception InvalidFormat(Idf format, String type = "Id") => new FormatException($"System.{type} does not contain '{format}' format string.");
 
     public static Exception InvalidFormat(String format, String type = "Id") => new FormatException($"System.{type} does not contain '{format}' format string.");

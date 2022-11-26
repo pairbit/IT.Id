@@ -154,8 +154,6 @@ public readonly partial struct Id
 
     private static Id ParsePath2(ReadOnlySpan<Char> chars)
     {
-        if (chars.Length != 18) throw new ArgumentException("The id must be 18 characters long", nameof(chars));
-
         var c1 = chars[1];
         var c3 = chars[3];
 
@@ -226,8 +224,6 @@ public readonly partial struct Id
 
     private static Id ParsePath2(ReadOnlySpan<Byte> bytes)
     {
-        if (bytes.Length != 18) throw new ArgumentException("The id must be 18 bytes long", nameof(bytes));
-
         var c1 = bytes[1];
         var c3 = bytes[3];
 

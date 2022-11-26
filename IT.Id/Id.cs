@@ -214,7 +214,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         19 => Idf.Path3,
         20 => Idf.Base32,
         24 => Idf.Hex,
-        _ => throw new ArgumentOutOfRangeException(nameof(length), length, $"The id cannot be {length} long. The id must be 24 characters long or between 15 and 20")
+        _ => throw Ex.InvalidLength(length)
     };
 
     public static Boolean TryGetFormat(Int32 length, out Idf format)
@@ -285,21 +285,57 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         19 => ParsePath3(chars),
         20 => ParseBase32(chars),
         24 => ParseHex(chars),
-        _ => throw new FormatException($"The id cannot be {chars.Length} characters long. The id must be 24 characters long or between 15 and 20")
+        _ => throw Ex.InvalidLengthChars(chars.Length)
     };
 
     /// <exception cref="FormatException"/>
-    public static Id Parse(ReadOnlySpan<Char> chars, Idf format) => format switch
+    public static Id Parse(ReadOnlySpan<Char> chars, Idf format)
     {
-        Idf.Hex or Idf.HexUpper => ParseHex(chars),
-        Idf.Base32 or Idf.Base32Upper => ParseBase32(chars),
-        Idf.Base58 => ParseBase58(chars),
-        Idf.Base64 or Idf.Base64Url => ParseBase64(chars),
-        Idf.Base85 => ParseBase85(chars),
-        Idf.Path2 => ParsePath2(chars),
-        Idf.Path3 => ParsePath3(chars),
-        _ => throw Ex.InvalidFormat(format)
-    };
+        if (format == Idf.Hex || format == Idf.HexUpper)
+        {
+            if (chars.Length != 24) throw Ex.InvalidLengthChars(format, chars.Length);
+            return ParseHex(chars);
+        }
+
+        if (format == Idf.Base32 || format == Idf.Base32Upper)
+        {
+            if (chars.Length != 20) throw Ex.InvalidLengthChars(format, chars.Length);
+            return ParseBase32(chars);
+        }
+
+        if (format == Idf.Base58)
+        {
+            var len = chars.Length;
+            if (len < 12 || len > 17) throw Ex.InvalidLengthChars(format, len, 12, 17);
+            return ParseBase58(chars);
+        }
+
+        if (format == Idf.Base64 || format == Idf.Base64Url)
+        {
+            if (chars.Length != 16) throw Ex.InvalidLengthChars(format, chars.Length);
+            return ParseBase64(chars);
+        }
+
+        if (format == Idf.Base85)
+        {
+            if (chars.Length != 15) throw Ex.InvalidLengthChars(format, chars.Length);
+            return ParseBase85(chars);
+        }
+
+        if (format == Idf.Path2)
+        {
+            if (chars.Length != 18) throw Ex.InvalidLengthChars(format, chars.Length);
+            return ParsePath2(chars);
+        }
+
+        if (format == Idf.Path3)
+        {
+            if (chars.Length != 19) throw Ex.InvalidLengthChars(format, chars.Length);
+            return ParsePath3(chars);
+        }
+
+        throw Ex.InvalidFormat(format);
+    }
 
     /// <exception cref="FormatException"/>
     public static Id Parse(ReadOnlySpan<Byte> bytes) => bytes.Length switch
@@ -311,21 +347,57 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         19 => ParsePath3(bytes),
         20 => ParseBase32(bytes),
         24 => ParseHex(bytes),
-        _ => throw new FormatException($"The id cannot be {bytes.Length} bytes long. The id must be 24 bytes long or between 15 and 20")
+        _ => throw Ex.InvalidLengthBytes(bytes.Length)
     };
 
     /// <exception cref="FormatException"/>
-    public static Id Parse(ReadOnlySpan<Byte> bytes, Idf format) => format switch
+    public static Id Parse(ReadOnlySpan<Byte> bytes, Idf format)
     {
-        Idf.Hex or Idf.HexUpper => ParseHex(bytes),
-        Idf.Base32 or Idf.Base32Upper => ParseBase32(bytes),
-        Idf.Base58 => ParseBase58(bytes),
-        Idf.Base64 or Idf.Base64Url => ParseBase64(bytes),
-        Idf.Base85 => ParseBase85(bytes),
-        Idf.Path2 => ParsePath2(bytes),
-        Idf.Path3 => ParsePath3(bytes),
-        _ => throw Ex.InvalidFormat(format)
-    };
+        if (format == Idf.Hex || format == Idf.HexUpper)
+        {
+            if (bytes.Length != 24) throw Ex.InvalidLengthBytes(format, bytes.Length);
+            return ParseHex(bytes);
+        }
+
+        if (format == Idf.Base32 || format == Idf.Base32Upper)
+        {
+            if (bytes.Length != 20) throw Ex.InvalidLengthBytes(format, bytes.Length);
+            return ParseBase32(bytes);
+        }
+
+        if (format == Idf.Base58)
+        {
+            var len = bytes.Length;
+            if (len < 12 || len > 17) throw Ex.InvalidLengthBytes(format, len, 12, 17);
+            return ParseBase58(bytes);
+        }
+
+        if (format == Idf.Base64 || format == Idf.Base64Url)
+        {
+            if (bytes.Length != 16) throw Ex.InvalidLengthBytes(format, bytes.Length);
+            return ParseBase64(bytes);
+        }
+
+        if (format == Idf.Base85)
+        {
+            if (bytes.Length != 15) throw Ex.InvalidLengthBytes(format, bytes.Length);
+            return ParseBase85(bytes);
+        }
+
+        if (format == Idf.Path2)
+        {
+            if (bytes.Length != 18) throw Ex.InvalidLengthBytes(format, bytes.Length);
+            return ParsePath2(bytes);
+        }
+
+        if (format == Idf.Path3)
+        {
+            if (bytes.Length != 19) throw Ex.InvalidLengthBytes(format, bytes.Length);
+            return ParsePath3(bytes);
+        }
+
+        throw Ex.InvalidFormat(format);
+    }
 
     #endregion Parse
 

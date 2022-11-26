@@ -110,8 +110,6 @@ public readonly partial struct Id
 
     private static unsafe Id ParseBase85(ReadOnlySpan<Char> chars)
     {
-        if (chars.Length != 15) throw new ArgumentException("The id must be 15 characters long", nameof(chars));
-
         fixed (char* src = chars)
         fixed (sbyte* map = Base85.DecodeMap)
         {
@@ -140,8 +138,6 @@ public readonly partial struct Id
 
     private static unsafe Id ParseBase85(ReadOnlySpan<Byte> bytes)
     {
-        if (bytes.Length != 15) throw new ArgumentException("The id must be 15 bytes long", nameof(bytes));
-
         fixed (byte* src = bytes)
         fixed (sbyte* map = Base85.DecodeMap)
         {

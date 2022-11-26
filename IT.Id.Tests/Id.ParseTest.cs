@@ -1,4 +1,5 @@
-﻿using SimpleBase;
+﻿using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
+using SimpleBase;
 using System.Text;
 
 namespace Tests;
@@ -8,6 +9,41 @@ public class IdParseTest
     [SetUp]
     public void Setup()
     {
+    }
+
+    [Test]
+    public void InvalidLength()
+    {
+        InvalidLength(() => Id.GetFormat(1),
+            $"The length of System.Id cannot be 1. It must be 24 or between 15 and 20.");
+
+        InvalidLength(() => Id.Parse(default(ReadOnlySpan<char>)), 
+            $"The length of System.Id cannot be 0 characters. It must be 24 or between 15 and 20 characters.");
+
+        InvalidLength(() => Id.Parse("1234"),
+            $"The length of System.Id cannot be 4 characters. It must be 24 or between 15 and 20 characters.");
+
+        InvalidLength(() => Id.Parse(default(ReadOnlySpan<byte>)), 
+            $"The length of System.Id cannot be 0 bytes. It must be 24 or between 15 and 20 bytes.");
+
+        InvalidLength(() => Id.Parse(new byte[] { 1, 2, 3, 4, 5 }),
+            $"The length of System.Id cannot be 5 bytes. It must be 24 or between 15 and 20 bytes.");
+
+        InvalidLength(Idf.Hex, "abc憨");
+        InvalidLength(Idf.HexUpper, "abc憨");
+        InvalidLength(Idf.Base32, "abc憨");
+        InvalidLength(Idf.Base32Upper, "abc憨");
+        InvalidLength(Idf.Base64, "abc憨");
+        InvalidLength(Idf.Base64Url, "abc憨");
+        InvalidLength(Idf.Path2, "abc憨");
+        InvalidLength(Idf.Path3, "abc憨");
+        InvalidLength(Idf.Base85, "abc憨");
+
+        InvalidLength(() => Id.Parse("abc", Idf.Base58),
+            $"Invalid System.Id format. Base58 must be between 12 to 17 characters long. The actual length is 3 characters.");
+
+        InvalidLength(() => Id.Parse(new byte[] { 1, 2, 3, 4 }, Idf.Base58),
+            $"Invalid System.Id format. Base58 must be between 12 to 17 bytes long. The actual length is 4 bytes.");
     }
 
     [Test]
@@ -160,5 +196,22 @@ public class IdParseTest
             ex = Assert.Throws<FormatException>(() => Id.Parse(bytes, format));
             Assert.That(ex.Message, Is.EqualTo(message));
         }
+    }
+
+    private void InvalidLength(Idf format, string str)
+    {
+        InvalidLength(() => Id.Parse(str, format), 
+            $"Invalid System.Id format. {format} must be {Id.GetLength(format)} characters long. The actual length is {str.Length} characters.");
+
+        var bytes = Encoding.UTF8.GetBytes(str);
+
+        InvalidLength(() => Id.Parse(bytes, format),
+            $"Invalid System.Id format. {format} must be {Id.GetLength(format)} bytes long. The actual length is {bytes.Length} bytes.");
+    }
+
+    private void InvalidLength<T>(Func<T> parse, string message)
+    {
+        var ex = Assert.Throws<FormatException>(() => parse());
+        Assert.That(ex.Message, Is.EqualTo(message));
     }
 }

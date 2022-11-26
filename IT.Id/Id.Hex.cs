@@ -100,8 +100,6 @@ public readonly partial struct Id
 
     private static Id ParseHex(ReadOnlySpan<Char> chars)
     {
-        if (chars.Length != 24) throw new ArgumentException("The id must be 24 bytes long", nameof(chars));
-
         ReadOnlySpan<sbyte> mapSpan = Hex.DecodeMap;
         ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
 
@@ -127,8 +125,6 @@ public readonly partial struct Id
 
     private static Id ParseHex(ReadOnlySpan<Byte> bytes)
     {
-        if (bytes.Length != 24) throw new ArgumentException("The id must be 24 bytes long", nameof(bytes));
-
         ReadOnlySpan<sbyte> mapSpan = Hex.DecodeMap;
         ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
 

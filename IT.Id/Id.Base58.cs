@@ -801,9 +801,6 @@ public readonly partial struct Id
 
     private static Id ParseBase58(ReadOnlySpan<Char> chars)
     {
-        var len = chars.Length;
-        if (len < 12 || len > 17) throw new ArgumentOutOfRangeException(nameof(chars), len, "The id must be between 12 to 17 characters long");
-
         var map = Base58.DecodeMap;
 
         byte b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, b7 = 0, b8 = 0, b9 = 0, b10 = 0, b11 = 0;
@@ -875,9 +872,6 @@ public readonly partial struct Id
 
     private static Id ParseBase58(ReadOnlySpan<Byte> bytes)
     {
-        var len = bytes.Length;
-        if (len < 12 || len > 17) throw new ArgumentOutOfRangeException(nameof(bytes), len, "The id must be between 12 to 17 bytes long");
-
         var map = Base58.DecodeMap;
 
         byte b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, b7 = 0, b8 = 0, b9 = 0, b10 = 0, b11 = 0;

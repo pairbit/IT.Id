@@ -192,8 +192,6 @@ public readonly partial struct Id
 
     private static Id ParseBase64(ReadOnlySpan<Char> chars)
     {
-        if (chars.Length != 16) throw new ArgumentException("The id must be 16 characters long", nameof(chars));
-
         ReadOnlySpan<sbyte> mapSpan = Base64.DecodeMap;
         ref char src = ref MemoryMarshal.GetReference(chars);
         ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
@@ -257,8 +255,6 @@ public readonly partial struct Id
 
     private static Id ParseBase64(ReadOnlySpan<Byte> bytes)
     {
-        if (bytes.Length != 16) throw new ArgumentException("The id must be 16 bytes long", nameof(bytes));
-
         ReadOnlySpan<sbyte> mapSpan = Base64.DecodeMap;
         ref byte src = ref MemoryMarshal.GetReference(bytes);
         ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
