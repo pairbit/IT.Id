@@ -99,6 +99,13 @@ public class IdParseTest
         Assert.That(Id.Parse("2suIyC5sA8ji2ZrS0").ToString(Idf.Base58), Is.EqualTo(base58));
         Assert.That(Id.Parse("2su1yC5sA8ji2ZrSo").ToString(Idf.Base58), Is.EqualTo(base58));
 
+        var base64 = "YqhPZ0Ax541HT+I/";
+
+        Assert.That(Id.Parse(base64).ToString(Idf.Base64), Is.EqualTo(base64));
+        Assert.That(Id.Parse("YqhPZ0Ax541HT-I_").ToString(Idf.Base64), Is.EqualTo(base64));
+        Assert.That(Id.Parse("YqhPZ0Ax541HT-I/").ToString(Idf.Base64), Is.EqualTo(base64));
+        Assert.That(Id.Parse("YqhPZ0Ax541HT+I_").ToString(Idf.Base64), Is.EqualTo(base64));
+
         //Win = \, Linux = /
         var p = Path.DirectorySeparatorChar;
 
@@ -113,6 +120,18 @@ public class IdParseTest
         Assert.That(Id.Parse("_\\I\\-\\TH145xA0ZPhqY").ToString(Idf.Path3), Is.EqualTo(path3));
         Assert.That(Id.Parse("_/I/-/TH145xA0ZPhqY").ToString(Idf.Path3), Is.EqualTo(path3));
         Assert.That(Id.Parse("/\\I/+\\TH145xA0ZPhqY").ToString(Idf.Path3), Is.EqualTo(path3));
+
+        var base85 = "v{IV^PiNKcFO_~|";
+
+        //Z85
+        //'&' -> '_'
+        //'<' -> '~'
+        //'>' -> '|'
+        Assert.That(Id.Parse("v{IV^PiNKcFO&<>").ToString(Idf.Base85), Is.EqualTo(base85));
+        Assert.That(Id.Parse("v{IV^PiNKcFO_<>").ToString(Idf.Base85), Is.EqualTo(base85));
+        Assert.That(Id.Parse("v{IV^PiNKcFO&~>").ToString(Idf.Base85), Is.EqualTo(base85));
+        Assert.That(Id.Parse("v{IV^PiNKcFO&<|").ToString(Idf.Base85), Is.EqualTo(base85));
+        Assert.That(Id.Parse("v{IV^PiNKcFO_~|").ToString(Idf.Base85), Is.EqualTo(base85));
     }
 
     private void InvalidFormat(string str, char invalid)

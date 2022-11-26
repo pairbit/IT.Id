@@ -50,7 +50,7 @@ internal static class Base85
     84, //35 -> #
     83, //36 -> $
     82, //37 -> %
-    -1, //38
+    72, //38 -> &
     -1, //39
     75, //40 -> (
     76, //41 -> )
@@ -72,9 +72,9 @@ internal static class Base85
      9, //57 -> 9
     64, //58 -> :
     -1, //59
-    -1, //60
+    73, //60 -> <
     66, //61 -> =
-    -1, //62
+    74, //62 -> >
     71, //63 -> ?
     81, //64 -> @
     36, //65 -> A
@@ -141,41 +141,58 @@ internal static class Base85
     73, //126 -> ~
     };
 
- //   static Base85()
-	//{
-	//	BuildDict(Z85Xml);
+    //static Base85()
+    //{
+    //    //BuildDict(Alphabet);
 
- //       Console.WriteLine("{");
- //       for (int i = 0; i < _char2Byte.Length; i++)
- //       {
- //           if (i == 127) break;
- //           var code = _char2Byte[i];
- //           if (code == -1)
- //               Console.WriteLine($"{code,2}, //{i}");
- //           else
- //               Console.WriteLine($"{code,2}, //{i} -> {(char)i}");
- //       }
- //       Console.WriteLine("};");
- //   }
+    //    for (sbyte i = 0; i < DecodeMap.Length; i++)
+    //    {
+    //        var ch = (char)i;
+    //        if (ch == '_')
+    //        {
+    //            DecodeMap['&'] = DecodeMap[i];
+    //        }
+    //        if (ch == '~')
+    //        {
+    //            DecodeMap['<'] = DecodeMap[i];
+    //        }
+    //        if (ch == '|')
+    //        {
+    //            DecodeMap['>'] = DecodeMap[i];
+    //        }
+    //    }
 
- //   private static void BuildDict(string digits)
-	//{
- //       for (int i = 0; i < _char2Byte.Length; i++)
- //       {
- //           _char2Byte[i] = -1;
- //       }
+    //    Console.WriteLine("{");
+    //    for (int i = 0; i < DecodeMap.Length; i++)
+    //    {
+    //        var code = DecodeMap[i];
 
-	//	for (var i = 0; i < digits.Length; i++)
-	//	{
-	//		var c = digits[i];
-	//		var d = (sbyte)i;
-	//		if (c > MAX_DIGIT) throw new ArgumentException($"Invalid character '{c}'");
+    //        if (code == -1)
+    //            Console.WriteLine($"{code,2}, //{i}");
+    //        else
+    //            Console.WriteLine($"{code,2}, //{i} -> {(char)i}");
+    //    }
+    //    Console.WriteLine("};");
+    //}
 
-	//		_byte2Byte[d] = (byte)c;
-	//		_byte2Char[d] = c;
-	//		_char2Byte[c] = d;
-	//	}
-	//}
+    //private static void BuildDict(string digits)
+    //{
+    //    for (int i = 0; i < _char2Byte.Length; i++)
+    //    {
+    //        _char2Byte[i] = -1;
+    //    }
+
+    //    for (var i = 0; i < digits.Length; i++)
+    //    {
+    //        var c = digits[i];
+    //        var d = (sbyte)i;
+    //        if (c > MAX_DIGIT) throw new ArgumentException($"Invalid character '{c}'");
+
+    //        _byte2Byte[d] = (byte)c;
+    //        _byte2Char[d] = c;
+    //        _char2Byte[c] = d;
+    //    }
+    //}
 
     //private const uint U85P1 = 85u;
     //private const uint U85P2 = 85u * 85u;
