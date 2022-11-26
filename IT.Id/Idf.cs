@@ -27,18 +27,28 @@ public enum Idf
     HexUpper = 16,
 
     /// <summary>
-    /// Base32 Crockford's
+    /// Base32 Crockford's Lower
     /// </summary>
-    /// <example>CAM4YST067KRTHTFW8ZG</example>
+    /// <example>ce0ytmyc14fgvd7358b0</example>
     /// <remarks>
-    /// Alphabet: 0123456789ABCDEFGHJKMNPQRSTVWXYZ <br/>
-    /// Example: CAM4YST067KRTHTFW8ZG <br/>
+    /// Alphabet: 0123456789abcdefghjkmnpqrstvwxyz <br/>
+    /// Example: ce0ytmyc14fgvd7358b0 <br/>
     /// Length: 20 <br/>
-    /// Format: B32
+    /// Format: v
     /// </remarks>
     Base32 = 32,
 
-    //Base32Upper = 33,
+    /// <summary>
+    /// Base32 Crockford's Classic
+    /// </summary>
+    /// <example>CE0YTMYC14FGVD7358B0</example>
+    /// <remarks>
+    /// Alphabet: 0123456789ABCDEFGHJKMNPQRSTVWXYZ <br/>
+    /// Example: CE0YTMYC14FGVD7358B0 <br/>
+    /// Length: 20 <br/>
+    /// Format: V
+    /// </remarks>
+    Base32Upper = 33,
 
     //Base36 = 36,
 
@@ -56,7 +66,7 @@ public enum Idf
     /// Alphabet: 123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz <br/>
     /// Example: 2ryw1nk6d1eiGQSL6 <br/>
     /// Length: 17 <br/>
-    /// Format: B58
+    /// Format: i
     /// </remarks>
     Base58 = 58,
 
@@ -68,7 +78,7 @@ public enum Idf
     /// Alphabet: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/ <br/>
     /// Example: YqhPZ0Ax541HT+I/ <br/>
     /// Length: 16 <br/>
-    /// Format: B64
+    /// Format: /
     /// </remarks>
     Base64 = 64,
 
@@ -80,7 +90,7 @@ public enum Idf
     /// Alphabet: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_ <br/>
     /// Example: YqhPZ0Ax541HT-I_ <br/>
     /// Length: 16 <br/>
-    /// Format: null
+    /// Format: _ (default)
     /// </remarks>
     /// <example>YqhPZ0Ax541HT-I_</example>
     /// <see cref="https://datatracker.ietf.org/doc/html/rfc7515#appendix-C"/>
@@ -96,7 +106,7 @@ public enum Idf
     /// Example for Win: _\I\-TH145xA0ZPhqY <br/>
     /// Example for Linux: _/I/-TH145xA0ZPhqY <br/>
     /// Length: 18 <br/>
-    /// Format: P2
+    /// Format: //
     /// </remarks>
     Path2 = 66,
 
@@ -110,7 +120,7 @@ public enum Idf
     /// Example for Win: _\I\-\TH145xA0ZPhqY <br/>
     /// Example for Linux: _/I/-/TH145xA0ZPhqY <br/>
     /// Length: 19 <br/>
-    /// Format: P3
+    /// Format: ///
     /// </remarks>
     Path3 = 67,
 
@@ -123,7 +133,7 @@ public enum Idf
     /// Alphabet: 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?_~|()[]{}@%$# <br/>
     /// Example: v{IV^PiNKcFO_~| <br/>
     /// Length: 15 <br/>
-    /// Format: B85
+    /// Format: |
     /// </remarks>
     Base85 = 85
 }

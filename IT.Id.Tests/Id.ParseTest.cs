@@ -75,7 +75,7 @@ public class IdParseTest
         Assert.That(Id.Parse("62a84f674031e78d474fe23f").ToString(Idf.Hex), Is.EqualTo(base16));
         Assert.That(Id.Parse("62A84F674031E78D474FE23F").ToString(Idf.Hex), Is.EqualTo(base16));
 
-        var base32 = "CDZ6ZZEC14FS687T52V0";
+        var base32 = "cdz6zzec14fs687t52v0";
 
         //Upper == Lower
 

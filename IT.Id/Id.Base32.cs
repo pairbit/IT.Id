@@ -6,13 +6,13 @@ namespace System;
 
 public readonly partial struct Id
 {
-    private String ToBase32()
+    private String ToBase32(String abc)
     {
         var base32 = new string((char)0, 20);
         unsafe
         {
             fixed (char* dest = base32)
-            fixed (char* map = Base32.Alphabet)
+            fixed (char* map = abc)
             {
                 ulong value = (byte)(_timestamp >> 24);
                 value = (value << 8) | (byte)(_timestamp >> 16);
@@ -58,10 +58,10 @@ public readonly partial struct Id
         return base32;
     }
 
-    private unsafe void ToBase32(Span<Char> chars)
+    private unsafe void ToBase32(Span<Char> chars, String abc)
     {
         fixed (char* dest = chars)
-        fixed (char* map = Base32.Alphabet)
+        fixed (char* map = abc)
         {
             ulong value = (byte)(_timestamp >> 24);
             value = (value << 8) | (byte)(_timestamp >> 16);
@@ -104,10 +104,10 @@ public readonly partial struct Id
         }
     }
 
-    private unsafe void ToBase32(Span<Byte> bytes)
+    private unsafe void ToBase32(Span<Byte> bytes, byte[] abc)
     {
         fixed (byte* dest = bytes)
-        fixed (byte* map = Base32.EncodeMap)
+        fixed (byte* map = abc)
         {
             ulong value = (byte)(_timestamp >> 24);
             value = (value << 8) | (byte)(_timestamp >> 16);

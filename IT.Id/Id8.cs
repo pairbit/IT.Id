@@ -67,12 +67,13 @@ public readonly struct Id8 : IComparable<Id8>, IEquatable<Id8>
 
     public override String ToString() => ToBase64();
 
+    /// <exception cref="FormatException"/>
     public String ToString(Idf format) => format switch
     {
         Idf.Hex => ToHex(format),
         Idf.HexUpper => ToHex(format),
         Idf.Base64Url => ToBase64(),
-        _ => throw new FormatException($"The '{format}' format string is not supported."),
+        _ => throw Ex.FormatInvalid(format),
     };
 
     public static Id8 Parse(ReadOnlySpan<Char> chars)

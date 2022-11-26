@@ -4,6 +4,10 @@ namespace Internal;
 
 internal static class Ex
 {
+    public static Exception FormatInvalid(Idf format) => new FormatException($"System.Id does not support '{format}' format string.");
+
+    public static Exception FormatInvalid(String format) => new FormatException($"System.Id does not support '{format}' format string.");
+
     public static Exception Format(Idf format, params int[] codes)
     {
         var min = GetMin(format);

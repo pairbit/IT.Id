@@ -20,7 +20,7 @@ using System.Text.Json.Serialization;
 var b = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 58 };
 //var b = new byte[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 var a = new Id(b);
-Console.WriteLine($"{a:B58} == {SimpleBase.Base58.Bitcoin.Encode(b)}");
+Console.WriteLine($"{a:i} == {SimpleBase.Base58.Bitcoin.Encode(b)}");
 
 //Console.ReadLine();
 
@@ -137,29 +137,29 @@ if (!f1.Equals(f2) || !f1.Equals(f3) || !f1.Equals(f4) || !id.Equals(Id.Parse(f4
     throw new InvalidOperationException();
 
 f1 = id.ToString(Idf.Base64);
-f2 = id.ToString("B64");
-f3 = $"{id:B64}";
+f2 = id.ToString("/");
+f3 = $"{id:/}";
 
 if (!f1.Equals(f2) || !f1.Equals(f3) || !id.Equals(Id.Parse(f3)))
     throw new InvalidOperationException();
 
 f1 = id.ToString(Idf.Base85);
-f2 = id.ToString("B85");
-f3 = $"{id:B85}";
+f2 = id.ToString("|");
+f3 = $"{id:|}";
 
 if (!f1.Equals(f2) || !f1.Equals(f3) || !id.Equals(Id.Parse(f3)))
     throw new InvalidOperationException();
 
 f1 = id.ToString(Idf.Path2);
-f2 = id.ToString("P2");
-f3 = $"{id:P2}";
+f2 = id.ToString("//");
+f3 = $"{id://}";
 
 if (!f1.Equals(f2) || !f1.Equals(f3) || !id.Equals(Id.Parse(f3)))
     throw new InvalidOperationException();
 
 f1 = id.ToString(Idf.Path3);
-f2 = id.ToString("P3");
-f3 = $"{id:P3}";
+f2 = id.ToString("///");
+f3 = $"{id:///}";
 
 if (!f1.Equals(f2) || !f1.Equals(f3) || !id.Equals(Id.Parse(f3)))
     throw new InvalidOperationException();
@@ -179,17 +179,26 @@ if (!f1.Equals(f2) || !f1.Equals(f3) || !id.Equals(Id.Parse(f3)) || !id.Equals(I
     throw new InvalidOperationException();
 
 f1 = id.ToString(Idf.Base32);
-f2 = id.ToString("B32");
-f3 = $"{id:B32}";
-f4 = SimpleBase.Base32.Crockford.Encode(id.ToByteArray());
+f2 = id.ToString("v");
+f3 = $"{id:v}";
+f4 = SimpleBase.Base32.Crockford.Encode(id.ToByteArray()).ToLowerInvariant();
 
 if (!f1.Equals(f2) || !f1.Equals(f3) || !f1.Equals(f4) || 
     !id.Equals(Id.Parse(f2)) || !id.Equals(Id.Parse(f2, Idf.Base32)))
     throw new InvalidOperationException();
 
+f1 = id.ToString(Idf.Base32Upper);
+f2 = id.ToString("V");
+f3 = $"{id:V}";
+f4 = SimpleBase.Base32.Crockford.Encode(id.ToByteArray());
+
+if (!f1.Equals(f2) || !f1.Equals(f3) || !f1.Equals(f4) ||
+    !id.Equals(Id.Parse(f2)) || !id.Equals(Id.Parse(f2, Idf.Base32)))
+    throw new InvalidOperationException();
+
 f1 = id.ToString(Idf.Base58);
-f2 = id.ToString("B58");
-f3 = $"{id:B58}";
+f2 = id.ToString("i");
+f3 = $"{id:i}";
 f4 = SimpleBase.Base58.Bitcoin.Encode(id.ToByteArray());
 
 if (f1.Length != 17 || !f1.Equals(f2) || !f1.Equals(f3) || !f1.Equals(f4) ||
@@ -201,11 +210,11 @@ for (int i = 0; i < 12; i++)
     idBytes[i] = 0;
     id = new Id(idBytes);
 
-    var id58 = $"{id:B58}";
+    var id58 = $"{id:i}";
 
     var id58o = SimpleBase.Base58.Bitcoin.Encode(idBytes);
 
-    if (id58.Length != 17 || !id.ToString("B58").Equals(id58)) throw new InvalidOperationException();
+    if (id58.Length != 17 || !id.ToString("i").Equals(id58)) throw new InvalidOperationException();
 
     if (!id58.EndsWith(id58o)) throw new InvalidOperationException();
 
@@ -235,8 +244,8 @@ for (int i = 0; i < 12; i++)
 id = Id.Min;
 //id = Id.New(new DateTime(1998, 3, 5));
 f1 = id.ToString(Idf.Base58);
-f2 = id.ToString("B58");
-f3 = $"{id:B58}";
+f2 = id.ToString("i");
+f3 = $"{id:i}";
 f4 = SimpleBase.Base58.Bitcoin.Encode(id.ToByteArray());
 
 if (!f1.Equals(f2) || !f1.Equals(f3) || !f1.EndsWith(f4))

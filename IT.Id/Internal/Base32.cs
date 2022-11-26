@@ -4,11 +4,17 @@ namespace Internal;
 
 internal static class Base32
 {
+    public const char FormatLower = 'v';
+    public const char FormatUpper = 'V';
     public const int Min = 48;
     public const int Max = 122;
 
-    public static readonly string Alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
-    public static readonly byte[] EncodeMap = Encoding.UTF8.GetBytes(Alphabet);
+    public static readonly string LowerAlphabet = "0123456789abcdefghjkmnpqrstvwxyz";
+    public static readonly byte[] LowerEncodeMap = Encoding.UTF8.GetBytes(LowerAlphabet);
+
+    public static readonly string UpperAlphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+    public static readonly byte[] UpperEncodeMap = Encoding.UTF8.GetBytes(UpperAlphabet);
+
     public static readonly sbyte[] DecodeMap = new sbyte[] {
     -1, //0
     -1, //1

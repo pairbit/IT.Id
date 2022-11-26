@@ -4,6 +4,7 @@ namespace Internal;
 
 internal static class Base85
 {
+    public const char Format = '|';
     public const int Min = 33;
     public const int Max = 126;
 

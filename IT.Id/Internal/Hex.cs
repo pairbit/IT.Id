@@ -7,6 +7,8 @@ namespace Internal;
 //https://stackoverflow.com/questions/311165/how-do-you-convert-a-byte-array-to-a-hexadecimal-string-and-vice-versa/24343727#24343727
 internal static class Hex
 {
+    public const char FormatLower = 'h';
+    public const char FormatUpper = 'H';
     public const int Min = 48;
     public const int Max = 102;
 

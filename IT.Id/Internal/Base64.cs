@@ -6,30 +6,32 @@ namespace Internal;
 
 internal static class Base64
 {
+    public const char Format = '/';
+    public const char FormatUrl = '_';
     public const int Min = 43;
     public const int Max = 122;
 
-    internal static readonly Char[] table = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+    internal static readonly char[] table = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
                                               'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd',
                                               'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
                                               't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7',
                                               '8', '9', '+', '/', '=' };
 
-    internal static readonly Byte[] bytes = Encoding.UTF8.GetBytes(table);
+    internal static readonly byte[] bytes = Encoding.UTF8.GetBytes(table);
 
-    internal static readonly Char[] tableNum = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
+    internal static readonly char[] tableNum = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
                                                  'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
                                                  'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
                                                  'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
                                                  'Y', 'Z', '-', '_' };
 
-    internal static readonly Char[] tableUrl = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+    internal static readonly char[] tableUrl = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
                                                  'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd',
                                                  'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
                                                  't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7',
                                                  '8', '9', '-', '_', '=' };
 
-    internal static readonly Byte[] bytesUrl = Encoding.UTF8.GetBytes(tableUrl);
+    internal static readonly byte[] bytesUrl = Encoding.UTF8.GetBytes(tableUrl);
 
     internal static readonly sbyte[] DecodeMap = new sbyte[] {
     -1, //0

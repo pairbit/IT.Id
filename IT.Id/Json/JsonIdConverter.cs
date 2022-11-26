@@ -34,7 +34,7 @@ public class JsonIdConverter : JsonConverter<Id>
     {
         Span<byte> bytes = stackalloc byte[Id.GetLength(_format)];
 
-        if (!value.TryFormat(bytes, out _, _format))
+        if (value.TryFormat(bytes, out _, _format) != OperationStatus.Done)
             throw new JsonException($"The id does not support the '{_format}' format");
 
         writer.WriteStringValue(bytes);
