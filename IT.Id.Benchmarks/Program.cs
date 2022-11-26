@@ -81,7 +81,7 @@ if (!process.Id.Equals(Environment.ProcessId)) throw new InvalidOperationExcepti
 //if (!id16.Id.Equals(id) || id16.Value != value12)
 //    throw new InvalidOperationException();
 
-var idb = new IT.Id.Benchmarks.IdBenchmark();
+var idb = new IT.Id.Benchmarks.IdStringBenchmark();
 
 var ulid = idb.Ulid_Decode();
 

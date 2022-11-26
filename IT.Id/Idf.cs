@@ -38,6 +38,8 @@ public enum Idf
     /// </remarks>
     Base32 = 32,
 
+    //Base32Upper = 33,
+
     //Base36 = 36,
 
     /// <summary>
@@ -82,20 +84,7 @@ public enum Idf
     /// </remarks>
     /// <example>YqhPZ0Ax541HT-I_</example>
     /// <see cref="https://datatracker.ietf.org/doc/html/rfc7515#appendix-C"/>
-    Base64Url = 63,
-
-    /// <summary>
-    /// Z85 Xml <br/>
-    /// Char '&amp;' repalce to '_', '&lt;' repalce to '~', '&gt;' repalce to '|'
-    /// </summary>
-    /// <example>v{IV^PiNKcFO_~|</example>
-    /// <remarks>
-    /// Alphabet: 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?_~|()[]{}@%$# <br/>
-    /// Example: v{IV^PiNKcFO_~| <br/>
-    /// Length: 15 <br/>
-    /// Format: B85
-    /// </remarks>
-    Base85 = 85,
+    Base64Url = 65,
 
     /// <summary>
     /// Win   = 38^2 + 38 = 1 482 max <br/>
@@ -109,7 +98,7 @@ public enum Idf
     /// Length: 18 <br/>
     /// Format: P2
     /// </remarks>
-    Path2 = 61,
+    Path2 = 66,
 
     /// <summary>
     /// Win   = 38^3 + 38^2 + 38 =  56 354 max <br/>
@@ -123,5 +112,18 @@ public enum Idf
     /// Length: 19 <br/>
     /// Format: P3
     /// </remarks>
-    Path3 = 62,
+    Path3 = 67,
+
+    /// <summary>
+    /// Z85 Xml <br/>
+    /// Char '&amp;' repalce to '_', '&lt;' repalce to '~', '&gt;' repalce to '|'
+    /// </summary>
+    /// <example>v{IV^PiNKcFO_~|</example>
+    /// <remarks>
+    /// Alphabet: 0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?_~|()[]{}@%$# <br/>
+    /// Example: v{IV^PiNKcFO_~| <br/>
+    /// Length: 15 <br/>
+    /// Format: B85
+    /// </remarks>
+    Base85 = 85
 }
