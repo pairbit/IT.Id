@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Internal;
 
@@ -45,7 +46,13 @@ internal static class Ex
     }
 
     public static Exception InvalidChar(Idf format, int code)
-        => new FormatException($"The System.Id in format {format} does not contain a character with code {code}.");
+        => new FormatException($"The System.Id in format {format} cannot contain character code {code}.");
+
+    public static Exception InvalidChar(Idf format, int index, int invalidCode, params char[] validCodes)
+        => new FormatException($"The System.Id in format {format} cannot contain character code {invalidCode} at position {index}. It must contain one of characters {String.Join(", ", validCodes.Select(x => "'" + x + "'"))}.");
+
+    public static Exception InvalidByte(Idf format, int index, int invalidCode, params int[] validCodes)
+        => new FormatException($"The System.Id in format {format} cannot contain byte {invalidCode} at position {index}. It must contain one of bytes {String.Join(", ", validCodes)}.");
 
     private static int GetMin(Idf format) => format switch
     {

@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using SimpleBase;
+using System;
 using System.Text;
 
 namespace Tests;
@@ -45,9 +46,6 @@ public class IdParseTest
         FormatException(() => Id.Parse(new byte[] { 1, 2, 3, 4 }, Idf.Base58),
             $"The length of System.Id in format Base58 cannot be 4 bytes. It must be between 12 to 17 bytes long.");
 
-        FormatException(() => Id.Parse(new byte[] { 1, 2, 3, 4 }, Idf.Base58),
-            $"The length of System.Id in format Base58 cannot be 4 bytes. It must be between 12 to 17 bytes long.");
-
         var format = (Idf)123123;
 
         InvalidFormat(format.ToString(), () => Id.Parse(Array.Empty<char>(), format));
@@ -58,6 +56,21 @@ public class IdParseTest
         InvalidFormat(format.ToString(), () => Id.New().TryFormat(Array.Empty<byte>(), out _, format));
         InvalidFormat("nf", () => Id.New().ToString("nf"));
         InvalidFormat("nf", () => Id.New().TryFormat(Array.Empty<char>(), out _, "nf"));
+
+        RequiredChars(() => Id.Parse("_aI/-TH145xA0ZPhqY", Idf.Path2), Idf.Path2.ToString(), 'a', 1);
+        RequiredChars(() => Id.Parse("_/Ib-TH145xA0ZPhqY", Idf.Path2), Idf.Path2.ToString(), 'b', 3);
+
+        RequiredBytes(() => Id.Parse(Encoding.UTF8.GetBytes("_aI/-TH145xA0ZPhqY"), Idf.Path2), Idf.Path2.ToString(), 'a', 1);
+        RequiredBytes(() => Id.Parse(Encoding.UTF8.GetBytes("_/Ib-TH145xA0ZPhqY"), Idf.Path2), Idf.Path2.ToString(), 'b', 3);
+
+        RequiredChars(() => Id.Parse("_cI/-/TH145xA0ZPhqY", Idf.Path3), Idf.Path3.ToString(), 'c', 1);
+        RequiredChars(() => Id.Parse("_/Id-/TH145xA0ZPhqY", Idf.Path3), Idf.Path3.ToString(), 'd', 3);
+        RequiredChars(() => Id.Parse("_/I/-eTH145xA0ZPhqY", Idf.Path3), Idf.Path3.ToString(), 'e', 5);
+
+        RequiredBytes(() => Id.Parse(Encoding.UTF8.GetBytes("_cI/-/TH145xA0ZPhqY"), Idf.Path3), Idf.Path3.ToString(), 'c', 1);
+        RequiredBytes(() => Id.Parse(Encoding.UTF8.GetBytes("_/Id-/TH145xA0ZPhqY"), Idf.Path3), Idf.Path3.ToString(), 'd', 3);
+        RequiredBytes(() => Id.Parse(Encoding.UTF8.GetBytes("_/I/-eTH145xA0ZPhqY"), Idf.Path3), Idf.Path3.ToString(), 'e', 5);
+
     }
 
     [Test]
@@ -189,7 +202,7 @@ public class IdParseTest
     {
         var format = Id.GetFormat(str.Length);
 
-        var message = $"The System.Id in format {format} does not contain a character with code {(int)code}.";
+        var message = $"The System.Id in format {format} cannot contain character code {(int)code}.";
 
         var ex = Assert.Throws<FormatException>(() => Id.Parse(str));
         Assert.That(ex.Message, Is.EqualTo(message));
@@ -226,6 +239,16 @@ public class IdParseTest
     private void InvalidFormat<T>(string format, Func<T> func)
     {
         FormatException(() => func(), $"The System.Id does not contain '{format}' format.");
+    }
+
+    private void RequiredChars<T>(Func<T> func, string format, int code, int index)
+    {
+        FormatException(() => func(), $"The System.Id in format {format} cannot contain character code {code} at position {index}. It must contain one of characters '/', '\\'.");
+    }
+
+    private void RequiredBytes<T>(Func<T> func, string format, int code, int index)
+    {
+        FormatException(() => func(), $"The System.Id in format {format} cannot contain byte {code} at position {index}. It must contain one of bytes 47, 92.");
     }
 
     private void FormatException<T>(Func<T> func, string message)

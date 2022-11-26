@@ -157,10 +157,14 @@ public readonly partial struct Id
 
     private static Id ParsePath3(ReadOnlySpan<Char> chars)
     {
-        var c1 = chars[1];
-        var c3 = chars[3];
-        var c5 = chars[5];
-        if (c1 != '\\' && c1 != '/' && c3 != '\\' && c3 != '/' && c5 != '\\' && c5 != '/') throw new FormatException();
+        var sep = chars[1];
+        if (sep != '\\' && sep != '/') throw Ex.InvalidChar(Idf.Path3, 1, sep, '/', '\\');
+
+        sep = chars[3];
+        if (sep != '\\' && sep != '/') throw Ex.InvalidChar(Idf.Path3, 3, sep, '/', '\\');
+
+        sep = chars[5];
+        if (sep != '\\' && sep != '/') throw Ex.InvalidChar(Idf.Path3, 5, sep, '/', '\\');
 
         //_\I\-\TH145xA0ZPhqY
 
@@ -227,10 +231,14 @@ public readonly partial struct Id
 
     private static Id ParsePath3(ReadOnlySpan<Byte> bytes)
     {
-        var c1 = bytes[1];
-        var c3 = bytes[3];
-        var c5 = bytes[5];
-        if (c1 != '\\' && c1 != '/' && c3 != '\\' && c3 != '/' && c5 != '\\' && c5 != '/') throw new FormatException();
+        var sep = bytes[1];
+        if (sep != '\\' && sep != '/') throw Ex.InvalidByte(Idf.Path3, 1, sep, '/', '\\');
+
+        sep = bytes[3];
+        if (sep != '\\' && sep != '/') throw Ex.InvalidByte(Idf.Path3, 3, sep, '/', '\\');
+
+        sep = bytes[5];
+        if (sep != '\\' && sep != '/') throw Ex.InvalidByte(Idf.Path3, 5, sep, '/', '\\');
 
         //_\I\-\TH145xA0ZPhqY
 
