@@ -1,5 +1,4 @@
 using System.Buffers;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -167,13 +166,23 @@ public class IdToStringTest
             Assert.That(s, Is.EqualTo(str));
         }
 
+        var formatString = Id.GetFormatString(format);
+
         //TryFormat Chars
 
         Span<char> chars = stackalloc char[length];
-        var status = id.TryFormat(chars, out var written, format);
-        Assert.That(status, Is.EqualTo(OperationStatus.Done));
+        var isDone = id.TryFormat(chars, out var written, formatString);
+        Assert.That(isDone, Is.EqualTo(true));
         Assert.That(written, Is.EqualTo(length));
         Assert.That(chars.SequenceEqual(s));
+
+        //TryFormat Chars
+
+        Span<char> chars2 = stackalloc char[length];
+        var status = id.TryFormat(chars2, out written, format);
+        Assert.That(status, Is.EqualTo(OperationStatus.Done));
+        Assert.That(written, Is.EqualTo(length));
+        Assert.That(chars2.SequenceEqual(s));
 
         //TryFormat Bytes
 
@@ -185,7 +194,11 @@ public class IdToStringTest
         Assert.That(written, Is.EqualTo(length));
         Assert.IsTrue(bytes.SequenceEqual(b));
 
-        //DestinationTooSmall
+        //DestinationTooSmall -> true
+
+        isDone = id.TryFormat(stackalloc char[length - 1], out written, formatString);
+        Assert.That(isDone, Is.EqualTo(false));
+        Assert.That(written, Is.EqualTo(0));
 
         status = id.TryFormat(stackalloc char[length - 1], out written, format);
         Assert.That(status, Is.EqualTo(OperationStatus.DestinationTooSmall));

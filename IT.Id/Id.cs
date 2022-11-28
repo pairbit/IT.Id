@@ -203,6 +203,33 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         _ => throw Ex.InvalidFormat(format)
     };
 
+    /// <summary>
+    /// Hex -> "h" <br/>
+    /// Hex Upper -> "H" <br/>
+    /// Base32 -> "v" <br/>
+    /// Base32 Upper -> "V" <br/>
+    /// Base58 -> "i" <br/>
+    /// Base64 -> "/" <br/>
+    /// Base64 Url -> "_" <br/>
+    /// Base64 Path2 -> "//" <br/>
+    /// Base64 Path3 -> "///" <br/>
+    /// Base85 -> "|" <br/>
+    /// </summary>
+    public static String GetFormatString(Idf format) => format switch
+    {
+        Idf.Base85 => "|",
+        Idf.Base64 => "/",
+        Idf.Base64Url => "_",
+        Idf.Base58 => "i",
+        Idf.Base64Path2 => "//",
+        Idf.Base64Path3 => "///",
+        Idf.Base32 => "v",
+        Idf.Base32Upper => "V",
+        Idf.Hex => "h",
+        Idf.HexUpper => "H",
+        _ => throw Ex.InvalidFormat(format)
+    };
+
     public static Idf GetFormat(Int32 length) => length switch
     {
         15 => Idf.Base85,
@@ -456,15 +483,15 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         (byte)(_timestamp >> 24),
         (byte)(_timestamp >> 16),
         (byte)(_timestamp >> 8),
-        (byte)(_timestamp),
+        (byte)_timestamp,
         (byte)(_b >> 24),
         (byte)(_b >> 16),
         (byte)(_b >> 8),
-        (byte)(_b),
+        (byte)_b,
         (byte)(_c >> 24),
         (byte)(_c >> 16),
         (byte)(_c >> 8),
-        (byte)(_c)
+        (byte)_c
     };
 
     public void ToByteArray(Span<Byte> bytes)
