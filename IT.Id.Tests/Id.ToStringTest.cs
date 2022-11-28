@@ -63,9 +63,9 @@ public class IdToStringTest
         //Win = \, Linux = /
         var p = Path.DirectorySeparatorChar;
 
-        Assert.That(CheckId(Id.Parse("_/I/-TH145xA0ZPhqY")).ToString(Idf.Path2), Is.EqualTo($"_{p}I{p}-TH145xA0ZPhqY"));
+        Assert.That(CheckId(Id.Parse("_/I/-TH145xA0ZPhqY")).ToString(Idf.Base64Path2), Is.EqualTo($"_{p}I{p}-TH145xA0ZPhqY"));
 
-        Assert.That(CheckId(Id.Parse("_/I/-/TH145xA0ZPhqY")).ToString(Idf.Path3), Is.EqualTo($"_{p}I{p}-{p}TH145xA0ZPhqY"));
+        Assert.That(CheckId(Id.Parse("_/I/-/TH145xA0ZPhqY")).ToString(Idf.Base64Path3), Is.EqualTo($"_{p}I{p}-{p}TH145xA0ZPhqY"));
     }
 
     [Test]
@@ -113,13 +113,13 @@ public class IdToStringTest
 
         var path2 = new string(base64Url.Reverse().ToArray()).Insert(2, Path.DirectorySeparatorChar.ToString()).Insert(1, Path.DirectorySeparatorChar.ToString());
 
-        CheckString(id, Idf.Path2, 18, 66, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_/\\",
+        CheckString(id, Idf.Base64Path2, 18, 66, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_/\\",
             id.ToString("//"), $"{id://}", path2);
 
         var path3 = path2.Insert(5, Path.DirectorySeparatorChar.ToString());
 
-        CheckString(id, Idf.Path3, 19, 66, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_/\\",
-            id.ToString(Idf.Path3), id.ToString("///"), $"{id:///}", path3);
+        CheckString(id, Idf.Base64Path3, 19, 66, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_/\\",
+            id.ToString(Idf.Base64Path3), id.ToString("///"), $"{id:///}", path3);
 
         var base32Upper = SimpleBase.Base32.Crockford.Encode(bytes);
 

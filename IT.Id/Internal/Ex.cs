@@ -5,7 +5,7 @@ namespace Internal;
 
 internal static class Ex
 {
-    public static Exception InvalidLength(int length) 
+    public static Exception InvalidLength(int length)
         => new FormatException($"The length of System.Id cannot be {length}. It must be 24 or between 15 and 20.");
 
     public static Exception InvalidLengthChars(int length)
@@ -14,13 +14,13 @@ internal static class Ex
     public static Exception InvalidLengthBytes(int length)
         => new FormatException($"The length of System.Id cannot be {length} bytes. It must be 24 or between 15 and 20 bytes.");
 
-    public static Exception InvalidLengthChars(Idf format, int length) 
+    public static Exception InvalidLengthChars(Idf format, int length)
         => new FormatException($"The length of System.Id in {format} format cannot be {length} characters. It must be {Id.GetLength(format)} characters long.");
 
     public static Exception InvalidLengthBytes(Idf format, int length)
         => new FormatException($"The length of System.Id in {format} format cannot be {length} bytes. It must be {Id.GetLength(format)} bytes long.");
 
-    public static Exception InvalidLengthChars(Idf format, int length, int min, int max) 
+    public static Exception InvalidLengthChars(Idf format, int length, int min, int max)
         => new FormatException($"The length of System.Id in {format} format cannot be {length} characters. It must be between {min} to {max} characters long.");
 
     public static Exception InvalidLengthBytes(Idf format, int length, int min, int max)
@@ -74,37 +74,31 @@ internal static class Ex
 
     private static int GetMin(Idf format) => format switch
     {
-        Idf.Base85 => Base85.Min,
-        Idf.Base64 => Base64.Min,
-        Idf.Base58 => Base58.Min,
-        Idf.Path2 => Base64.Min,
-        Idf.Path3 => Base64.Min,
-        Idf.Base32 => Base32.Min,
         Idf.Hex => Hex.Min,
+        Idf.Base32 => Base32.Min,
+        Idf.Base58 => Base58.Min,
+        Idf.Base64 or Idf.Base64Path2 or Idf.Base64Path3 => Base64.Min,
+        Idf.Base85 => Base85.Min,
         _ => throw new NotImplementedException()
     };
 
     private static int GetMax(Idf format) => format switch
     {
-        Idf.Base85 => Base85.Max,
-        Idf.Base64 => Base64.Max,
-        Idf.Base58 => Base58.Max,
-        Idf.Path2 => Base64.Max,
-        Idf.Path3 => Base64.Max,
-        Idf.Base32 => Base32.Max,
         Idf.Hex => Hex.Max,
+        Idf.Base32 => Base32.Max,
+        Idf.Base58 => Base58.Max,
+        Idf.Base64 or Idf.Base64Path2 or Idf.Base64Path3 => Base64.Max,
+        Idf.Base85 => Base85.Max,
         _ => throw new NotImplementedException()
     };
 
     private static sbyte[] GetMap(Idf format) => format switch
     {
-        Idf.Base85 => Base85.DecodeMap,
-        Idf.Base64 => Base64.DecodeMap,
-        Idf.Base58 => Base58.DecodeMap,
-        Idf.Path2 => Base64.DecodeMap,
-        Idf.Path3 => Base64.DecodeMap,
-        Idf.Base32 => Base32.DecodeMap,
         Idf.Hex => Hex.DecodeMap,
+        Idf.Base32 => Base32.DecodeMap,
+        Idf.Base58 => Base58.DecodeMap,
+        Idf.Base64 or Idf.Base64Path2 or Idf.Base64Path3 => Base64.DecodeMap,
+        Idf.Base85 => Base85.DecodeMap,
         _ => throw new NotImplementedException()
     };
 }

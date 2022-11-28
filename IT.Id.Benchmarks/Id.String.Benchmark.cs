@@ -31,8 +31,8 @@ public class IdStringBenchmark
         _idBase58 = Id_Encode_Base58();
         _idBase64Url = Id_Encode_Base64Url();
         _idBase85 = Id_Encode_Base85();
-        _idPath2 = Id_Encode_Path2();
-        _idPath3 = Id_Encode_Path3();
+        _idPath2 = Id_Encode_Base64Path2();
+        _idPath3 = Id_Encode_Base64Path3();
 
         _ulid = Ulid.NewUlid();
         _ulidString = Ulid_Encode();
@@ -84,16 +84,16 @@ public class IdStringBenchmark
     public System.Id Id_Decode_Base85() => System.Id.Parse(_idBase85);
 
     [Benchmark]
-    public String Id_Encode_Path2() => _id.ToString(Idf.Path2);
+    public String Id_Encode_Base64Path2() => _id.ToString(Idf.Base64Path2);
 
     [Benchmark]
-    public System.Id Id_Decode_Path2() => System.Id.Parse(_idPath2);
+    public System.Id Id_Decode_Base64Path2() => System.Id.Parse(_idPath2);
 
     [Benchmark]
-    public String Id_Encode_Path3() => _id.ToString(Idf.Path3);
+    public String Id_Encode_Base64Path3() => _id.ToString(Idf.Base64Path3);
 
     [Benchmark]
-    public System.Id Id_Decode_Path3() => System.Id.Parse(_idPath3);
+    public System.Id Id_Decode_Base64Path3() => System.Id.Parse(_idPath3);
 
     [Benchmark]
     public String Ulid_Encode() => _ulid.ToString();

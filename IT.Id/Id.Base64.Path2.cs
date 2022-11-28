@@ -155,10 +155,10 @@ public readonly partial struct Id
     private static Id ParsePath2(ReadOnlySpan<Char> chars)
     {
         var sep = chars[1];
-        if (sep != '\\' && sep != '/') throw Ex.InvalidCharIndex(Idf.Path2, 1, sep, '/', '\\');
+        if (sep != '\\' && sep != '/') throw Ex.InvalidCharIndex(Idf.Base64Path2, 1, sep, '/', '\\');
 
         sep = chars[3];
-        if (sep != '\\' && sep != '/') throw Ex.InvalidCharIndex(Idf.Path2, 3, sep, '/', '\\');
+        if (sep != '\\' && sep != '/') throw Ex.InvalidCharIndex(Idf.Base64Path2, 3, sep, '/', '\\');
 
         //_\I\-TH145xA0ZPhqY
 
@@ -171,11 +171,11 @@ public readonly partial struct Id
         int i2 = Unsafe.Add(ref src, 15);
         int i3 = Unsafe.Add(ref src, 14);
 
-        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw Ex.InvalidChar(Idf.Path2, i0, i1, i2, i3);
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw Ex.InvalidChar(Idf.Base64Path2, i0, i1, i2, i3);
 
         var val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
 
-        if (val < 0) throw Ex.InvalidChar(Idf.Path2, i0, i1, i2, i3);
+        if (val < 0) throw Ex.InvalidChar(Idf.Base64Path2, i0, i1, i2, i3);
 
         var timestamp = (byte)(val >> 16) << 24 | (byte)(val >> 8) << 16 | (byte)val << 8;
 
@@ -184,11 +184,11 @@ public readonly partial struct Id
         i2 = Unsafe.Add(ref src, 11);
         i3 = Unsafe.Add(ref src, 10);
 
-        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw Ex.InvalidChar(Idf.Path2, i0, i1, i2, i3);
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw Ex.InvalidChar(Idf.Base64Path2, i0, i1, i2, i3);
 
         val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
 
-        if (val < 0) throw Ex.InvalidChar(Idf.Path2, i0, i1, i2, i3);
+        if (val < 0) throw Ex.InvalidChar(Idf.Base64Path2, i0, i1, i2, i3);
 
         timestamp |= (byte)(val >> 16);
 
@@ -199,11 +199,11 @@ public readonly partial struct Id
         i2 = Unsafe.Add(ref src, 7);
         i3 = Unsafe.Add(ref src, 6);
 
-        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw Ex.InvalidChar(Idf.Path2, i0, i1, i2, i3);
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw Ex.InvalidChar(Idf.Base64Path2, i0, i1, i2, i3);
 
         val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
 
-        if (val < 0) throw Ex.InvalidChar(Idf.Path2, i0, i1, i2, i3);
+        if (val < 0) throw Ex.InvalidChar(Idf.Base64Path2, i0, i1, i2, i3);
 
         b |= (byte)(val >> 16) << 8 | (byte)(val >> 8);
 
@@ -214,11 +214,11 @@ public readonly partial struct Id
         i2 = Unsafe.Add(ref src, 2);
         i3 = Unsafe.Add(ref src, 0);
 
-        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw Ex.InvalidChar(Idf.Path2, i0, i1, i2, i3);
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw Ex.InvalidChar(Idf.Base64Path2, i0, i1, i2, i3);
 
         val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
 
-        if (val < 0) throw Ex.InvalidChar(Idf.Path2, i0, i1, i2, i3);
+        if (val < 0) throw Ex.InvalidChar(Idf.Base64Path2, i0, i1, i2, i3);
 
         return new Id(timestamp, b, c | val);
     }
@@ -226,10 +226,10 @@ public readonly partial struct Id
     private static Id ParsePath2(ReadOnlySpan<Byte> bytes)
     {
         var sep = bytes[1];
-        if (sep != '\\' && sep != '/') throw Ex.InvalidByteIndex(Idf.Path2, 1, sep, '/', '\\');
+        if (sep != '\\' && sep != '/') throw Ex.InvalidByteIndex(Idf.Base64Path2, 1, sep, '/', '\\');
 
         sep = bytes[3];
-        if (sep != '\\' && sep != '/') throw Ex.InvalidByteIndex(Idf.Path2, 3, sep, '/', '\\');
+        if (sep != '\\' && sep != '/') throw Ex.InvalidByteIndex(Idf.Base64Path2, 3, sep, '/', '\\');
 
         //_\I\-TH145xA0ZPhqY
 
@@ -242,11 +242,11 @@ public readonly partial struct Id
         int i2 = Unsafe.Add(ref src, 15);
         int i3 = Unsafe.Add(ref src, 14);
 
-        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw Ex.InvalidByte(Idf.Path2, i0, i1, i2, i3);
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw Ex.InvalidByte(Idf.Base64Path2, i0, i1, i2, i3);
 
         var val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
 
-        if (val < 0) throw Ex.InvalidByte(Idf.Path2, i0, i1, i2, i3);
+        if (val < 0) throw Ex.InvalidByte(Idf.Base64Path2, i0, i1, i2, i3);
 
         var timestamp = (byte)(val >> 16) << 24 | (byte)(val >> 8) << 16 | (byte)val << 8;
 
@@ -255,11 +255,11 @@ public readonly partial struct Id
         i2 = Unsafe.Add(ref src, 11);
         i3 = Unsafe.Add(ref src, 10);
 
-        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw Ex.InvalidByte(Idf.Path2, i0, i1, i2, i3);
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw Ex.InvalidByte(Idf.Base64Path2, i0, i1, i2, i3);
 
         val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
 
-        if (val < 0) throw Ex.InvalidByte(Idf.Path2, i0, i1, i2, i3);
+        if (val < 0) throw Ex.InvalidByte(Idf.Base64Path2, i0, i1, i2, i3);
 
         timestamp |= (byte)(val >> 16);
 
@@ -270,11 +270,11 @@ public readonly partial struct Id
         i2 = Unsafe.Add(ref src, 7);
         i3 = Unsafe.Add(ref src, 6);
 
-        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw Ex.InvalidByte(Idf.Path2, i0, i1, i2, i3);
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw Ex.InvalidByte(Idf.Base64Path2, i0, i1, i2, i3);
 
         val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
 
-        if (val < 0) throw Ex.InvalidByte(Idf.Path2, i0, i1, i2, i3);
+        if (val < 0) throw Ex.InvalidByte(Idf.Base64Path2, i0, i1, i2, i3);
 
         b |= (byte)(val >> 16) << 8 | (byte)(val >> 8);
 
@@ -285,11 +285,11 @@ public readonly partial struct Id
         i2 = Unsafe.Add(ref src, 2);
         i3 = Unsafe.Add(ref src, 0);
 
-        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw Ex.InvalidByte(Idf.Path2, i0, i1, i2, i3);
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) throw Ex.InvalidByte(Idf.Base64Path2, i0, i1, i2, i3);
 
         val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
 
-        if (val < 0) throw Ex.InvalidByte(Idf.Path2, i0, i1, i2, i3);
+        if (val < 0) throw Ex.InvalidByte(Idf.Base64Path2, i0, i1, i2, i3);
 
         return new Id(timestamp, b, c | val);
     }

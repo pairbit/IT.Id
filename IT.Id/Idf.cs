@@ -108,7 +108,7 @@ public enum Idf
     /// Length: 18 <br/>
     /// Format: //
     /// </remarks>
-    Path2 = 66,
+    Base64Path2 = 66,
 
     /// <summary>
     /// Win   = 38^3 + 38^2 + 38 =  56 354 max <br/>
@@ -122,7 +122,7 @@ public enum Idf
     /// Length: 19 <br/>
     /// Format: ///
     /// </remarks>
-    Path3 = 67,
+    Base64Path3 = 67,
 
     /// <summary>
     /// Z85 Xml <br/>

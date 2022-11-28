@@ -36,8 +36,8 @@ public class IdParseTest
         InvalidLength(Idf.Base32Upper, "abc憨");
         InvalidLength(Idf.Base64, "abc憨");
         InvalidLength(Idf.Base64Url, "abc憨");
-        InvalidLength(Idf.Path2, "abc憨");
-        InvalidLength(Idf.Path3, "abc憨");
+        InvalidLength(Idf.Base64Path2, "abc憨");
+        InvalidLength(Idf.Base64Path3, "abc憨");
         InvalidLength(Idf.Base85, "abc憨");
 
         FormatException(() => Id.Parse("abc", Idf.Base58),
@@ -57,19 +57,19 @@ public class IdParseTest
         InvalidFormat("nf", () => Id.New().ToString("nf"));
         InvalidFormat("nf", () => Id.New().TryFormat(Array.Empty<char>(), out _, "nf"));
 
-        RequiredChars(() => Id.Parse("_aI/-TH145xA0ZPhqY", Idf.Path2), Idf.Path2.ToString(), 'a', 1);
-        RequiredChars(() => Id.Parse("_/Ib-TH145xA0ZPhqY", Idf.Path2), Idf.Path2.ToString(), 'b', 3);
+        RequiredChars(() => Id.Parse("_aI/-TH145xA0ZPhqY", Idf.Base64Path2), Idf.Base64Path2.ToString(), 'a', 1);
+        RequiredChars(() => Id.Parse("_/Ib-TH145xA0ZPhqY", Idf.Base64Path2), Idf.Base64Path2.ToString(), 'b', 3);
 
-        RequiredBytes(() => Id.Parse(Encoding.UTF8.GetBytes("_aI/-TH145xA0ZPhqY"), Idf.Path2), Idf.Path2.ToString(), 'a', 1);
-        RequiredBytes(() => Id.Parse(Encoding.UTF8.GetBytes("_/Ib-TH145xA0ZPhqY"), Idf.Path2), Idf.Path2.ToString(), 'b', 3);
+        RequiredBytes(() => Id.Parse(Encoding.UTF8.GetBytes("_aI/-TH145xA0ZPhqY"), Idf.Base64Path2), Idf.Base64Path2.ToString(), 'a', 1);
+        RequiredBytes(() => Id.Parse(Encoding.UTF8.GetBytes("_/Ib-TH145xA0ZPhqY"), Idf.Base64Path2), Idf.Base64Path2.ToString(), 'b', 3);
 
-        RequiredChars(() => Id.Parse("_cI/-/TH145xA0ZPhqY", Idf.Path3), Idf.Path3.ToString(), 'c', 1);
-        RequiredChars(() => Id.Parse("_/Id-/TH145xA0ZPhqY", Idf.Path3), Idf.Path3.ToString(), 'd', 3);
-        RequiredChars(() => Id.Parse("_/I/-eTH145xA0ZPhqY", Idf.Path3), Idf.Path3.ToString(), 'e', 5);
+        RequiredChars(() => Id.Parse("_cI/-/TH145xA0ZPhqY", Idf.Base64Path3), Idf.Base64Path3.ToString(), 'c', 1);
+        RequiredChars(() => Id.Parse("_/Id-/TH145xA0ZPhqY", Idf.Base64Path3), Idf.Base64Path3.ToString(), 'd', 3);
+        RequiredChars(() => Id.Parse("_/I/-eTH145xA0ZPhqY", Idf.Base64Path3), Idf.Base64Path3.ToString(), 'e', 5);
 
-        RequiredBytes(() => Id.Parse(Encoding.UTF8.GetBytes("_cI/-/TH145xA0ZPhqY"), Idf.Path3), Idf.Path3.ToString(), 'c', 1);
-        RequiredBytes(() => Id.Parse(Encoding.UTF8.GetBytes("_/Id-/TH145xA0ZPhqY"), Idf.Path3), Idf.Path3.ToString(), 'd', 3);
-        RequiredBytes(() => Id.Parse(Encoding.UTF8.GetBytes("_/I/-eTH145xA0ZPhqY"), Idf.Path3), Idf.Path3.ToString(), 'e', 5);
+        RequiredBytes(() => Id.Parse(Encoding.UTF8.GetBytes("_cI/-/TH145xA0ZPhqY"), Idf.Base64Path3), Idf.Base64Path3.ToString(), 'c', 1);
+        RequiredBytes(() => Id.Parse(Encoding.UTF8.GetBytes("_/Id-/TH145xA0ZPhqY"), Idf.Base64Path3), Idf.Base64Path3.ToString(), 'd', 3);
+        RequiredBytes(() => Id.Parse(Encoding.UTF8.GetBytes("_/I/-eTH145xA0ZPhqY"), Idf.Base64Path3), Idf.Base64Path3.ToString(), 'e', 5);
 
     }
 
@@ -105,6 +105,21 @@ public class IdParseTest
         InvalidChar("YqhP憨0Ax541HT+I/", '憨');//25000
         InvalidChar("YqhPZ0Ax541HT+I￼", '￼');//65532
 
+        //Base64 Path2 -> _/I/-TH145xA0ZPhqY
+        InvalidChar("_/*/-TH145xA0ZPhqY", '*');//42
+        InvalidChar("_/I/-T^145xA0ZPhqY", '^');//94
+        InvalidChar("_/I/-TH145xA0ZP{qY", '{');//123
+        InvalidChar("_/I/-TH145憨A0ZPhqY", '憨');//25000
+        InvalidChar("￼/I/-TH145xA0ZPhqY", '￼');//65532
+
+        //Base64 Path3 -> _/I/-/TH145xA0ZPhqY
+        InvalidChar("_/I/-/TH*45xA0ZPhqY", '*');//42
+        InvalidChar("_/I/-/TH145xA^ZPhqY", '^');//94
+        InvalidChar("_/{/-/TH145xA0ZPhqY", '{');//123
+        InvalidChar("_/I/-/TH145xA0ZPhĀY", 'Ā');//256
+        InvalidChar("_/I/-/TH145xA0憨PhqY", '憨');//25000
+        InvalidChar("_/I/￼/TH145xA0ZPhqY", '￼');//65532
+
         //Base85 -> v{IV^PiNKcFO_~|
         InvalidChar("v{IV^PiNK FO_~|", ' ');//32
         InvalidChar("v{I,^PiNKcFO_~|", ',');//44
@@ -112,21 +127,6 @@ public class IdParseTest
         InvalidChar("v{IV^\u007fiNKcFO_~|", '\u007f');//127
         InvalidChar("v{IV^PiNKcFO憨~|", '憨');//25000
         InvalidChar("v￼IV^PiNKcFO_~|", '￼');//65532
-
-        //Path2 -> _/I/-TH145xA0ZPhqY
-        InvalidChar("_/*/-TH145xA0ZPhqY", '*');//42
-        InvalidChar("_/I/-T^145xA0ZPhqY", '^');//94
-        InvalidChar("_/I/-TH145xA0ZP{qY", '{');//123
-        InvalidChar("_/I/-TH145憨A0ZPhqY", '憨');//25000
-        InvalidChar("￼/I/-TH145xA0ZPhqY", '￼');//65532
-
-        //Path3 -> _/I/-/TH145xA0ZPhqY
-        InvalidChar("_/I/-/TH*45xA0ZPhqY", '*');//42
-        InvalidChar("_/I/-/TH145xA^ZPhqY", '^');//94
-        InvalidChar("_/{/-/TH145xA0ZPhqY", '{');//123
-        InvalidChar("_/I/-/TH145xA0ZPhĀY", 'Ā');//256
-        InvalidChar("_/I/-/TH145xA0憨PhqY", '憨');//25000
-        InvalidChar("_/I/￼/TH145xA0ZPhqY", '￼');//65532
     }
 
     [Test]
@@ -175,15 +175,15 @@ public class IdParseTest
 
         var path2 = $"_{p}I{p}-TH145xA0ZPhqY";
 
-        Assert.That(Id.Parse("_\\I\\-TH145xA0ZPhqY").ToString(Idf.Path2), Is.EqualTo(path2));
-        Assert.That(Id.Parse("_/I/-TH145xA0ZPhqY").ToString(Idf.Path2), Is.EqualTo(path2));
-        Assert.That(Id.Parse("//I\\+TH145xA0ZPhqY").ToString(Idf.Path2), Is.EqualTo(path2));
+        Assert.That(Id.Parse("_\\I\\-TH145xA0ZPhqY").ToString(Idf.Base64Path2), Is.EqualTo(path2));
+        Assert.That(Id.Parse("_/I/-TH145xA0ZPhqY").ToString(Idf.Base64Path2), Is.EqualTo(path2));
+        Assert.That(Id.Parse("//I\\+TH145xA0ZPhqY").ToString(Idf.Base64Path2), Is.EqualTo(path2));
 
         var path3 = $"_{p}I{p}-{p}TH145xA0ZPhqY";
 
-        Assert.That(Id.Parse("_\\I\\-\\TH145xA0ZPhqY").ToString(Idf.Path3), Is.EqualTo(path3));
-        Assert.That(Id.Parse("_/I/-/TH145xA0ZPhqY").ToString(Idf.Path3), Is.EqualTo(path3));
-        Assert.That(Id.Parse("/\\I/+\\TH145xA0ZPhqY").ToString(Idf.Path3), Is.EqualTo(path3));
+        Assert.That(Id.Parse("_\\I\\-\\TH145xA0ZPhqY").ToString(Idf.Base64Path3), Is.EqualTo(path3));
+        Assert.That(Id.Parse("_/I/-/TH145xA0ZPhqY").ToString(Idf.Base64Path3), Is.EqualTo(path3));
+        Assert.That(Id.Parse("/\\I/+\\TH145xA0ZPhqY").ToString(Idf.Base64Path3), Is.EqualTo(path3));
 
         var base85 = "v{IV^PiNKcFO_~|";
 

@@ -95,10 +95,10 @@ if (!base32.Equals(idb._ulidString))
 //var base32_2 = Wiry.Base32.Base32Encoding.Base32.GetString(bytes);
 
 var id1 = idb.Id_Decode_Hex();
-var id2 = idb.Id_Decode_Hex();
+var id2 = idb.Id_Decode_Base64();
 var id3 = idb.Id_Decode_Base85();
-var id4 = idb.Id_Decode_Path2();
-var id5 = idb.Id_Decode_Path3();
+var id4 = idb.Id_Decode_Base64Path2();
+var id5 = idb.Id_Decode_Base64Path3();
 var id6 = idb.Id_Decode_Base32();
 var id7 = idb.Id_Decode_Base58();
 
@@ -123,8 +123,8 @@ for (int i = 0; i < 10000; i++)
     if (Id.Parse(idn.ToString(Idf.Hex)) != idn) throw new InvalidOperationException("Hex");
     if (Id.Parse(idn.ToString(Idf.Base85)) != idn) throw new InvalidOperationException("Base85");
     if (Id.Parse(idn.ToString(Idf.Base64)) != idn) throw new InvalidOperationException("Base64");
-    if (Id.Parse(idn.ToString(Idf.Path2)) != idn) throw new InvalidOperationException("Path2");
-    if (Id.Parse(idn.ToString(Idf.Path3)) != idn) throw new InvalidOperationException("Path3");
+    if (Id.Parse(idn.ToString(Idf.Base64Path2)) != idn) throw new InvalidOperationException("Path2");
+    if (Id.Parse(idn.ToString(Idf.Base64Path3)) != idn) throw new InvalidOperationException("Path3");
     if (Id.Parse(idn.ToString(Idf.Base58)) != idn) throw new InvalidOperationException("Base58");
 }
 
@@ -150,14 +150,14 @@ f3 = $"{id:|}";
 if (!f1.Equals(f2) || !f1.Equals(f3) || !id.Equals(Id.Parse(f3)))
     throw new InvalidOperationException();
 
-f1 = id.ToString(Idf.Path2);
+f1 = id.ToString(Idf.Base64Path2);
 f2 = id.ToString("//");
 f3 = $"{id://}";
 
 if (!f1.Equals(f2) || !f1.Equals(f3) || !id.Equals(Id.Parse(f3)))
     throw new InvalidOperationException();
 
-f1 = id.ToString(Idf.Path3);
+f1 = id.ToString(Idf.Base64Path3);
 f2 = id.ToString("///");
 f3 = $"{id:///}";
 

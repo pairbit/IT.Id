@@ -196,8 +196,8 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         Idf.Base85 => 15,
         Idf.Base64 or Idf.Base64Url => 16,
         Idf.Base58 => 17,
-        Idf.Path2 => 18,
-        Idf.Path3 => 19,
+        Idf.Base64Path2 => 18,
+        Idf.Base64Path3 => 19,
         Idf.Base32 or Idf.Base32Upper => 20,
         Idf.Hex or Idf.HexUpper => 24,
         _ => throw Ex.InvalidFormat(format)
@@ -208,8 +208,8 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         15 => Idf.Base85,
         16 => Idf.Base64,
         17 => Idf.Base58,
-        18 => Idf.Path2,
-        19 => Idf.Path3,
+        18 => Idf.Base64Path2,
+        19 => Idf.Base64Path3,
         20 => Idf.Base32,
         24 => Idf.Hex,
         _ => throw Ex.InvalidLength(length)
@@ -237,13 +237,13 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (length == 18)
         {
-            format = Idf.Path2;
+            format = Idf.Base64Path2;
             return true;
         }
 
         if (length == 19)
         {
-            format = Idf.Path3;
+            format = Idf.Base64Path3;
             return true;
         }
 
@@ -320,13 +320,13 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             return ParseBase85(chars);
         }
 
-        if (format == Idf.Path2)
+        if (format == Idf.Base64Path2)
         {
             if (chars.Length != 18) throw Ex.InvalidLengthChars(format, chars.Length);
             return ParsePath2(chars);
         }
 
-        if (format == Idf.Path3)
+        if (format == Idf.Base64Path3)
         {
             if (chars.Length != 19) throw Ex.InvalidLengthChars(format, chars.Length);
             return ParsePath3(chars);
@@ -382,13 +382,13 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             return ParseBase85(bytes);
         }
 
-        if (format == Idf.Path2)
+        if (format == Idf.Base64Path2)
         {
             if (bytes.Length != 18) throw Ex.InvalidLengthBytes(format, bytes.Length);
             return ParsePath2(bytes);
         }
 
-        if (format == Idf.Path3)
+        if (format == Idf.Base64Path3)
         {
             if (bytes.Length != 19) throw Ex.InvalidLengthBytes(format, bytes.Length);
             return ParsePath3(bytes);
@@ -545,8 +545,8 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         Idf.Base64 => ToBase64(),
         Idf.Base64Url => ToBase64Url(),
         Idf.Base85 => ToBase85(),
-        Idf.Path2 => ToPath2(),
-        Idf.Path3 => ToPath3(),
+        Idf.Base64Path2 => ToPath2(),
+        Idf.Base64Path3 => ToPath3(),
         _ => throw Ex.InvalidFormat(format),
     };
 
@@ -654,7 +654,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             return OperationStatus.Done;
         }
 
-        if (format == Idf.Path2)
+        if (format == Idf.Base64Path2)
         {
             if (bytes.Length < 18)
             {
@@ -666,7 +666,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             return OperationStatus.Done;
         }
 
-        if (format == Idf.Path3)
+        if (format == Idf.Base64Path3)
         {
             if (bytes.Length < 19)
             {
@@ -785,7 +785,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             return OperationStatus.Done;
         }
 
-        if (format == Idf.Path2)
+        if (format == Idf.Base64Path2)
         {
             if (chars.Length < 18)
             {
@@ -797,7 +797,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             return OperationStatus.Done;
         }
 
-        if (format == Idf.Path3)
+        if (format == Idf.Base64Path3)
         {
             if (chars.Length < 19)
             {
