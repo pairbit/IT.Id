@@ -280,7 +280,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             return true;
         }
 
-        if (length == 20)
+        if (length == 24)
         {
             format = Idf.Hex;
             return true;

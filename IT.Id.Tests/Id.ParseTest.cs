@@ -15,6 +15,9 @@ public class IdParseTest
     [Test]
     public void InvalidLength()
     {
+        Assert.IsFalse(Id.TryGetFormat(1, out var format));
+        Assert.That(format, Is.EqualTo((Idf)0));
+
         FormatException(() => Id.GetFormat(1),
             $"The length of System.Id cannot be 1. It must be 24 or between 15 and 20.");
 
@@ -46,7 +49,7 @@ public class IdParseTest
         FormatException(() => Id.Parse(new byte[] { 1, 2, 3, 4 }, Idf.Base58),
             $"The length of System.Id in Base58 format cannot be 4 bytes. It must be between 12 to 17 bytes long.");
 
-        var format = (Idf)123123;
+        format = (Idf)123123;
 
         InvalidFormat(format.ToString(), () => Id.Parse(Array.Empty<char>(), format));
         InvalidFormat(format.ToString(), () => Id.Parse(Array.Empty<byte>(), format));
@@ -201,6 +204,10 @@ public class IdParseTest
     private void InvalidChar(string str, char code)
     {
         var format = Id.GetFormat(str.Length);
+
+        Assert.IsTrue(Id.TryGetFormat(str.Length, out var format2));
+
+        Assert.That(format, Is.EqualTo(format2));
 
         var message = $"The System.Id in {format} format cannot contain character code {(int)code}.";
 
