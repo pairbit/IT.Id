@@ -279,8 +279,8 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         15 => ParseBase85(chars),
         16 => ParseBase64(chars),
         17 => ParseBase58(chars),
-        18 => ParsePath2(chars),
-        19 => ParsePath3(chars),
+        18 => ParseBase64Path2(chars),
+        19 => ParseBase64Path3(chars),
         20 => ParseBase32(chars),
         24 => ParseHex(chars),
         _ => throw Ex.InvalidLengthChars(chars.Length)
@@ -323,13 +323,13 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         if (format == Idf.Base64Path2)
         {
             if (chars.Length != 18) throw Ex.InvalidLengthChars(format, chars.Length);
-            return ParsePath2(chars);
+            return ParseBase64Path2(chars);
         }
 
         if (format == Idf.Base64Path3)
         {
             if (chars.Length != 19) throw Ex.InvalidLengthChars(format, chars.Length);
-            return ParsePath3(chars);
+            return ParseBase64Path3(chars);
         }
 
         throw Ex.InvalidFormat(format);
@@ -341,8 +341,8 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         15 => ParseBase85(bytes),
         16 => ParseBase64(bytes),
         17 => ParseBase58(bytes),
-        18 => ParsePath2(bytes),
-        19 => ParsePath3(bytes),
+        18 => ParseBase64Path2(bytes),
+        19 => ParseBase64Path3(bytes),
         20 => ParseBase32(bytes),
         24 => ParseHex(bytes),
         _ => throw Ex.InvalidLengthBytes(bytes.Length)
@@ -385,13 +385,13 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         if (format == Idf.Base64Path2)
         {
             if (bytes.Length != 18) throw Ex.InvalidLengthBytes(format, bytes.Length);
-            return ParsePath2(bytes);
+            return ParseBase64Path2(bytes);
         }
 
         if (format == Idf.Base64Path3)
         {
             if (bytes.Length != 19) throw Ex.InvalidLengthBytes(format, bytes.Length);
-            return ParsePath3(bytes);
+            return ParseBase64Path3(bytes);
         }
 
         throw Ex.InvalidFormat(format);
@@ -509,8 +509,8 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     /// "V" -> Base32 Upper (CE0YTMYC14FGVD7358B0) <br/>
     /// "i" -> Base58 (2ryw1nk6d1eiGQSL6) <br/>
     /// "/" -> Base64 (YqhPZ0Ax541HT+I/) <br/>
-    /// "//" -> Path2 (_\I\-TH145xA0ZPhqY) <br/>
-    /// "///" -> Path3 (_\I\-\TH145xA0ZPhqY) <br/>
+    /// "//" -> Base64 Path2 (_/I/-TH145xA0ZPhqY) <br/>
+    /// "///" -> Base64 Path3 (_/I/-/TH145xA0ZPhqY) <br/>
     /// "|" -> Base85 (v{IV^PiNKcFO_~|) <br/>
     /// </param>
     /// <exception cref="FormatException"/>
@@ -528,8 +528,8 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             "V" => ToBase32(Base32.UpperAlphabet),
             "i" => ToBase58(),
             "/" => ToBase64(),
-            "//" => ToPath2(),
-            "///" => ToPath3(),
+            "//" => ToBase64Path2(),
+            "///" => ToBase64Path3(),
             "|" => ToBase85(),
             _ => throw Ex.InvalidFormat(format),
         };
@@ -545,8 +545,8 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         Idf.Base64 => ToBase64(),
         Idf.Base64Url => ToBase64Url(),
         Idf.Base85 => ToBase85(),
-        Idf.Base64Path2 => ToPath2(),
-        Idf.Base64Path3 => ToPath3(),
+        Idf.Base64Path2 => ToBase64Path2(),
+        Idf.Base64Path3 => ToBase64Path3(),
         _ => throw Ex.InvalidFormat(format),
     };
 
@@ -661,7 +661,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
                 written = 0;
                 return OperationStatus.DestinationTooSmall;
             }
-            ToPath2(bytes, (byte)'/');
+            ToBase64Path2(bytes);
             written = 18;
             return OperationStatus.Done;
         }
@@ -673,7 +673,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
                 written = 0;
                 return OperationStatus.DestinationTooSmall;
             }
-            ToPath3(bytes, (byte)'/');
+            ToBase64Path3(bytes);
             written = 19;
             return OperationStatus.Done;
         }
@@ -792,7 +792,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
                 written = 0;
                 return OperationStatus.DestinationTooSmall;
             }
-            ToPath2(chars);
+            ToBase64Path2(chars);
             written = 18;
             return OperationStatus.Done;
         }
@@ -804,7 +804,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
                 written = 0;
                 return OperationStatus.DestinationTooSmall;
             }
-            ToPath3(chars);
+            ToBase64Path3(chars);
             written = 19;
             return OperationStatus.Done;
         }
@@ -820,8 +820,8 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     /// "V" -> Base32 Upper (CE0YTMYC14FGVD7358B0) <br/>
     /// "i" -> Base58 (2ryw1nk6d1eiGQSL6) <br/>
     /// "/" -> Base64 (YqhPZ0Ax541HT+I/) <br/>
-    /// "//" -> Path2 (_\I\-TH145xA0ZPhqY) <br/>
-    /// "///" -> Path3 (_\I\-\TH145xA0ZPhqY) <br/>
+    /// "//" -> Base64 Path2 (_/I/-TH145xA0ZPhqY) <br/>
+    /// "///" -> Base64 Path3 (_/I/-/TH145xA0ZPhqY) <br/>
     /// "|" -> Base85 (v{IV^PiNKcFO_~|) <br/>
     /// </param>
     /// <exception cref="FormatException"/>
@@ -963,7 +963,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
                     return false;
                 }
                 written = 18;
-                ToPath2(chars);
+                ToBase64Path2(chars);
                 return true;
             }
         }
@@ -978,7 +978,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
                     return false;
                 }
                 written = 19;
-                ToPath3(chars);
+                ToBase64Path3(chars);
                 return true;
             }
         }

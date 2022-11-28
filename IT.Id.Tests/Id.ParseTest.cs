@@ -171,15 +171,15 @@ public class IdParseTest
         Assert.That(Id.Parse("YqhPZ0Ax541HT+I_").ToString(Idf.Base64), Is.EqualTo(base64));
 
         //Win = \, Linux = /
-        var p = Path.DirectorySeparatorChar;
+        //var p = Path.DirectorySeparatorChar;
 
-        var path2 = $"_{p}I{p}-TH145xA0ZPhqY";
+        var path2 = $"_/I/-TH145xA0ZPhqY";
 
         Assert.That(Id.Parse("_\\I\\-TH145xA0ZPhqY").ToString(Idf.Base64Path2), Is.EqualTo(path2));
         Assert.That(Id.Parse("_/I/-TH145xA0ZPhqY").ToString(Idf.Base64Path2), Is.EqualTo(path2));
         Assert.That(Id.Parse("//I\\+TH145xA0ZPhqY").ToString(Idf.Base64Path2), Is.EqualTo(path2));
 
-        var path3 = $"_{p}I{p}-{p}TH145xA0ZPhqY";
+        var path3 = $"_/I/-/TH145xA0ZPhqY";
 
         Assert.That(Id.Parse("_\\I\\-\\TH145xA0ZPhqY").ToString(Idf.Base64Path3), Is.EqualTo(path3));
         Assert.That(Id.Parse("_/I/-/TH145xA0ZPhqY").ToString(Idf.Base64Path3), Is.EqualTo(path3));

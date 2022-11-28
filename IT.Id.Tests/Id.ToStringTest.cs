@@ -1,3 +1,6 @@
+using System.Buffers;
+using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -61,11 +64,11 @@ public class IdToStringTest
         Assert.That(CheckId(Id.Parse("v{IV^PiNKcFO_~|")).ToString(Idf.Base85), Is.EqualTo("v{IV^PiNKcFO_~|"));
 
         //Win = \, Linux = /
-        var p = Path.DirectorySeparatorChar;
+        //var p = Path.DirectorySeparatorChar;
 
-        Assert.That(CheckId(Id.Parse("_/I/-TH145xA0ZPhqY")).ToString(Idf.Base64Path2), Is.EqualTo($"_{p}I{p}-TH145xA0ZPhqY"));
+        Assert.That(CheckId(Id.Parse("_/I/-TH145xA0ZPhqY")).ToString(Idf.Base64Path2), Is.EqualTo($"_/I/-TH145xA0ZPhqY"));
 
-        Assert.That(CheckId(Id.Parse("_/I/-/TH145xA0ZPhqY")).ToString(Idf.Base64Path3), Is.EqualTo($"_{p}I{p}-{p}TH145xA0ZPhqY"));
+        Assert.That(CheckId(Id.Parse("_/I/-/TH145xA0ZPhqY")).ToString(Idf.Base64Path3), Is.EqualTo($"_/I/-/TH145xA0ZPhqY"));
     }
 
     [Test]
@@ -111,12 +114,12 @@ public class IdToStringTest
         CheckString(id, Idf.Base58, 17, 58, "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz",
             id.ToString("i"), $"{id:i}", base58);
 
-        var path2 = new string(base64Url.Reverse().ToArray()).Insert(2, Path.DirectorySeparatorChar.ToString()).Insert(1, Path.DirectorySeparatorChar.ToString());
+        var path2 = new string(base64Url.Reverse().ToArray()).Insert(2, "/").Insert(1, "/");
 
         CheckString(id, Idf.Base64Path2, 18, 66, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_/\\",
             id.ToString("//"), $"{id://}", path2);
 
-        var path3 = path2.Insert(5, Path.DirectorySeparatorChar.ToString());
+        var path3 = path2.Insert(5, "/");
 
         CheckString(id, Idf.Base64Path3, 19, 66, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_/\\",
             id.ToString(Idf.Base64Path3), id.ToString("///"), $"{id:///}", path3);
@@ -163,5 +166,33 @@ public class IdToStringTest
         {
             Assert.That(s, Is.EqualTo(str));
         }
+
+        //TryFormat Chars
+
+        Span<char> chars = stackalloc char[length];
+        var status = id.TryFormat(chars, out var written, format);
+        Assert.That(status, Is.EqualTo(OperationStatus.Done));
+        Assert.That(written, Is.EqualTo(length));
+        Assert.That(chars.SequenceEqual(s));
+
+        //TryFormat Bytes
+
+        var b = Encoding.UTF8.GetBytes(s);
+
+        Span<byte> bytes = stackalloc byte[length];
+        status = id.TryFormat(bytes, out written, format);
+        Assert.That(status, Is.EqualTo(OperationStatus.Done));
+        Assert.That(written, Is.EqualTo(length));
+        Assert.IsTrue(bytes.SequenceEqual(b));
+
+        //DestinationTooSmall
+
+        status = id.TryFormat(stackalloc char[length - 1], out written, format);
+        Assert.That(status, Is.EqualTo(OperationStatus.DestinationTooSmall));
+        Assert.That(written, Is.EqualTo(0));
+
+        status = id.TryFormat(stackalloc byte[length - 1], out written, format);
+        Assert.That(status, Is.EqualTo(OperationStatus.DestinationTooSmall));
+        Assert.That(written, Is.EqualTo(0));
     }
 }

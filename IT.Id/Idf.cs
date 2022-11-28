@@ -100,7 +100,7 @@ public enum Idf
     /// Win   = 38^2 + 38 = 1 482 max <br/>
     /// Linux = 64^2 + 64 = 4 160 max
     /// </summary>
-    /// <example>_\I\-TH145xA0ZPhqY</example>
+    /// <example>_/I/-TH145xA0ZPhqY</example>
     /// <remarks>
     /// Alphabet: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_/\ <br/>
     /// Example for Win: _\I\-TH145xA0ZPhqY <br/>
@@ -114,7 +114,7 @@ public enum Idf
     /// Win   = 38^3 + 38^2 + 38 =  56 354 max <br/>
     /// Linux = 64^3 + 64^2 + 64 = 266 304 max
     /// </summary>
-    /// <example>_\I\-\TH145xA0ZPhqY</example>
+    /// <example>_/I/-/TH145xA0ZPhqY</example>
     /// <remarks>
     /// Alphabet: ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_/\ <br/>
     /// Example for Win: _\I\-\TH145xA0ZPhqY <br/>

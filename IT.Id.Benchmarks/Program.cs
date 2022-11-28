@@ -30,14 +30,14 @@ var id = Id.Parse("62A84F674031E78D474FE23F");
 #region Json
 
 var serializerOptions = new JsonSerializerOptions();
-serializerOptions.Converters.Add(new JsonIdConverter { Format = Idf.Base58 });
+serializerOptions.Converters.Add(new JsonIdConverter { Format = Idf.Base64Path2 });
 serializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
 
-var ids = JsonSerializer.Serialize(id, serializerOptions);
+var idjs = JsonSerializer.Serialize(id, serializerOptions);
 
-var idd = JsonSerializer.Deserialize<Id>(ids);
+var idjd = JsonSerializer.Deserialize<Id>(idjs);
 
-if (!idd.Equals(id)) throw new InvalidOperationException();
+if (!idjd.Equals(id)) throw new InvalidOperationException();
 
 var myobj = new MyClass { Id = id, Value = 234 };
 
@@ -81,30 +81,43 @@ if (!process.Id.Equals(Environment.ProcessId)) throw new InvalidOperationExcepti
 //if (!id16.Id.Equals(id) || id16.Value != value12)
 //    throw new InvalidOperationException();
 
-var idb = new IT.Id.Benchmarks.IdStringBenchmark();
+var ids = new IT.Id.Benchmarks.IdStringBenchmark();
 
-var ulid = idb.Ulid_Decode();
+var ulid = ids.Ulid_Decode();
 
 var bytes = ulid.ToByteArray();
 
 var base32 = SimpleBase.Base32.Crockford.Encode(bytes);
 
-if (!base32.Equals(idb._ulidString))
-    Console.WriteLine($"Ulid '{idb._ulidString}' != Crockford base32 '{base32}'");
+if (!base32.Equals(ids._ulidString))
+    Console.WriteLine($"Ulid '{ids._ulidString}' != Crockford base32 '{base32}'");
 
 //var base32_2 = Wiry.Base32.Base32Encoding.Base32.GetString(bytes);
 
-var id1 = idb.Id_Decode_Hex();
-var id2 = idb.Id_Decode_Base64();
-var id3 = idb.Id_Decode_Base85();
-var id4 = idb.Id_Decode_Base64Path2();
-var id5 = idb.Id_Decode_Base64Path3();
-var id6 = idb.Id_Decode_Base32();
-var id7 = idb.Id_Decode_Base58();
+var id1 = ids.Id_Decode_Hex();
+var id2 = ids.Id_Decode_Base64();
+var id3 = ids.Id_Decode_Base85();
+var id4 = ids.Id_Decode_Base64Path2();
+var id5 = ids.Id_Decode_Base64Path3();
+var id6 = ids.Id_Decode_Base32();
+var id7 = ids.Id_Decode_Base58();
 
 //if (!idb._idBase32.Equals("CDF3X28R6E0ACQ4NEVR0")) throw new InvalidOperationException();
 
 if (!id1.Equals(id2) || !id1.Equals(id3) || !id1.Equals(id4) || 
+    !id1.Equals(id5) || !id1.Equals(id6) || !id1.Equals(id7)) throw new InvalidOperationException();
+
+var idb = new IT.Id.Benchmarks.IdBytesBenchmark();
+
+id1 = idb.Id_Decode_Hex();
+id2 = idb.Id_Decode_Base32();
+id3 = idb.Id_Decode_Base58();
+id4 = idb.Id_Decode_Base64();
+id5 = idb.Id_Decode_Base64Path2();
+id6 = idb.Id_Decode_Base64Path3();
+id7 = idb.Id_Decode_Base85();
+
+if (!id1.Equals(id2) || !id1.Equals(id3) || !id1.Equals(id4) ||
     !id1.Equals(id5) || !id1.Equals(id6) || !id1.Equals(id7)) throw new InvalidOperationException();
 
 Console.WriteLine("Ok");
