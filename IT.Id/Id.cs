@@ -1,5 +1,6 @@
 ﻿using Internal;
 using System.Buffers;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -32,6 +33,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     private static readonly Int32 _machinePid = (GetMachineXXHash() << 8) | ((_pid >> 8) & 0xff);
     private static readonly Int64 _random = CalculateRandomValue();
     private static Int32 _staticIncrement = new Random().Next();
+    private static IDictionary<Int32, String>? _machines;
 
     /// <summary>
     /// First 3 bytes of machine name hash
@@ -98,6 +100,8 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     public Int32 Machine => (_b >> 8) & 0xffffff;
 
+    public String? MachineName => _machines == null ? null : (_machines.TryGetValue(Machine, out var name) ? name : null);
+
     public Int16 Pid => (short)(((_b << 8) & 0xff00) | ((_c >> 24) & 0x00ff));
 
     public Int32 Increment => _c & 0xffffff;
@@ -131,10 +135,6 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     #endregion Operators
 
     #region Public Methods
-
-    //[DllImport(Interop.Libraries.SystemNative, EntryPoint = "SystemNative_GetSystemTimeAsTicks")]
-    //internal static extern long GetSystemTimeAsTicks();
-    //https://github.com/dotnet/runtime/blob/4aeec6397c7dd6198129219ed806f93d6ed675c0/src/libraries/Common/src/Interop/Unix/System.Native/Interop.GetSystemTimeAsTicks.cs
 
     #region New
 
@@ -288,6 +288,26 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         format = default;
         return false;
+    }
+
+    public static void Machines(params String[] names)
+    {
+        if (_machines != null) throw new InvalidOperationException("Machines already initialized");
+        if (names == null) throw new ArgumentNullException(nameof(names));
+        if (names.Length == 0) throw new ArgumentException("names is empty", nameof(names));
+
+        var machines = new Dictionary<Int32, String>();
+
+        foreach (var name in names)
+        {
+            var hash = XXHash24(name);
+
+            if (machines.ContainsKey(hash)) throw new ArgumentException($"Machine name '{name}' has already been added", nameof(names));
+
+            machines.Add(hash, name);
+        }
+
+        _machines = machines;
     }
 
     #region Parse
@@ -1207,9 +1227,10 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         return 0x00ffffff & machineName.GetHashCode(); // use first 3 bytes of hash
     }
 
-    private static int GetMachineXXHash()
+    private static int GetMachineXXHash() => XXHash24(Environment.MachineName);
+
+    private static int XXHash24(String machineName)
     {
-        var machineName = Environment.MachineName;
         var bytes = Encoding.UTF8.GetBytes(machineName);
         var hash = (int)Internal.XXH32.DigestOf(bytes);
         return 0x00ffffff & hash; // use first 3 bytes of hash
