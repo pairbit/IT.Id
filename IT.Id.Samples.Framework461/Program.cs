@@ -27,11 +27,11 @@ namespace Framework461
 
             foreach (Idf idf in Enum.GetValues(typeof(Idf)))
             {
-                Console.WriteLine($"{idf,9} -> {id.ToString(idf)}");
+                Console.WriteLine($"{idf,11} -> {id.ToString(idf)}");
             }
 
-            Console.WriteLine($"{"XXH32",9} -> {id.Hash32()}");
-            Console.WriteLine($"{"XXH64",9} -> {id.Hash64()}");
+            Console.WriteLine($"{"XXH32",11} -> {id.XXH32()}");
+            Console.WriteLine($"{"XXH64",11} -> {id.XXH64()}");
 
             var ids = System.Text.Json.JsonSerializer.Serialize(id);
 
