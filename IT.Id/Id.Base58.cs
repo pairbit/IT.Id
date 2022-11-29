@@ -1,5 +1,4 @@
 ﻿using Internal;
-using System.Runtime.CompilerServices;
 
 namespace System;
 
@@ -799,6 +798,158 @@ public readonly partial struct Id
         }
     }
 
+    private static bool TryParseBase58(ReadOnlySpan<Char> chars, out Id id)
+    {
+        var map = Base58.DecodeMap;
+
+        byte b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, b7 = 0, b8 = 0, b9 = 0, b10 = 0, b11 = 0;
+
+        for (int i = 0; i < chars.Length; i++)
+        {
+            char ch = chars[i];
+
+            if (ch < Base58.Min || ch > Base58.Max)
+            {
+                id = default;
+                return false;
+            }
+
+            int carry = map[ch];
+
+            if (carry == 0xFF)
+            {
+                id = default;
+                return false;
+            }
+
+            //1
+            carry += 58 * b11;
+            b11 = (byte)carry;
+
+            //2
+            carry = (carry >> 8) + (58 * b10);
+            b10 = (byte)carry;
+
+            //3
+            carry = (carry >> 8) + (58 * b9);
+            b9 = (byte)carry;
+
+            //4
+            carry = (carry >> 8) + (58 * b8);
+            b8 = (byte)carry;
+
+            //5
+            carry = (carry >> 8) + (58 * b7);
+            b7 = (byte)carry;
+
+            //6
+            carry = (carry >> 8) + (58 * b6);
+            b6 = (byte)carry;
+
+            //7
+            carry = (carry >> 8) + (58 * b5);
+            b5 = (byte)carry;
+
+            //8
+            carry = (carry >> 8) + (58 * b4);
+            b4 = (byte)carry;
+
+            //9
+            carry = (carry >> 8) + (58 * b3);
+            b3 = (byte)carry;
+
+            //10
+            carry = (carry >> 8) + (58 * b2);
+            b2 = (byte)carry;
+
+            //11
+            carry = (carry >> 8) + (58 * b1);
+            b1 = (byte)carry;
+
+            //12
+            b0 = (byte)((carry >> 8) + (58 * b0));
+        }
+
+        var timestamp = (b0 << 24) | (b1 << 16) | (b2 << 8) | b3;
+        var b = (b4 << 24) | (b5 << 16) | (b6 << 8) | b7;
+        var c = (b8 << 24) | (b9 << 16) | (b10 << 8) | b11;
+
+        id = new Id(timestamp, b, c);
+        return true;
+    }
+
+    private static bool TryParseBase58(ReadOnlySpan<Byte> bytes, out Id id)
+    {
+        var map = Base58.DecodeMap;
+
+        byte b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, b7 = 0, b8 = 0, b9 = 0, b10 = 0, b11 = 0;
+
+        for (int i = 0; i < bytes.Length; i++)
+        {
+            int carry = map[bytes[i]];
+
+            if (carry == 0xFF)
+            {
+                id = default;
+                return false;
+            }
+
+            //1
+            carry += 58 * b11;
+            b11 = (byte)carry;
+
+            //2
+            carry = (carry >> 8) + (58 * b10);
+            b10 = (byte)carry;
+
+            //3
+            carry = (carry >> 8) + (58 * b9);
+            b9 = (byte)carry;
+
+            //4
+            carry = (carry >> 8) + (58 * b8);
+            b8 = (byte)carry;
+
+            //5
+            carry = (carry >> 8) + (58 * b7);
+            b7 = (byte)carry;
+
+            //6
+            carry = (carry >> 8) + (58 * b6);
+            b6 = (byte)carry;
+
+            //7
+            carry = (carry >> 8) + (58 * b5);
+            b5 = (byte)carry;
+
+            //8
+            carry = (carry >> 8) + (58 * b4);
+            b4 = (byte)carry;
+
+            //9
+            carry = (carry >> 8) + (58 * b3);
+            b3 = (byte)carry;
+
+            //10
+            carry = (carry >> 8) + (58 * b2);
+            b2 = (byte)carry;
+
+            //11
+            carry = (carry >> 8) + (58 * b1);
+            b1 = (byte)carry;
+
+            //12
+            b0 = (byte)((carry >> 8) + (58 * b0));
+        }
+
+        var timestamp = (b0 << 24) | (b1 << 16) | (b2 << 8) | b3;
+        var b = (b4 << 24) | (b5 << 16) | (b6 << 8) | b7;
+        var c = (b8 << 24) | (b9 << 16) | (b10 << 8) | b11;
+
+        id = new Id(timestamp, b, c);
+        return true;
+    }
+
     private static Id ParseBase58(ReadOnlySpan<Char> chars)
     {
         var map = Base58.DecodeMap;
@@ -813,7 +964,7 @@ public readonly partial struct Id
 
             int carry = map[ch];
 
-            if (carry == -1) throw Ex.InvalidChar(Idf.Base58, ch);
+            if (carry == 0xFF) throw Ex.InvalidChar(Idf.Base58, ch);
 
             //1
             carry += 58 * b11;
@@ -878,13 +1029,9 @@ public readonly partial struct Id
 
         for (int i = 0; i < bytes.Length; i++)
         {
-            byte ch = bytes[i];
+            int carry = map[bytes[i]];
 
-            if (ch < Base58.Min || ch > Base58.Max) throw Ex.InvalidByte(Idf.Base58, ch);
-
-            int carry = map[ch];
-
-            if (carry == -1) throw Ex.InvalidByte(Idf.Base58, ch);
+            if (carry == 0xFF) throw Ex.InvalidByte(Idf.Base58, bytes[i]);
 
             //1
             carry += 58 * b11;

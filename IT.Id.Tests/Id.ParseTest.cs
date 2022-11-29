@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using SimpleBase;
 using System;
+using System.Buffers.Text;
 using System.Text;
 
 namespace Tests;
@@ -60,20 +61,11 @@ public class IdParseTest
         InvalidFormat("nf", () => Id.New().ToString("nf"));
         InvalidFormat("nf", () => Id.New().TryFormat(Array.Empty<char>(), out _, "nf"));
 
-        RequiredChars(() => Id.Parse("_aI/-TH145xA0ZPhqY", Idf.Base64Path2), Idf.Base64Path2.ToString(), 'a', 1);
-        RequiredChars(() => Id.Parse("_/Ib-TH145xA0ZPhqY", Idf.Base64Path2), Idf.Base64Path2.ToString(), 'b', 3);
-
-        RequiredBytes(() => Id.Parse(Encoding.UTF8.GetBytes("_aI/-TH145xA0ZPhqY"), Idf.Base64Path2), Idf.Base64Path2.ToString(), 'a', 1);
-        RequiredBytes(() => Id.Parse(Encoding.UTF8.GetBytes("_/Ib-TH145xA0ZPhqY"), Idf.Base64Path2), Idf.Base64Path2.ToString(), 'b', 3);
-
-        RequiredChars(() => Id.Parse("_cI/-/TH145xA0ZPhqY", Idf.Base64Path3), Idf.Base64Path3.ToString(), 'c', 1);
-        RequiredChars(() => Id.Parse("_/Id-/TH145xA0ZPhqY", Idf.Base64Path3), Idf.Base64Path3.ToString(), 'd', 3);
-        RequiredChars(() => Id.Parse("_/I/-eTH145xA0ZPhqY", Idf.Base64Path3), Idf.Base64Path3.ToString(), 'e', 5);
-
-        RequiredBytes(() => Id.Parse(Encoding.UTF8.GetBytes("_cI/-/TH145xA0ZPhqY"), Idf.Base64Path3), Idf.Base64Path3.ToString(), 'c', 1);
-        RequiredBytes(() => Id.Parse(Encoding.UTF8.GetBytes("_/Id-/TH145xA0ZPhqY"), Idf.Base64Path3), Idf.Base64Path3.ToString(), 'd', 3);
-        RequiredBytes(() => Id.Parse(Encoding.UTF8.GetBytes("_/I/-eTH145xA0ZPhqY"), Idf.Base64Path3), Idf.Base64Path3.ToString(), 'e', 5);
-
+        InvalidPath("_aI/-TH145xA0ZPhqY", Idf.Base64Path2, 'a', 1);
+        InvalidPath("_/Ib-TH145xA0ZPhqY", Idf.Base64Path2, 'b', 3);
+        InvalidPath("_cI/-/TH145xA0ZPhqY", Idf.Base64Path3, 'c', 1);
+        InvalidPath("_/Id-/TH145xA0ZPhqY", Idf.Base64Path3, 'd', 3);
+        InvalidPath("_/I/-eTH145xA0ZPhqY", Idf.Base64Path3, 'e', 5);
     }
 
     [Test]
@@ -139,54 +131,54 @@ public class IdParseTest
 
         //Upper == Lower
 
-        Assert.That(Id.Parse("62a84f674031e78d474fe23f").ToString(Idf.Hex), Is.EqualTo(base16));
-        Assert.That(Id.Parse("62A84F674031E78D474FE23F").ToString(Idf.Hex), Is.EqualTo(base16));
+        Valid("62a84f674031e78d474fe23f", Idf.Hex, base16);
+        Valid("62A84F674031E78D474FE23F", Idf.Hex, base16);
 
         var base32 = "cdz6zzec14fs687t52v0";
 
         //Upper == Lower
 
-        Assert.That(Id.Parse("CDZ6ZZEC14FS687T52V0").ToString(Idf.Base32), Is.EqualTo(base32));
-        Assert.That(Id.Parse("cdz6zzec14fs687t52v0").ToString(Idf.Base32), Is.EqualTo(base32));
+        Valid("CDZ6ZZEC14FS687T52V0", Idf.Base32, base32);
+        Valid("cdz6zzec14fs687t52v0", Idf.Base32, base32);
 
         //'o','O' -> 0
         //'i','I','l','L' -> 1
         //'u','U' -> 'V'
 
-        Assert.That(Id.Parse("CdZ6ZZECi4fs687t52Vo").ToString(Idf.Base32), Is.EqualTo(base32));
-        Assert.That(Id.Parse("CDz6zZECI4FS687T52uO").ToString(Idf.Base32), Is.EqualTo(base32));
-        Assert.That(Id.Parse("cDZ6ZzeCl4FS687T52Uo").ToString(Idf.Base32), Is.EqualTo(base32));
-        Assert.That(Id.Parse("CDZ6ZZECL4FS687T52VO").ToString(Idf.Base32), Is.EqualTo(base32));
+        Valid("CdZ6ZZECi4fs687t52Vo", Idf.Base32, base32);
+        Valid("CDz6zZECI4FS687T52uO", Idf.Base32, base32);
+        Valid("cDZ6ZzeCl4FS687T52Uo", Idf.Base32, base32);
+        Valid("CDZ6ZZECL4FS687T52VO", Idf.Base32, base32);
 
         var base58 = "2su1yC5sA8ji2ZrSo";
 
         //'O','0' -> 'o'
         //'I','l' -> '1'
-        Assert.That(Id.Parse("2sulyC5sA8ji2ZrSO").ToString(Idf.Base58), Is.EqualTo(base58));
-        Assert.That(Id.Parse("2suIyC5sA8ji2ZrS0").ToString(Idf.Base58), Is.EqualTo(base58));
-        Assert.That(Id.Parse("2su1yC5sA8ji2ZrSo").ToString(Idf.Base58), Is.EqualTo(base58));
+        Valid("2sulyC5sA8ji2ZrSO", Idf.Base58, base58);
+        Valid("2suIyC5sA8ji2ZrS0", Idf.Base58, base58);
+        Valid("2su1yC5sA8ji2ZrSo", Idf.Base58, base58);
 
         var base64 = "YqhPZ0Ax541HT+I/";
 
-        Assert.That(Id.Parse(base64).ToString(Idf.Base64), Is.EqualTo(base64));
-        Assert.That(Id.Parse("YqhPZ0Ax541HT-I_").ToString(Idf.Base64), Is.EqualTo(base64));
-        Assert.That(Id.Parse("YqhPZ0Ax541HT-I/").ToString(Idf.Base64), Is.EqualTo(base64));
-        Assert.That(Id.Parse("YqhPZ0Ax541HT+I_").ToString(Idf.Base64), Is.EqualTo(base64));
+        Valid(base64, Idf.Base64, base64);
+        Valid("YqhPZ0Ax541HT-I_", Idf.Base64, base64);
+        Valid("YqhPZ0Ax541HT-I/", Idf.Base64, base64);
+        Valid("YqhPZ0Ax541HT+I_", Idf.Base64, base64);
 
         //Win = \, Linux = /
         //var p = Path.DirectorySeparatorChar;
 
         var path2 = $"_/I/-TH145xA0ZPhqY";
 
-        Assert.That(Id.Parse("_\\I\\-TH145xA0ZPhqY").ToString(Idf.Base64Path2), Is.EqualTo(path2));
-        Assert.That(Id.Parse("_/I/-TH145xA0ZPhqY").ToString(Idf.Base64Path2), Is.EqualTo(path2));
-        Assert.That(Id.Parse("//I\\+TH145xA0ZPhqY").ToString(Idf.Base64Path2), Is.EqualTo(path2));
+        Valid("_\\I\\-TH145xA0ZPhqY", Idf.Base64Path2, path2);
+        Valid("_/I/-TH145xA0ZPhqY", Idf.Base64Path2, path2);
+        Valid("//I\\+TH145xA0ZPhqY", Idf.Base64Path2, path2);
 
         var path3 = $"_/I/-/TH145xA0ZPhqY";
 
-        Assert.That(Id.Parse("_\\I\\-\\TH145xA0ZPhqY").ToString(Idf.Base64Path3), Is.EqualTo(path3));
-        Assert.That(Id.Parse("_/I/-/TH145xA0ZPhqY").ToString(Idf.Base64Path3), Is.EqualTo(path3));
-        Assert.That(Id.Parse("/\\I/+\\TH145xA0ZPhqY").ToString(Idf.Base64Path3), Is.EqualTo(path3));
+        Valid("_\\I\\-\\TH145xA0ZPhqY", Idf.Base64Path3, path3);
+        Valid("_/I/-/TH145xA0ZPhqY", Idf.Base64Path3, path3);
+        Valid("/\\I/+\\TH145xA0ZPhqY", Idf.Base64Path3, path3);
 
         var base85 = "v{IV^PiNKcFO_~|";
 
@@ -194,11 +186,35 @@ public class IdParseTest
         //'&' -> '_'
         //'<' -> '~'
         //'>' -> '|'
-        Assert.That(Id.Parse("v{IV^PiNKcFO&<>").ToString(Idf.Base85), Is.EqualTo(base85));
-        Assert.That(Id.Parse("v{IV^PiNKcFO_<>").ToString(Idf.Base85), Is.EqualTo(base85));
-        Assert.That(Id.Parse("v{IV^PiNKcFO&~>").ToString(Idf.Base85), Is.EqualTo(base85));
-        Assert.That(Id.Parse("v{IV^PiNKcFO&<|").ToString(Idf.Base85), Is.EqualTo(base85));
-        Assert.That(Id.Parse("v{IV^PiNKcFO_~|").ToString(Idf.Base85), Is.EqualTo(base85));
+        Valid("v{IV^PiNKcFO&<>", Idf.Base85, base85);
+        Valid("v{IV^PiNKcFO_<>", Idf.Base85, base85);
+        Valid("v{IV^PiNKcFO&~>", Idf.Base85, base85);
+        Valid("v{IV^PiNKcFO&<|", Idf.Base85, base85);
+        Valid("v{IV^PiNKcFO_~|", Idf.Base85, base85);
+    }
+
+    private void Valid(string str, Idf format, string tostring)
+    {
+        var id = Id.Parse(str, format);
+        Assert.That(id.ToString(format), Is.EqualTo(tostring));
+        Assert.That(id, Is.EqualTo(Id.Parse(str)));
+
+        Assert.IsTrue(Id.TryParse(str, format, out var id2));
+        Assert.That(id, Is.EqualTo(id2));
+
+        Assert.IsTrue(Id.TryParse(str, out var id3));
+        Assert.That(id, Is.EqualTo(id3));
+
+        var bytes = Encoding.UTF8.GetBytes(str);
+
+        Assert.That(id, Is.EqualTo(Id.Parse(bytes, format)));
+        Assert.That(id, Is.EqualTo(Id.Parse(bytes)));
+
+        Assert.IsTrue(Id.TryParse(bytes, format, out var id4));
+        Assert.That(id, Is.EqualTo(id4));
+
+        Assert.IsTrue(Id.TryParse(bytes, out var id5));
+        Assert.That(id, Is.EqualTo(id5));
     }
 
     private void InvalidChar(string str, char code)
@@ -208,6 +224,12 @@ public class IdParseTest
         Assert.IsTrue(Id.TryGetFormat(str.Length, out var format2));
 
         Assert.That(format, Is.EqualTo(format2));
+
+        Assert.IsFalse(Id.TryParse(str, out var id));
+        Assert.That(id, Is.EqualTo((Id)default));
+
+        Assert.IsFalse(Id.TryParse(str, format, out id));
+        Assert.That(id, Is.EqualTo((Id)default));
 
         var message = $"The System.Id in {format} format cannot contain character code {(int)code}.";
 
@@ -226,6 +248,12 @@ public class IdParseTest
             var bytes = Encoding.UTF8.GetBytes(str);
             Assert.That(bytes, Has.Length.EqualTo(str.Length));
 
+            Assert.IsFalse(Id.TryParse(bytes, out id));
+            Assert.That(id, Is.EqualTo((Id)default));
+
+            Assert.IsFalse(Id.TryParse(bytes, format, out id));
+            Assert.That(id, Is.EqualTo((Id)default));
+
             ex = Assert.Throws<FormatException>(() => Id.Parse(bytes));
             Assert.That(ex.Message, Is.EqualTo(message));
 
@@ -239,10 +267,45 @@ public class IdParseTest
         FormatException(() => Id.Parse(str, format),
             $"The length of System.Id in {format} format cannot be {str.Length} characters. It must be {Id.GetLength(format)} characters long.");
 
+        Assert.IsFalse(Id.TryParse(str, out var id));
+        Assert.That(id, Is.EqualTo((Id)default));
+
+        Assert.IsFalse(Id.TryParse(str, format, out id));
+        Assert.That(id, Is.EqualTo((Id)default));
+
         var bytes = Encoding.UTF8.GetBytes(str);
 
         FormatException(() => Id.Parse(bytes, format),
             $"The length of System.Id in {format} format cannot be {bytes.Length} bytes. It must be {Id.GetLength(format)} bytes long.");
+
+        Assert.IsFalse(Id.TryParse(bytes, out id));
+        Assert.That(id, Is.EqualTo((Id)default));
+
+        Assert.IsFalse(Id.TryParse(bytes, format, out id));
+        Assert.That(id, Is.EqualTo((Id)default));
+    }
+
+    private void InvalidPath(string str, Idf format, int code, int index)
+    {
+        Assert.IsFalse(Id.TryParse(str, out var id));
+        Assert.That(id, Is.EqualTo((Id)default));
+
+        Assert.IsFalse(Id.TryParse(str, format, out id));
+        Assert.That(id, Is.EqualTo((Id)default));
+
+        RequiredChars(() => Id.Parse(str), format.ToString(), code, index);
+        RequiredChars(() => Id.Parse(str, format), format.ToString(), code, index);
+
+        var bytes = Encoding.UTF8.GetBytes(str);
+
+        Assert.IsFalse(Id.TryParse(bytes, out id));
+        Assert.That(id, Is.EqualTo((Id)default));
+
+        Assert.IsFalse(Id.TryParse(bytes, format, out id));
+        Assert.That(id, Is.EqualTo((Id)default));
+
+        RequiredBytes(() => Id.Parse(bytes), format.ToString(), code, index);
+        RequiredBytes(() => Id.Parse(bytes, format), format.ToString(), code, index);
     }
 
     private void InvalidFormat<T>(string format, Func<T> func)

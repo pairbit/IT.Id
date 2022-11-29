@@ -436,13 +436,149 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
 #endif
 
-    public static Boolean TryParse(ReadOnlySpan<Char> chars, out Id id) => throw new NotImplementedException("https://github.com/pairbit/IT.Id/issues/1");
+    public static Boolean TryParse(ReadOnlySpan<Char> chars, out Id id)
+    {
+        var len = chars.Length;
 
-    public static Boolean TryParse(ReadOnlySpan<Char> chars, Idf format, out Id id) => throw new NotImplementedException("https://github.com/pairbit/IT.Id/issues/1");
+        if (len == 15) return TryParseBase85(chars, out id);
 
-    public static Boolean TryParse(ReadOnlySpan<Byte> bytes, out Id id) => throw new NotImplementedException("https://github.com/pairbit/IT.Id/issues/1");
+        if (len == 16) return TryParseBase64(chars, out id);
 
-    public static Boolean TryParse(ReadOnlySpan<Byte> bytes, Idf format, out Id id) => throw new NotImplementedException("https://github.com/pairbit/IT.Id/issues/1");
+        if (len == 17) return TryParseBase58(chars, out id);
+
+        if (len == 18) return TryParseBase64Path2(chars, out id);
+
+        if (len == 19) return TryParseBase64Path3(chars, out id);
+
+        if (len == 20) return TryParseBase32(chars, out id);
+
+        if (len == 24) return TryParseHex(chars, out id);
+
+        id = default;
+        return false;
+    }
+
+    public static Boolean TryParse(ReadOnlySpan<Char> chars, Idf format, out Id id)
+    {
+        if (format == Idf.Hex || format == Idf.HexUpper)
+        {
+            if (chars.Length != 24) goto fail;
+            return TryParseHex(chars, out id);
+        }
+
+        if (format == Idf.Base32 || format == Idf.Base32Upper)
+        {
+            if (chars.Length != 20) goto fail;
+            return TryParseBase32(chars, out id);
+        }
+
+        if (format == Idf.Base58)
+        {
+            var len = chars.Length;
+            if (len < 12 || len > 17) goto fail;
+            return TryParseBase58(chars, out id);
+        }
+
+        if (format == Idf.Base64 || format == Idf.Base64Url)
+        {
+            if (chars.Length != 16) goto fail;
+            return TryParseBase64(chars, out id);
+        }
+
+        if (format == Idf.Base85)
+        {
+            if (chars.Length != 15) goto fail;
+            return TryParseBase85(chars, out id);
+        }
+
+        if (format == Idf.Base64Path2)
+        {
+            if (chars.Length != 18) goto fail;
+            return TryParseBase64Path2(chars, out id);
+        }
+
+        if (format == Idf.Base64Path3)
+        {
+            if (chars.Length != 19) goto fail;
+            return TryParseBase64Path3(chars, out id);
+        }
+
+    fail:
+        id = default;
+        return false;
+    }
+
+    public static Boolean TryParse(ReadOnlySpan<Byte> bytes, out Id id)
+    {
+        var len = bytes.Length;
+
+        if (len == 15) return TryParseBase85(bytes, out id);
+
+        if (len == 16) return TryParseBase64(bytes, out id);
+
+        if (len == 17) return TryParseBase58(bytes, out id);
+
+        if (len == 18) return TryParseBase64Path2(bytes, out id);
+
+        if (len == 19) return TryParseBase64Path3(bytes, out id);
+
+        if (len == 20) return TryParseBase32(bytes, out id);
+
+        if (len == 24) return TryParseHex(bytes, out id);
+
+        id = default;
+        return false;
+    }
+
+    public static Boolean TryParse(ReadOnlySpan<Byte> bytes, Idf format, out Id id)
+    {
+        if (format == Idf.Hex || format == Idf.HexUpper)
+        {
+            if (bytes.Length != 24) goto fail;
+            return TryParseHex(bytes, out id);
+        }
+
+        if (format == Idf.Base32 || format == Idf.Base32Upper)
+        {
+            if (bytes.Length != 20) goto fail;
+            return TryParseBase32(bytes, out id);
+        }
+
+        if (format == Idf.Base58)
+        {
+            var len = bytes.Length;
+            if (len < 12 || len > 17) goto fail;
+            return TryParseBase58(bytes, out id);
+        }
+
+        if (format == Idf.Base64 || format == Idf.Base64Url)
+        {
+            if (bytes.Length != 16) goto fail;
+            return TryParseBase64(bytes, out id);
+        }
+
+        if (format == Idf.Base85)
+        {
+            if (bytes.Length != 15) goto fail;
+            return TryParseBase85(bytes, out id);
+        }
+
+        if (format == Idf.Base64Path2)
+        {
+            if (bytes.Length != 18) goto fail;
+            return TryParseBase64Path2(bytes, out id);
+        }
+
+        if (format == Idf.Base64Path3)
+        {
+            if (bytes.Length != 19) goto fail;
+            return TryParseBase64Path3(bytes, out id);
+        }
+
+    fail:
+        id = default;
+        return false;
+    }
 
     #endregion TryParse
 

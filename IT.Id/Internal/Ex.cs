@@ -30,75 +30,83 @@ internal static class Ex
 
     public static Exception InvalidFormat(String format, String type = "Id") => new FormatException($"The System.{type} does not contain '{format}' format.");
 
-    public static Exception InvalidChar(Idf format, params int[] codes)
-    {
-        var min = GetMin(format);
-        var max = GetMax(format);
-        var map = GetMap(format);
+    public static Exception InvalidChar(Idf format, params int[] codes) => Invalid(false, format, codes);
 
-        foreach (var code in codes)
-        {
-            if (code < min || code > max || map[code] == -1)
-                return InvalidChar(format, code);
-        }
+    public static Exception InvalidChar(Idf format, int code) => Invalid(false, format, code);
 
-        throw new NotImplementedException();
-    }
+    public static Exception InvalidCharIndex(Idf format, int index, int invalidCode, params int[] validCodes)
+        => InvalidWithIndex(false, format, index, invalidCode, validCodes);
 
-    public static Exception InvalidChar(Idf format, int code)
-        => new FormatException($"The System.Id in {format} format cannot contain character code {code}.");
+    public static Exception InvalidByte(Idf format, params int[] codes) => Invalid(true, format, codes);
 
-    public static Exception InvalidCharIndex(Idf format, int index, int invalidCode, params char[] validCodes)
-        => new FormatException($"The System.Id in {format} format cannot contain character code {invalidCode} at position {index}. It must contain one of characters {String.Join(", ", validCodes.Select(x => "'" + x + "'"))}.");
-
-    public static Exception InvalidByte(Idf format, params int[] codes)
-    {
-        var min = GetMin(format);
-        var max = GetMax(format);
-        var map = GetMap(format);
-
-        foreach (var code in codes)
-        {
-            if (code < min || code > max || map[code] == -1)
-                return InvalidByte(format, code);
-        }
-
-        throw new NotImplementedException();
-    }
-
-    public static Exception InvalidByte(Idf format, int code)
-        => new FormatException($"The System.Id in {format} format cannot contain byte {code}.");
+    public static Exception InvalidByte(Idf format, int code) => Invalid(true, format, code);
 
     public static Exception InvalidByteIndex(Idf format, int index, int invalidCode, params int[] validCodes)
-        => new FormatException($"The System.Id in {format} format cannot contain byte {invalidCode} at position {index}. It must contain one of bytes {String.Join(", ", validCodes)}.");
+        => InvalidWithIndex(true, format, index, invalidCode, validCodes);
 
-    private static int GetMin(Idf format) => format switch
-    {
-        Idf.Hex => Hex.Min,
-        Idf.Base32 => Base32.Min,
-        Idf.Base58 => Base58.Min,
-        Idf.Base64 or Idf.Base64Path2 or Idf.Base64Path3 => Base64.Min,
-        Idf.Base85 => Base85.Min,
-        _ => throw new NotImplementedException()
-    };
+    private static Exception Invalid(bool isByte, Idf format, int code)
+        => new FormatException(isByte
+            ? $"The System.Id in {format} format cannot contain byte {code}."
+            : $"The System.Id in {format} format cannot contain character code {code}.");
 
-    private static int GetMax(Idf format) => format switch
-    {
-        Idf.Hex => Hex.Max,
-        Idf.Base32 => Base32.Max,
-        Idf.Base58 => Base58.Max,
-        Idf.Base64 or Idf.Base64Path2 or Idf.Base64Path3 => Base64.Max,
-        Idf.Base85 => Base85.Max,
-        _ => throw new NotImplementedException()
-    };
+    private static Exception InvalidWithIndex(bool isByte, Idf format, int index, int invalidCode, int[] validCodes)
+       => new FormatException(isByte
+           ? $"The System.Id in {format} format cannot contain byte {invalidCode} at position {index}. It must contain one of bytes {String.Join(", ", validCodes)}."
+           : $"The System.Id in {format} format cannot contain character code {invalidCode} at position {index}. It must contain one of characters {String.Join(", ", validCodes.Select(x => "'" + (char)x + "'"))}.");
 
-    private static sbyte[] GetMap(Idf format) => format switch
+
+    private static Exception Invalid(bool isByte, Idf format, int[] codes)
     {
-        Idf.Hex => Hex.DecodeMap,
-        Idf.Base32 => Base32.DecodeMap,
-        Idf.Base58 => Base58.DecodeMap,
-        Idf.Base64 or Idf.Base64Path2 or Idf.Base64Path3 => Base64.DecodeMap,
-        Idf.Base85 => Base85.DecodeMap,
-        _ => throw new NotImplementedException()
-    };
+        if (format == Idf.Hex || format == Idf.HexUpper)
+        {
+            var map = Hex.DecodeMap;
+            foreach (var code in codes)
+            {
+                if (code < Hex.Min || code > Hex.Max || map[code] == 0xFF)
+                    return Invalid(isByte, format, code);
+            }
+        }
+
+        if (format == Idf.Base32 || format == Idf.Base32Upper)
+        {
+            var map = Base32.DecodeMap;
+            foreach (var code in codes)
+            {
+                if (code < Base32.Min || code > Base32.Max || map[code] == 0xFF)
+                    return Invalid(isByte, format, code);
+            }
+        }
+
+        if (format == Idf.Base58)
+        {
+            var map = Base58.DecodeMap;
+            foreach (var code in codes)
+            {
+                if (code < Base58.Min || code > Base58.Max || map[code] == 0xFF)
+                    return Invalid(isByte, format, code);
+            }
+        }
+
+        if (format == Idf.Base64 || format == Idf.Base64Path2 || format == Idf.Base64Path3)
+        {
+            var map = Base64.DecodeMap;
+            foreach (var code in codes)
+            {
+                if (code < Base64.Min || code > Base64.Max || map[code] == -1)
+                    return Invalid(isByte, format, code);
+            }
+        }
+
+        if (format == Idf.Base85)
+        {
+            var map = Base85.DecodeMap;
+            foreach (var code in codes)
+            {
+                if (code < Base85.Min || code > Base85.Max || map[code] == 0xFF)
+                    return Invalid(isByte, format, code);
+            }
+        }
+
+        throw new NotImplementedException();
+    }
 }

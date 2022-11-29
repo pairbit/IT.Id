@@ -146,6 +146,154 @@ public readonly partial struct Id
         }
     }
 
+    private static bool TryParseBase64Path2(ReadOnlySpan<Char> chars, out Id id)
+    {
+        var sep = chars[1];
+        if (sep != '\\' && sep != '/') goto fail;
+
+        sep = chars[3];
+        if (sep != '\\' && sep != '/') goto fail;
+
+        ReadOnlySpan<sbyte> mapSpan = Base64.DecodeMap;
+        ref char src = ref MemoryMarshal.GetReference(chars);
+        ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
+
+        int i0 = Unsafe.Add(ref src, 17);
+        int i1 = Unsafe.Add(ref src, 16);
+        int i2 = Unsafe.Add(ref src, 15);
+        int i3 = Unsafe.Add(ref src, 14);
+
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) goto fail;
+
+        var val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+
+        if (val < 0) goto fail;
+
+        var timestamp = (byte)(val >> 16) << 24 | (byte)(val >> 8) << 16 | (byte)val << 8;
+
+        i0 = Unsafe.Add(ref src, 13);
+        i1 = Unsafe.Add(ref src, 12);
+        i2 = Unsafe.Add(ref src, 11);
+        i3 = Unsafe.Add(ref src, 10);
+
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) goto fail;
+
+        val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+
+        if (val < 0) goto fail;
+
+        timestamp |= (byte)(val >> 16);
+
+        var b = (byte)(val >> 8) << 24 | (byte)val << 16;
+
+        i0 = Unsafe.Add(ref src, 9);
+        i1 = Unsafe.Add(ref src, 8);
+        i2 = Unsafe.Add(ref src, 7);
+        i3 = Unsafe.Add(ref src, 6);
+
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) goto fail;
+
+        val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+
+        if (val < 0) goto fail;
+
+        b |= (byte)(val >> 16) << 8 | (byte)(val >> 8);
+
+        var c = (byte)val << 24;
+
+        i0 = Unsafe.Add(ref src, 5);
+        i1 = Unsafe.Add(ref src, 4);
+        i2 = Unsafe.Add(ref src, 2);
+        i3 = Unsafe.Add(ref src, 0);
+
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) goto fail;
+
+        val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+
+        if (val < 0) goto fail;
+
+        id = new Id(timestamp, b, c | val);
+        return true;
+
+    fail:
+        id = default;
+        return false;
+    }
+
+    private static bool TryParseBase64Path2(ReadOnlySpan<Byte> bytes, out Id id)
+    {
+        var sep = bytes[1];
+        if (sep != '\\' && sep != '/') goto fail;
+
+        sep = bytes[3];
+        if (sep != '\\' && sep != '/') goto fail;
+
+        ReadOnlySpan<sbyte> mapSpan = Base64.DecodeMap;
+        ref byte src = ref MemoryMarshal.GetReference(bytes);
+        ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
+
+        int i0 = Unsafe.Add(ref src, 17);
+        int i1 = Unsafe.Add(ref src, 16);
+        int i2 = Unsafe.Add(ref src, 15);
+        int i3 = Unsafe.Add(ref src, 14);
+
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) goto fail;
+
+        var val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+
+        if (val < 0) goto fail;
+
+        var timestamp = (byte)(val >> 16) << 24 | (byte)(val >> 8) << 16 | (byte)val << 8;
+
+        i0 = Unsafe.Add(ref src, 13);
+        i1 = Unsafe.Add(ref src, 12);
+        i2 = Unsafe.Add(ref src, 11);
+        i3 = Unsafe.Add(ref src, 10);
+
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) goto fail;
+
+        val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+
+        if (val < 0) goto fail;
+
+        timestamp |= (byte)(val >> 16);
+
+        var b = (byte)(val >> 8) << 24 | (byte)val << 16;
+
+        i0 = Unsafe.Add(ref src, 9);
+        i1 = Unsafe.Add(ref src, 8);
+        i2 = Unsafe.Add(ref src, 7);
+        i3 = Unsafe.Add(ref src, 6);
+
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) goto fail;
+
+        val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+
+        if (val < 0) goto fail;
+
+        b |= (byte)(val >> 16) << 8 | (byte)(val >> 8);
+
+        var c = (byte)val << 24;
+
+        i0 = Unsafe.Add(ref src, 5);
+        i1 = Unsafe.Add(ref src, 4);
+        i2 = Unsafe.Add(ref src, 2);
+        i3 = Unsafe.Add(ref src, 0);
+
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) goto fail;
+
+        val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+
+        if (val < 0) goto fail;
+
+        id = new Id(timestamp, b, c | val);
+        return true;
+
+    fail:
+        id = default;
+        return false;
+    }
+
     private static Id ParseBase64Path2(ReadOnlySpan<Char> chars)
     {
         var sep = chars[1];
