@@ -29,7 +29,7 @@ public class IdStringBenchmark
         _idHexLower = Id_Encode_HexLower();
         _idBase32 = Id_Encode_Base32();
         _idBase58 = Id_Encode_Base58();
-        _idBase64Url = Id_Encode_Base64Url();
+        _idBase64Url = Id_Encode_Base64();
         _idBase85 = Id_Encode_Base85();
         _idPath2 = Id_Encode_Base64Path2();
         _idPath3 = Id_Encode_Base64Path3();
@@ -72,7 +72,7 @@ public class IdStringBenchmark
     public System.Id Id_Decode_Base58_SimpleBase() => new System.Id(SimpleBase.Base58.Bitcoin.Decode(_idBase58));
 
     [Benchmark]
-    public String Id_Encode_Base64Url() => _id.ToString();
+    public String Id_Encode_Base64() => _id.ToString();
 
     [Benchmark]
     public System.Id Id_Decode_Base64() => System.Id.Parse(_idBase64Url);

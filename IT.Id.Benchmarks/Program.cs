@@ -120,6 +120,30 @@ id7 = idb.Id_Decode_Base85();
 if (!id1.Equals(id2) || !id1.Equals(id3) || !id1.Equals(id4) ||
     !id1.Equals(id5) || !id1.Equals(id6) || !id1.Equals(id7)) throw new InvalidOperationException();
 
+id1 = idb.Id_TryDecode_Hex();
+id2 = idb.Id_TryDecode_Base32();
+id3 = idb.Id_TryDecode_Base58();
+id4 = idb.Id_TryDecode_Base64();
+id5 = idb.Id_TryDecode_Base64Path2();
+id6 = idb.Id_TryDecode_Base64Path3();
+id7 = idb.Id_TryDecode_Base85();
+
+if (!id1.Equals(id2) || !id1.Equals(id3) || !id1.Equals(id4) ||
+    !id1.Equals(id5) || !id1.Equals(id6) || !id1.Equals(id7)) throw new InvalidOperationException();
+
+var idc = new IT.Id.Benchmarks.IdTryCharsBenchmark();
+
+id1 = idc.Id_Decode_Hex();
+id2 = idc.Id_Decode_Base32();
+id3 = idc.Id_Decode_Base58();
+id4 = idc.Id_Decode_Base64();
+id5 = idc.Id_Decode_Base64Path2();
+id6 = idc.Id_Decode_Base64Path3();
+id7 = idc.Id_Decode_Base85();
+
+if (!id1.Equals(id2) || !id1.Equals(id3) || !id1.Equals(id4) ||
+    !id1.Equals(id5) || !id1.Equals(id6) || !id1.Equals(id7)) throw new InvalidOperationException();
+
 Console.WriteLine("Ok");
 
 var idBytes = id.ToByteArray();
