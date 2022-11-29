@@ -207,5 +207,16 @@ public class IdToStringTest
         status = id.TryFormat(stackalloc byte[length - 1], out written, format);
         Assert.That(status, Is.EqualTo(OperationStatus.DestinationTooSmall));
         Assert.That(written, Is.EqualTo(0));
+
+        //Json
+        var serializerOptions = new JsonSerializerOptions();
+        serializerOptions.Converters.Add(new JsonIdConverter { Format = format });
+        serializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
+
+        var idJson = JsonSerializer.Serialize(id, serializerOptions);
+        Assert.That(idJson, Is.EqualTo("\"" + s + "\""));
+
+        var idfromJson = JsonSerializer.Deserialize<Id>(idJson);
+        Assert.That(idfromJson, Is.EqualTo(id));
     }
 }

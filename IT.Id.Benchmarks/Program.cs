@@ -273,6 +273,8 @@ Console.WriteLine("Ok");
 
 BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IT.Id.Benchmarks.IdStringBenchmark));
 
+BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IT.Id.Benchmarks.IdBytesBenchmark));
+
 class MyClass
 {
     //[JsonConverter(typeof(DateTimeOffsetJsonConverter))]
