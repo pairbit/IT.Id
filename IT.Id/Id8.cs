@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace System;
 
 [StructLayout(LayoutKind.Explicit, Size = 13)]
-public readonly struct Id8 : IComparable<Id8>, IEquatable<Id8>
+internal readonly struct Id8 : IComparable<Id8>, IEquatable<Id8>
 {
     [FieldOffset(0)]
     private readonly Id _id;

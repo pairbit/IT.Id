@@ -12,7 +12,7 @@ public enum Idf
     /// Length: 24 <br/>
     /// Format: h
     /// </remarks>
-    Hex = 15,
+    Hex = 16,
 
     /// <summary>
     /// Base16 Upper
@@ -24,7 +24,7 @@ public enum Idf
     /// Length: 24 <br/>
     /// Format: H
     /// </remarks>
-    HexUpper = 16,
+    HexUpper = 17,
 
     /// <summary>
     /// Base32 Crockford's Lower
