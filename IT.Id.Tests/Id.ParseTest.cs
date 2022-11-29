@@ -69,6 +69,24 @@ public class IdParseTest
     }
 
     [Test]
+    public void InvalidAllChar()
+    {
+        InvalidAllChar("62a84f674031e78d474fe23f", '/', 'G', 'g');
+
+        InvalidAllChar("CDZ6ZZEC14FS687T52V0", '/', '_', '{');
+
+        InvalidAllChar("2su1yC5sA8ji2ZrSo", '/', '_', '{');
+
+        InvalidAllChar("YqhPZ0Ax541HT+I/", '*', '^', '{');
+
+        InvalidAllChar("_/I/-TH145xA0ZPhqY", new[] { 1, 3 }, '*', '^', '{');
+
+        InvalidAllChar("_/I/-/TH145xA0ZPhqY", new[] { 1, 3, 5 }, '*', '^', '{');
+
+        InvalidAllChar("v{IV^PiNKcFO_~|", ' ', ',', ';', '\u007f');
+    }
+
+    [Test]
     public void InvalidChar()
     {
         //Base16 -> 62a84f674031e78d474fe23f
@@ -215,6 +233,33 @@ public class IdParseTest
 
         Assert.IsTrue(Id.TryParse(bytes, out var id5));
         Assert.That(id, Is.EqualTo(id5));
+    }
+
+    private void InvalidAllChar(string str, params char[] codes)
+    {
+        foreach (var code in codes)
+        {
+            for (int i = 0; i < str.Length; i++)
+            {
+                Span<char> span = str.ToArray();
+                span[i] = code;
+                InvalidChar(new string(span), code);
+            }
+        }
+    }
+
+    private void InvalidAllChar(string str, int[] skip, params char[] codes)
+    {
+        foreach (var code in codes)
+        {
+            for (int i = 0; i < str.Length; i++)
+            {
+                if (skip.Contains(i)) continue;
+                Span<char> span = str.ToArray();
+                span[i] = code;
+                InvalidChar(new string(span), code);
+            }
+        }
     }
 
     private void InvalidChar(string str, char code)
