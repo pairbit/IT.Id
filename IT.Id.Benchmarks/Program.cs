@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using IT.Id.Benchmarks;
+using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -8,9 +9,12 @@ using System.Text.Json.Serialization;
 
 //Console.WriteLine($"{high} - {low}");
 
-//Console.WriteLine($"SizeOf Id - {System.Runtime.InteropServices.Marshal.SizeOf<Id>()} bytes");
-//Console.WriteLine($"SizeOf Id8 - {System.Runtime.InteropServices.Marshal.SizeOf<Id6>()} bytes");
-//Console.WriteLine($"SizeOf Id16 - {System.Runtime.InteropServices.Marshal.SizeOf<Id12>()} bytes");
+Console.WriteLine($"SizeOf Id - {System.Runtime.InteropServices.Marshal.SizeOf<Id>()} bytes");
+//Console.WriteLine($"SizeOf Id8 - {System.Runtime.InteropServices.Marshal.SizeOf<Id8>()} bytes");
+//Console.WriteLine($"SizeOf Id16 - {System.Runtime.InteropServices.Marshal.SizeOf<Id16>()} bytes");
+Console.WriteLine($"SizeOf Id32 - {System.Runtime.InteropServices.Marshal.SizeOf<Id32>()} bytes");
+Console.WriteLine($"SizeOf Guid - {System.Runtime.InteropServices.Marshal.SizeOf<Guid>()} bytes");
+Console.WriteLine($"SizeOf Id40 - {System.Runtime.InteropServices.Marshal.SizeOf<Id40>()} bytes");
 //Console.WriteLine($"SizeOf Id8i - {System.Runtime.InteropServices.Marshal.SizeOf<Id6i>()} bytes");
 //Console.WriteLine($"SizeOf Id12i - {System.Runtime.InteropServices.Marshal.SizeOf<Id12i>()} bytes");
 
@@ -295,11 +299,13 @@ if (f1.Length != 17) throw new InvalidOperationException();
 
 Console.WriteLine("Ok");
 
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IT.Id.Benchmarks.IdBytesBenchmark));
+BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IT.Id.Benchmarks.StructBenchmark));
 
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IT.Id.Benchmarks.IdTryCharsBenchmark));
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IT.Id.Benchmarks.IdBytesBenchmark));
 
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IT.Id.Benchmarks.IdStringBenchmark));
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IT.Id.Benchmarks.IdTryCharsBenchmark));
+
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IT.Id.Benchmarks.IdStringBenchmark));
 
 class MyClass
 {

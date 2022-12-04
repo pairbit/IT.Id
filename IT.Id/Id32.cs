@@ -3,24 +3,24 @@ using System.Runtime.InteropServices;
 
 namespace System;
 
-[StructLayout(LayoutKind.Explicit, Size = 13)]
-internal readonly struct Id8 : IComparable<Id8>, IEquatable<Id8>
+[StructLayout(LayoutKind.Explicit, Size = 16)]
+public readonly struct Id32 : IComparable<Id32>, IEquatable<Id32>
 {
     [FieldOffset(0)]
     private readonly Id _id;
 
     [FieldOffset(12)]
-    private readonly Byte _value;
+    private readonly UInt32 _value;
 
-    public static readonly Id8 Empty = default;
-    public static readonly Id8 Min = new(Id.Min, Byte.MinValue);
-    public static readonly Id8 Max = new(Id.Max, Byte.MaxValue);
+    public static readonly Id32 Empty = default;
+    public static readonly Id32 Min = new(Id.Min, UInt16.MinValue);
+    public static readonly Id32 Max = new(Id.Max, UInt16.MaxValue);
 
     public Id Id => _id;
 
-    public Byte Value => _value;
+    public UInt32 Value => _value;
 
-    public Id8(Id id, Byte value)
+    public Id32(Id id, UInt32 value)
     {
         _id = id;
         _value = value;
@@ -28,23 +28,23 @@ internal readonly struct Id8 : IComparable<Id8>, IEquatable<Id8>
 
     #region Operators
 
-    public static Boolean operator <(Id8 left, Id8 right) => left.CompareTo(right) < 0;
+    public static Boolean operator <(Id32 left, Id32 right) => left.CompareTo(right) < 0;
 
-    public static Boolean operator <=(Id8 left, Id8 right) => left.CompareTo(right) <= 0;
+    public static Boolean operator <=(Id32 left, Id32 right) => left.CompareTo(right) <= 0;
 
-    public static Boolean operator ==(Id8 left, Id8 right) => left.Equals(right);
+    public static Boolean operator ==(Id32 left, Id32 right) => left.Equals(right);
 
-    public static Boolean operator !=(Id8 left, Id8 right) => !left.Equals(right);
+    public static Boolean operator !=(Id32 left, Id32 right) => !left.Equals(right);
 
-    public static Boolean operator >=(Id8 left, Id8 right) => left.CompareTo(right) >= 0;
+    public static Boolean operator >=(Id32 left, Id32 right) => left.CompareTo(right) >= 0;
 
-    public static Boolean operator >(Id8 left, Id8 right) => left.CompareTo(right) > 0;
+    public static Boolean operator >(Id32 left, Id32 right) => left.CompareTo(right) > 0;
 
     #endregion Operators
 
     #region Public Methods
 
-    public Int32 CompareTo(Id8 other)
+    public Int32 CompareTo(Id32 other)
     {
         int result = _id.CompareTo(other._id);
 
@@ -53,9 +53,9 @@ internal readonly struct Id8 : IComparable<Id8>, IEquatable<Id8>
         return _value.CompareTo(other._value);
     }
 
-    public Boolean Equals(Id8 other) => _id == other._id && _value == other._value;
+    public Boolean Equals(Id32 other) => _id == other._id && _value == other._value;
 
-    public override Boolean Equals(Object? obj) => obj is Id8 id && Equals(id);
+    public override Boolean Equals(Object? obj) => obj is Id32 id && Equals(id);
 
     public override Int32 GetHashCode()
     {
@@ -73,10 +73,10 @@ internal readonly struct Id8 : IComparable<Id8>, IEquatable<Id8>
         Idf.Hex => ToHex(format),
         Idf.HexUpper => ToHex(format),
         Idf.Base64Url => ToBase64(),
-        _ => throw Ex.InvalidFormat(format, nameof(Id8)),
+        _ => throw Ex.InvalidFormat(format, nameof(Id32)),
     };
 
-    public static Id8 Parse(ReadOnlySpan<Char> chars)
+    public static Id32 Parse(ReadOnlySpan<Char> chars)
     {
         var len = chars.Length;
         if (len == 0) throw new FormatException();
@@ -93,7 +93,7 @@ internal readonly struct Id8 : IComparable<Id8>, IEquatable<Id8>
 
     private String ToHex(Idf format)
     {
-        var len = 24 + Hex.GetLength(_value) + 1;
+        var len = 24 + Hex.GetLength((uint)_value) + 1;
         var str = new string('\0', len);
 
         unsafe
@@ -106,7 +106,7 @@ internal readonly struct Id8 : IComparable<Id8>, IEquatable<Id8>
 
                 var map = format == Idf.HexUpper ? Hex._numUpper : Hex._numLower;
 
-                Hex.TryWrite(chars.Slice(24), _value, map);
+                Hex.TryWrite(chars.Slice(24), (uint)_value, map);
 
                 chars[len - 1] = '1';
             }
@@ -117,7 +117,7 @@ internal readonly struct Id8 : IComparable<Id8>, IEquatable<Id8>
 
     private String ToBase64()
     {
-        var len = 16 + Base64.GetLength(_value) + 1;
+        var len = 16 + Base64.GetLength((uint)_value) + 1;
         var str = new string('\0', len);
 
         unsafe
@@ -128,7 +128,7 @@ internal readonly struct Id8 : IComparable<Id8>, IEquatable<Id8>
 
                 _id.TryFormat(chars, out _, Idf.Base64Url);
 
-                Base64.TryWrite(chars.Slice(16), _value);
+                Base64.TryWrite(chars.Slice(16), (uint)_value);
 
                 chars[len - 1] = '6';
             }
@@ -137,7 +137,7 @@ internal readonly struct Id8 : IComparable<Id8>, IEquatable<Id8>
         return str;
     }
 
-    private static Id8 ParseHex(ReadOnlySpan<Char> chars)
+    private static Id32 ParseHex(ReadOnlySpan<Char> chars)
     {
         var len = chars.Length;
         if (len == 0) throw new FormatException();
@@ -150,14 +150,14 @@ internal readonly struct Id8 : IComparable<Id8>, IEquatable<Id8>
 
         if (len == 0) throw new FormatException();
 
-        var value = Hex.ToByte(chars.Slice(24, len));
+        var value = Hex.ToUInt32(chars.Slice(24, len));
 
         var id = Id.Parse(chars.Slice(0, 24));
 
-        return new Id8(id, value);
+        return new Id32(id, value);
     }
 
-    private static Id8 ParseBase64(ReadOnlySpan<Char> chars)
+    private static Id32 ParseBase64(ReadOnlySpan<Char> chars)
     {
         var len = chars.Length;
         if (len == 0) throw new FormatException();
@@ -170,10 +170,10 @@ internal readonly struct Id8 : IComparable<Id8>, IEquatable<Id8>
 
         if (len == 0) throw new FormatException();
 
-        var value = Base64.ToByte(chars.Slice(16, len));
+        var value = Base64.ToUInt32(chars.Slice(16, len));
 
         var id = Id.Parse(chars.Slice(0, 16));
 
-        return new Id8(id, value);
+        return new Id32(id, value);
     }
 }
