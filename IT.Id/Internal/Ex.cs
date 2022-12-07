@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Internal;
+namespace IT.Internal;
 
 internal static class Ex
 {

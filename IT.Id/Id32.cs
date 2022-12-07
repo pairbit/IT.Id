@@ -1,7 +1,7 @@
-﻿using Internal;
+﻿using IT.Internal;
 using System.Runtime.InteropServices;
 
-namespace System;
+namespace IT;
 
 [StructLayout(LayoutKind.Explicit, Size = 16)]
 public readonly struct Id32 : IComparable<Id32>, IEquatable<Id32>

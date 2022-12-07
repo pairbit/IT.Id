@@ -4,10 +4,10 @@ using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace IT.Id.Benchmarks;
+namespace IT.IdBenchmarks;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public record Id40(System.Id Id, UInt32 value1, Byte value2);
+public record Id40(Id Id, UInt32 value1, Byte value2);
 
 [MemoryDiagnoser]
 [MinColumn, MaxColumn]
@@ -15,7 +15,7 @@ public record Id40(System.Id Id, UInt32 value1, Byte value2);
 public class StructBenchmark
 {
     public const int Count = 100_000;
-    private static readonly System.Id Id = System.Id.Min;
+    private static readonly Id Id = Id.Min;
 
     [Benchmark]
     public int CopyInt32()

@@ -1,4 +1,4 @@
-namespace Tests;
+namespace IT.Tests;
 
 public class IdTest
 {

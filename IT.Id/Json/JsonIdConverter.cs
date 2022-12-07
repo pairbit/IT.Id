@@ -1,6 +1,9 @@
-﻿using System.Buffers;
+﻿using System;
+using System.Buffers;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
-namespace System.Text.Json.Serialization;
+namespace IT.Json.Converters;
 
 public class JsonIdConverter : JsonConverter<Id>
 {

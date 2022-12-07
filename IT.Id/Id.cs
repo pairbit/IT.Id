@@ -1,26 +1,23 @@
-﻿using Internal;
+﻿using IT.Internal;
 using System.Buffers;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
-using System.Threading;
 
-namespace System;
+namespace IT;
 
 [Serializable]
 [StructLayout(LayoutKind.Explicit, Size = 12)]
 [DebuggerDisplay("{ToString(),nq}")]
-[Text.Json.Serialization.JsonConverter(typeof(Text.Json.Serialization.JsonIdConverter))]
+[System.Text.Json.Serialization.JsonConverter(typeof(Json.Converters.JsonIdConverter))]
 public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattable
 #if NET6_0_OR_GREATER
 , ISpanFormattable
 #endif
 #if NET7_0_OR_GREATER
-, IMinMaxValue<Id>, ISpanParsable<Id>
+, System.Numerics.IMinMaxValue<Id>, ISpanParsable<Id>
 #endif
 {
     #region Fields
@@ -110,9 +107,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
 #if NET7_0_OR_GREATER
 
-    static Id IMinMaxValue<Id>.MaxValue => Max;
+    static Id System.Numerics.IMinMaxValue<Id>.MaxValue => Max;
 
-    static Id IMinMaxValue<Id>.MinValue => Min;
+    static Id System.Numerics.IMinMaxValue<Id>.MinValue => Min;
 
 #endif
 

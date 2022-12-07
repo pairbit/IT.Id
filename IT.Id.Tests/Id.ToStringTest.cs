@@ -1,9 +1,9 @@
+using IT.Json.Converters;
 using System.Buffers;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
-namespace Tests;
+namespace IT.Tests;
 
 public class IdToStringTest
 {

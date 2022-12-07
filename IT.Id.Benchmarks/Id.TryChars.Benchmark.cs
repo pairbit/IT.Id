@@ -1,7 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Order;
 
-namespace IT.Id.Benchmarks;
+namespace IT.IdBenchmarks;
 
 [MemoryDiagnoser]
 [MinColumn, MaxColumn]
@@ -11,7 +11,7 @@ public class IdTryCharsBenchmark
     private readonly Ulid _ulid;
     internal readonly char[] _ulidChars;
 
-    private readonly System.Id _id;
+    private readonly Id _id;
     private readonly char[] _idHexLower;
     private readonly char[] _idHexUpper;
     internal readonly char[] _idBase32;
@@ -23,8 +23,8 @@ public class IdTryCharsBenchmark
 
     public IdTryCharsBenchmark()
     {
-        //_id = System.Id.Parse("Y14-iRgzgKZclXbw");
-        _id = System.Id.NewObjectId();
+        //_id = Id.Parse("Y14-iRgzgKZclXbw");
+        _id = Id.NewObjectId();
         _idHexUpper = Id_Encode_HexUpper();
         _idHexLower = Id_Encode_HexLower();
         _idBase32 = Id_Encode_Base32();
@@ -47,7 +47,7 @@ public class IdTryCharsBenchmark
     }
 
     [Benchmark]
-    public System.Id Id_Decode_Hex() => System.Id.TryParse(_idHexLower, out var id) ? id : throw new FormatException();
+    public Id Id_Decode_Hex() => Id.TryParse(_idHexLower, out var id) ? id : throw new FormatException();
 
     [Benchmark]
     public char[] Id_Encode_HexUpper()
@@ -66,7 +66,7 @@ public class IdTryCharsBenchmark
     }
 
     [Benchmark]
-    public System.Id Id_Decode_Base32() => System.Id.TryParse(_idBase32, out var id) ? id : throw new FormatException();
+    public Id Id_Decode_Base32() => Id.TryParse(_idBase32, out var id) ? id : throw new FormatException();
 
     [Benchmark]
     public char[] Id_Encode_Base58()
@@ -77,7 +77,7 @@ public class IdTryCharsBenchmark
     }
 
     [Benchmark]
-    public System.Id Id_Decode_Base58() => System.Id.TryParse(_idBase58, out var id) ? id : throw new FormatException();
+    public Id Id_Decode_Base58() => Id.TryParse(_idBase58, out var id) ? id : throw new FormatException();
 
     [Benchmark]
     public char[] Id_Encode_Base64()
@@ -88,7 +88,7 @@ public class IdTryCharsBenchmark
     }
 
     [Benchmark]
-    public System.Id Id_Decode_Base64() => System.Id.TryParse(_idBase64, out var id) ? id : throw new FormatException();
+    public Id Id_Decode_Base64() => Id.TryParse(_idBase64, out var id) ? id : throw new FormatException();
 
     [Benchmark]
     public char[] Id_Encode_Base85()
@@ -99,7 +99,7 @@ public class IdTryCharsBenchmark
     }
 
     [Benchmark]
-    public System.Id Id_Decode_Base85() => System.Id.TryParse(_idBase85, out var id) ? id : throw new FormatException();
+    public Id Id_Decode_Base85() => Id.TryParse(_idBase85, out var id) ? id : throw new FormatException();
 
     [Benchmark]
     public char[] Id_Encode_Base64Path2()
@@ -110,7 +110,7 @@ public class IdTryCharsBenchmark
     }
 
     [Benchmark]
-    public System.Id Id_Decode_Base64Path2() => System.Id.TryParse(_idPath2, out var id) ? id : throw new FormatException();
+    public Id Id_Decode_Base64Path2() => Id.TryParse(_idPath2, out var id) ? id : throw new FormatException();
 
     [Benchmark]
     public char[] Id_Encode_Base64Path3()
@@ -121,7 +121,7 @@ public class IdTryCharsBenchmark
     }
 
     [Benchmark]
-    public System.Id Id_Decode_Base64Path3() => System.Id.TryParse(_idPath3, out var id) ? id : throw new FormatException();
+    public Id Id_Decode_Base64Path3() => Id.TryParse(_idPath3, out var id) ? id : throw new FormatException();
 
     [Benchmark]
     public char[] Ulid_Encode()

@@ -1,7 +1,8 @@
-﻿using IT.Id.Benchmarks;
+﻿using IT;
+using IT.IdBenchmarks;
+using IT.Json.Converters;
 using System.Diagnostics;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 //var random = new Random(123);
 //var high = random.Next();
@@ -85,7 +86,7 @@ if (!process.Id.Equals(Environment.ProcessId)) throw new InvalidOperationExcepti
 //if (!id16.Id.Equals(id) || id16.Value != value12)
 //    throw new InvalidOperationException();
 
-var ids = new IT.Id.Benchmarks.IdStringBenchmark();
+var ids = new IdStringBenchmark();
 
 var ulid = ids.Ulid_Decode();
 
@@ -111,7 +112,7 @@ var id7 = ids.Id_Decode_Base58();
 if (!id1.Equals(id2) || !id1.Equals(id3) || !id1.Equals(id4) || 
     !id1.Equals(id5) || !id1.Equals(id6) || !id1.Equals(id7)) throw new InvalidOperationException();
 
-var idb = new IT.Id.Benchmarks.IdBytesBenchmark();
+var idb = new IdBytesBenchmark();
 
 id1 = idb.Id_Decode_Hex();
 id2 = idb.Id_Decode_Base32();
@@ -135,7 +136,7 @@ id7 = idb.Id_TryDecode_Base85();
 if (!id1.Equals(id2) || !id1.Equals(id3) || !id1.Equals(id4) ||
     !id1.Equals(id5) || !id1.Equals(id6) || !id1.Equals(id7)) throw new InvalidOperationException();
 
-var idc = new IT.Id.Benchmarks.IdTryCharsBenchmark();
+var idc = new IdTryCharsBenchmark();
 
 id1 = idc.Id_Decode_Hex();
 id2 = idc.Id_Decode_Base32();
@@ -299,13 +300,13 @@ if (f1.Length != 17) throw new InvalidOperationException();
 
 Console.WriteLine("Ok");
 
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IT.Id.Benchmarks.StructBenchmark));
+BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(StructBenchmark));
 
-//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IT.Id.Benchmarks.IdBytesBenchmark));
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdBytesBenchmark));
 
-//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IT.Id.Benchmarks.IdTryCharsBenchmark));
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryCharsBenchmark));
 
-//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IT.Id.Benchmarks.IdStringBenchmark));
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdStringBenchmark));
 
 class MyClass
 {

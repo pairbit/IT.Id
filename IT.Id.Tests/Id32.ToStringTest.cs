@@ -1,6 +1,6 @@
 using System.Buffers.Text;
 
-namespace Tests;
+namespace IT.Tests;
 
 public class Id32ToStringTest
 {
