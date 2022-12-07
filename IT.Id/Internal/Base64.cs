@@ -2,7 +2,7 @@
 using System.Buffers;
 using System.Text;
 
-namespace Internal;
+namespace IT.Internal;
 
 internal static class Base64
 {

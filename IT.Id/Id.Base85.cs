@@ -1,7 +1,7 @@
-﻿using Internal;
+﻿using IT.Internal;
 using System.Runtime.CompilerServices;
 
-namespace System;
+namespace IT;
 
 public readonly partial struct Id
 {

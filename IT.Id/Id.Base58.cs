@@ -1,6 +1,6 @@
-﻿using Internal;
+﻿using IT.Internal;
 
-namespace System;
+namespace IT;
 
 public readonly partial struct Id
 {

@@ -2,7 +2,7 @@
 using System.Buffers;
 using System.Runtime.InteropServices;
 
-namespace Internal;
+namespace IT.Internal;
 
 //https://stackoverflow.com/questions/311165/how-do-you-convert-a-byte-array-to-a-hexadecimal-string-and-vice-versa/24343727#24343727
 internal static class Hex

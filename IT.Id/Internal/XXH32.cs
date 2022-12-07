@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace Internal;
+namespace IT.Internal;
 
 internal static unsafe class XXH32
 {
