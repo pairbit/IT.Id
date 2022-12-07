@@ -6,29 +6,29 @@ namespace IT.Internal;
 internal static class Ex
 {
     public static Exception InvalidLength(int length)
-        => new FormatException($"The length of System.Id cannot be {length}. It must be 24 or between 15 and 20.");
+        => new FormatException($"The length of Id cannot be {length}. It must be 24 or between 15 and 20.");
 
     public static Exception InvalidLengthChars(int length)
-        => new FormatException($"The length of System.Id cannot be {length} characters. It must be 24 or between 15 and 20 characters.");
+        => new FormatException($"The length of Id cannot be {length} characters. It must be 24 or between 15 and 20 characters.");
 
     public static Exception InvalidLengthBytes(int length)
-        => new FormatException($"The length of System.Id cannot be {length} bytes. It must be 24 or between 15 and 20 bytes.");
+        => new FormatException($"The length of Id cannot be {length} bytes. It must be 24 or between 15 and 20 bytes.");
 
     public static Exception InvalidLengthChars(Idf format, int length)
-        => new FormatException($"The length of System.Id in {format} format cannot be {length} characters. It must be {Id.GetLength(format)} characters long.");
+        => new FormatException($"The length of Id in {format} format cannot be {length} characters. It must be {Id.GetLength(format)} characters long.");
 
     public static Exception InvalidLengthBytes(Idf format, int length)
-        => new FormatException($"The length of System.Id in {format} format cannot be {length} bytes. It must be {Id.GetLength(format)} bytes long.");
+        => new FormatException($"The length of Id in {format} format cannot be {length} bytes. It must be {Id.GetLength(format)} bytes long.");
 
     public static Exception InvalidLengthChars(Idf format, int length, int min, int max)
-        => new FormatException($"The length of System.Id in {format} format cannot be {length} characters. It must be between {min} to {max} characters long.");
+        => new FormatException($"The length of Id in {format} format cannot be {length} characters. It must be between {min} to {max} characters long.");
 
     public static Exception InvalidLengthBytes(Idf format, int length, int min, int max)
-        => new FormatException($"The length of System.Id in {format} format cannot be {length} bytes. It must be between {min} to {max} bytes long.");
+        => new FormatException($"The length of Id in {format} format cannot be {length} bytes. It must be between {min} to {max} bytes long.");
 
     public static Exception InvalidFormat(Idf format, String type = "Id") => InvalidFormat(format.ToString(), type);
 
-    public static Exception InvalidFormat(String format, String type = "Id") => new FormatException($"The System.{type} does not contain '{format}' format.");
+    public static Exception InvalidFormat(String format, String type = "Id") => new FormatException($"The {type} does not contain '{format}' format.");
 
     public static Exception InvalidChar(Idf format, params int[] codes) => Invalid(false, format, codes);
 
@@ -46,13 +46,13 @@ internal static class Ex
 
     private static Exception Invalid(bool isByte, Idf format, int code)
         => new FormatException(isByte
-            ? $"The System.Id in {format} format cannot contain byte {code}."
-            : $"The System.Id in {format} format cannot contain character code {code}.");
+            ? $"The Id in {format} format cannot contain byte {code}."
+            : $"The Id in {format} format cannot contain character code {code}.");
 
     private static Exception InvalidWithIndex(bool isByte, Idf format, int index, int invalidCode, int[] validCodes)
        => new FormatException(isByte
-           ? $"The System.Id in {format} format cannot contain byte {invalidCode} at position {index}. It must contain one of bytes {String.Join(", ", validCodes)}."
-           : $"The System.Id in {format} format cannot contain character code {invalidCode} at position {index}. It must contain one of characters {String.Join(", ", validCodes.Select(x => "'" + (char)x + "'"))}.");
+           ? $"The Id in {format} format cannot contain byte {invalidCode} at position {index}. It must contain one of bytes {String.Join(", ", validCodes)}."
+           : $"The Id in {format} format cannot contain character code {invalidCode} at position {index}. It must contain one of characters {String.Join(", ", validCodes.Select(x => "'" + (char)x + "'"))}.");
 
 
     private static Exception Invalid(bool isByte, Idf format, int[] codes)
