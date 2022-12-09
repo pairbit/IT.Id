@@ -1,0 +1,60 @@
+using MemoryPack;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+
+namespace IT.Tests;
+
+public class IdMemoryPackTest
+{
+    [SetUp]
+    public void Setup()
+    {
+    }
+
+    [Test]
+    public void SerializeDeserialize()
+    {
+        var id = Id.NewObjectId();
+
+        Span<byte> bytes = stackalloc byte[Unsafe.SizeOf<Id>()];
+        ref byte pointer = ref MemoryMarshal.GetReference(bytes);
+        Unsafe.WriteUnaligned(ref pointer, id);
+
+        var serialized = MemoryPackSerializer.Serialize(id);
+
+        Assert.That(bytes.SequenceEqual(serialized), Is.True);
+
+        id.Write(bytes);
+
+        //TODO: 
+        Assert.That(bytes.SequenceEqual(serialized), Is.False);
+
+        var id2 = MemoryPackSerializer.Deserialize<Id>(serialized);
+
+        Assert.That(id, Is.EqualTo(id2));
+    }
+
+    [Test]
+    public void SerializeDeserialize_Nullable()
+    {
+        Id? id = Id.NewObjectId();
+
+        var serialized = MemoryPackSerializer.Serialize(id);
+
+        var id2 = MemoryPackSerializer.Deserialize<Id?>(serialized);
+
+        Assert.That(id, Is.EqualTo(id2));
+    }
+
+    [Test]
+    public void SerializeDeserialize_MyRecord()
+    {
+        var obj = new MyRecord { Id = Id.NewObjectId(), Name = "Ivan" };
+
+        var serialized = MemoryPackSerializer.Serialize(obj);
+
+        var obj2 = MemoryPackSerializer.Deserialize<MyRecord>(serialized);
+
+        Assert.That(obj, Is.EqualTo(obj2));
+    }
+}
