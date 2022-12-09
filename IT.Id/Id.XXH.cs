@@ -1,4 +1,6 @@
-﻿namespace IT;
+﻿using System;
+
+namespace IT;
 
 public readonly partial struct Id
 {
