@@ -13,7 +13,7 @@ public class IdMessagePackTest
         public Id Id { get; set; }
 
         [DataMember(Order = 1)]
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         public string ToJsonArray() => $"[\"{Id:/}\",\"{Name}\"]";
     }
@@ -36,9 +36,9 @@ public class IdMessagePackTest
 
         var serialized = MessagePackSerializer.Serialize(id, options);
 
-        var serializedSpan = serialized.AsSpan().Slice(2);
+        var serializedSpan = serialized.AsSpan()[2..];
 
-        Assert.IsTrue(serializedSpan.SequenceEqual(bytes));
+        Assert.That(serializedSpan.SequenceEqual(bytes), Is.True);
 
         var json = MessagePackSerializer.ConvertToJson(serialized);
 
@@ -64,9 +64,9 @@ public class IdMessagePackTest
 
         var serialized = MessagePackSerializer.Serialize(id, options);
 
-        var serializedSpan = serialized.AsSpan().Slice(2);
+        var serializedSpan = serialized.AsSpan()[2..];
 
-        Assert.IsTrue(serializedSpan.SequenceEqual(bytes));
+        Assert.That(serializedSpan.SequenceEqual(bytes), Is.True);
 
         var json = MessagePackSerializer.ConvertToJson(serialized);
 

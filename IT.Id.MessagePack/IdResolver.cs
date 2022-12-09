@@ -8,14 +8,14 @@ public class IdResolver : IFormatterResolver
 {
     static class Cache<T>
     {
-        public static readonly IMessagePackFormatter<T> formatter;
+        public static readonly IMessagePackFormatter<T>? formatter;
 
         static Cache()
         {
-            formatter = (IMessagePackFormatter<T>)GetFormatter(typeof(T));
+            formatter = (IMessagePackFormatter<T>?)GetFormatter(typeof(T));
         }
 
-        private static object GetFormatter(Type t)
+        private static object? GetFormatter(Type t)
         {
             if (t == typeof(Id)) return IdFormatter.Instance;
 
@@ -27,5 +27,5 @@ public class IdResolver : IFormatterResolver
 
     public readonly static IFormatterResolver Instance = new IdResolver();
 
-    public IMessagePackFormatter<T> GetFormatter<T>() => Cache<T>.formatter;
+    public IMessagePackFormatter<T>? GetFormatter<T>() => Cache<T>.formatter;
 }
