@@ -37,8 +37,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Publish
-        uses: pairbit/publish-nuget@v2.5.9
+      - name: Publish IT.Id
+        uses: pairbit/publish-nuget@v2.6.0
         with:
             PROJECT_FILE_PATH: IT.Id/IT.Id.csproj
+            NUGET_KEY: ${{secrets.NUGET}}
+            TAG_COMMIT: true
+            
+      - name: Publish IT.Id.MessagePack
+        uses: pairbit/publish-nuget@v2.6.0
+        with:
+            PROJECT_FILE_PATH: IT.Id.MessagePack/IT.Id.MessagePack.csproj
             NUGET_KEY: ${{secrets.NUGET}}
