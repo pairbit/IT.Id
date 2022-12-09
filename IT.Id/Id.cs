@@ -650,7 +650,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         (byte)_c
     };
 
-    public void ToByteArray(Span<Byte> bytes)
+    public void Write(Span<Byte> bytes)
     {
         if (bytes.Length < 12) throw new ArgumentException("There is not enough space in the destination buffer. A minimum of 12 bytes is required.", nameof(bytes));
 
