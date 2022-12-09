@@ -56,5 +56,11 @@ public class IdMemoryPackTest
         var obj2 = MemoryPackSerializer.Deserialize<MyRecord>(serialized);
 
         Assert.That(obj, Is.EqualTo(obj2));
+
+        obj2 = null;
+
+        MemoryPackSerializer.Deserialize(serialized, ref obj2);
+
+        Assert.That(obj, Is.EqualTo(obj2));
     }
 }
