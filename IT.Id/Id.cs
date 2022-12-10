@@ -1031,8 +1031,12 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 #if NET7_0_OR_GREATER
         //[StringSyntax("/")] 
 #endif
-        ReadOnlySpan<Char> format = default,
-        IFormatProvider? provider = null)
+        ReadOnlySpan<Char> format = default
+#if NET6_0_OR_GREATER
+        , IFormatProvider? provider = null)
+#else
+        )
+#endif
     {
         var len = format.Length;
 

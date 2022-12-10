@@ -32,7 +32,7 @@ public class IdToStringTest
         serializerOptions.Converters.Add(new JsonIdConverter { Format = Idf.Hex });
         serializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
 
-        var seri = JsonSerializer.Serialize(id, serializerOptions);
+        JsonSerializer.Serialize(id, serializerOptions);
 
         //Console.WriteLine($"HasUpper16 : {Internal.Hex.HasUpper16}");
         //Console.WriteLine($"HasUpper32 : {Internal.Hex.HasUpper32}");
@@ -46,28 +46,31 @@ public class IdToStringTest
         CheckId(Id.Min);
         CheckId(Id.Max);
 
-        Assert.That(CheckId(Id.Parse("62a84f674031e78d474fe23f")).ToString(Idf.Hex), Is.EqualTo("62a84f674031e78d474fe23f"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(CheckId(Id.Parse("62a84f674031e78d474fe23f")).ToString(Idf.Hex), Is.EqualTo("62a84f674031e78d474fe23f"));
 
-        Assert.That(CheckId(Id.Parse("62A84F674031E78D474FE23F")).ToString(Idf.HexUpper), Is.EqualTo("62A84F674031E78D474FE23F"));
+            Assert.That(CheckId(Id.Parse("62A84F674031E78D474FE23F")).ToString(Idf.HexUpper), Is.EqualTo("62A84F674031E78D474FE23F"));
 
-        Assert.That(CheckId(Id.Parse("ce0ytmyc14fgvd7358b0")).ToString(Idf.Base32), Is.EqualTo("ce0ytmyc14fgvd7358b0"));
+            Assert.That(CheckId(Id.Parse("ce0ytmyc14fgvd7358b0")).ToString(Idf.Base32), Is.EqualTo("ce0ytmyc14fgvd7358b0"));
 
-        Assert.That(CheckId(Id.Parse("CE0YTMYC14FGVD7358B0")).ToString(Idf.Base32Upper), Is.EqualTo("CE0YTMYC14FGVD7358B0"));
+            Assert.That(CheckId(Id.Parse("CE0YTMYC14FGVD7358B0")).ToString(Idf.Base32Upper), Is.EqualTo("CE0YTMYC14FGVD7358B0"));
 
-        Assert.That(CheckId(Id.Parse("2ryw1nk6d1eiGQSL6")).ToString(Idf.Base58), Is.EqualTo("2ryw1nk6d1eiGQSL6"));
+            Assert.That(CheckId(Id.Parse("2ryw1nk6d1eiGQSL6")).ToString(Idf.Base58), Is.EqualTo("2ryw1nk6d1eiGQSL6"));
 
-        Assert.That(CheckId(Id.Parse("YqhPZ0Ax541HT+I/")).ToString(Idf.Base64), Is.EqualTo("YqhPZ0Ax541HT+I/"));
+            Assert.That(CheckId(Id.Parse("YqhPZ0Ax541HT+I/")).ToString(Idf.Base64), Is.EqualTo("YqhPZ0Ax541HT+I/"));
 
-        Assert.That(CheckId(Id.Parse("YqhPZ0Ax541HT-I_")).ToString(Idf.Base64Url), Is.EqualTo("YqhPZ0Ax541HT-I_"));
+            Assert.That(CheckId(Id.Parse("YqhPZ0Ax541HT-I_")).ToString(Idf.Base64Url), Is.EqualTo("YqhPZ0Ax541HT-I_"));
 
-        Assert.That(CheckId(Id.Parse("v{IV^PiNKcFO_~|")).ToString(Idf.Base85), Is.EqualTo("v{IV^PiNKcFO_~|"));
+            Assert.That(CheckId(Id.Parse("v{IV^PiNKcFO_~|")).ToString(Idf.Base85), Is.EqualTo("v{IV^PiNKcFO_~|"));
 
-        //Win = \, Linux = /
-        //var p = Path.DirectorySeparatorChar;
+            //Win = \, Linux = /
+            //var p = Path.DirectorySeparatorChar;
 
-        Assert.That(CheckId(Id.Parse("_/I/-TH145xA0ZPhqY")).ToString(Idf.Base64Path2), Is.EqualTo($"_/I/-TH145xA0ZPhqY"));
+            Assert.That(CheckId(Id.Parse("_/I/-TH145xA0ZPhqY")).ToString(Idf.Base64Path2), Is.EqualTo($"_/I/-TH145xA0ZPhqY"));
 
-        Assert.That(CheckId(Id.Parse("_/I/-/TH145xA0ZPhqY")).ToString(Idf.Base64Path3), Is.EqualTo($"_/I/-/TH145xA0ZPhqY"));
+            Assert.That(CheckId(Id.Parse("_/I/-/TH145xA0ZPhqY")).ToString(Idf.Base64Path3), Is.EqualTo($"_/I/-/TH145xA0ZPhqY"));
+        });
     }
 
     [Test]
@@ -148,11 +151,15 @@ public class IdToStringTest
 
     private static void CheckString(Id id, Idf format, int length, int alphabetLength, ReadOnlySpan<char> alphabet, params string[] strings)
     {
-        Assert.That(strings, Is.Not.Null);
-        Assert.That(strings, Is.Not.Empty);
         Assert.That(alphabet.Length, Is.EqualTo(alphabetLength));
-        Assert.That(length, Is.GreaterThan(0));
-        Assert.That(Id.GetLength(format), Is.EqualTo(length));
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(strings, Is.Not.Null);
+            Assert.That(strings, Is.Not.Empty);
+            Assert.That(length, Is.GreaterThan(0));
+            Assert.That(Id.GetLength(format), Is.EqualTo(length));
+        });
 
         var s = id.ToString(format);
 
@@ -176,17 +183,23 @@ public class IdToStringTest
 
         Span<char> chars = stackalloc char[length];
         var isDone = id.TryFormat(chars, out var written, formatString);
-        Assert.That(isDone, Is.EqualTo(true));
-        Assert.That(written, Is.EqualTo(length));
         Assert.That(chars.SequenceEqual(s));
+        Assert.Multiple(() =>
+        {
+            Assert.That(isDone, Is.EqualTo(true));
+            Assert.That(written, Is.EqualTo(length));
+        });
 
         //TryFormat Chars
 
         Span<char> chars2 = stackalloc char[length];
         var status = id.TryFormat(chars2, out written, format);
-        Assert.That(status, Is.EqualTo(OperationStatus.Done));
-        Assert.That(written, Is.EqualTo(length));
         Assert.That(chars2.SequenceEqual(s));
+        Assert.Multiple(() =>
+        {
+            Assert.That(status, Is.EqualTo(OperationStatus.Done));
+            Assert.That(written, Is.EqualTo(length));
+        });
 
         //TryFormat Bytes
 
@@ -194,23 +207,33 @@ public class IdToStringTest
 
         Span<byte> bytes = stackalloc byte[length];
         status = id.TryFormat(bytes, out written, format);
-        Assert.That(status, Is.EqualTo(OperationStatus.Done));
-        Assert.That(written, Is.EqualTo(length));
-        Assert.IsTrue(bytes.SequenceEqual(b));
+        Assert.That(bytes.SequenceEqual(b), Is.True);
+        Assert.Multiple(() =>
+        {
+            Assert.That(status, Is.EqualTo(OperationStatus.Done));
+            Assert.That(written, Is.EqualTo(length));
+        });
 
         //DestinationTooSmall -> true
 
         isDone = id.TryFormat(stackalloc char[length - 1], out written, formatString);
-        Assert.That(isDone, Is.EqualTo(false));
-        Assert.That(written, Is.EqualTo(0));
-
+        Assert.Multiple(() =>
+        {
+            Assert.That(isDone, Is.EqualTo(false));
+            Assert.That(written, Is.EqualTo(0));
+        });
         status = id.TryFormat(stackalloc char[length - 1], out written, format);
-        Assert.That(status, Is.EqualTo(OperationStatus.DestinationTooSmall));
-        Assert.That(written, Is.EqualTo(0));
-
+        Assert.Multiple(() =>
+        {
+            Assert.That(status, Is.EqualTo(OperationStatus.DestinationTooSmall));
+            Assert.That(written, Is.EqualTo(0));
+        });
         status = id.TryFormat(stackalloc byte[length - 1], out written, format);
-        Assert.That(status, Is.EqualTo(OperationStatus.DestinationTooSmall));
-        Assert.That(written, Is.EqualTo(0));
+        Assert.Multiple(() =>
+        {
+            Assert.That(status, Is.EqualTo(OperationStatus.DestinationTooSmall));
+            Assert.That(written, Is.EqualTo(0));
+        });
 
         //Json
         var serializerOptions = new JsonSerializerOptions();
