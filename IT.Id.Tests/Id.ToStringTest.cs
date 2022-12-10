@@ -131,7 +131,11 @@ public class IdToStringTest
 
         CheckString(id, Idf.Base32, 20, 32, "0123456789abcdefghjkmnpqrstvwxyz", id.ToString("v"), $"{id:v}", base32);
 
+#if NET6_0_OR_GREATER
         var hexUpper = Convert.ToHexString(bytes);
+#else
+        var hexUpper = SimpleBase.Base16.UpperCase.Encode(bytes);
+#endif
 
         CheckString(id, Idf.HexUpper, 24, 16, "0123456789ABCDEF", id.ToString("H"), $"{id:H}", hexUpper);
 
