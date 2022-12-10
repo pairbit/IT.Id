@@ -13,7 +13,6 @@ public class IdStringBenchmark
 
     private readonly Id _id;
     private readonly String _idHexLower;
-    private readonly String _idHexUpper;
     internal readonly String _idBase32;
     private readonly String _idBase58;
     private readonly String _idBase64Url;
@@ -25,7 +24,6 @@ public class IdStringBenchmark
     {
         //_id = Id.Parse("Y14-iRgzgKZclXbw");
         _id = Id.NewObjectId();
-        _idHexUpper = Id_Encode_HexUpper();
         _idHexLower = Id_Encode_HexLower();
         _idBase32 = Id_Encode_Base32();
         _idBase58 = Id_Encode_Base58();
@@ -62,14 +60,16 @@ public class IdStringBenchmark
     [Benchmark]
     public String Id_Encode_Base58() => _id.ToString(Idf.Base58);
 
+#if NETCOREAPP3_1_OR_GREATER
     //[Benchmark]
     public String Id_Encode_Base58_SimpleBase() => SimpleBase.Base58.Bitcoin.Encode(_id.ToByteArray());
 
-    [Benchmark]
-    public Id Id_Decode_Base58() => Id.Parse(_idBase58);
-
     //[Benchmark]
     public Id Id_Decode_Base58_SimpleBase() => new Id(SimpleBase.Base58.Bitcoin.Decode(_idBase58));
+#endif
+
+    [Benchmark]
+    public Id Id_Decode_Base58() => Id.Parse(_idBase58);
 
     [Benchmark]
     public String Id_Encode_Base64() => _id.ToString();

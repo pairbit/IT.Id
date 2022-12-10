@@ -1,8 +1,6 @@
 ﻿using IT;
 using IT.IdBenchmarks;
-using IT.Json.Converters;
 using System.Diagnostics;
-using System.Text.Json;
 
 //var random = new Random(123);
 //var high = random.Next();
@@ -21,38 +19,9 @@ Console.WriteLine($"SizeOf Id40 - {System.Runtime.InteropServices.Marshal.SizeOf
 
 //Console.WriteLine($"{Id.GetMachineHash()} - {Id.GetMachineXXHash()}");
 
-//var b = new byte[] { 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255 };
-var b = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 58 };
-//var b = new byte[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
-var a = new Id(b);
-Console.WriteLine($"{a:i} == {SimpleBase.Base58.Bitcoin.Encode(b)}");
-
-//Console.ReadLine();
 
 var id = Id.Parse("62A84F674031E78D474FE23F");
 //var id = Id.New();
-
-#region Json
-
-var serializerOptions = new JsonSerializerOptions();
-serializerOptions.Converters.Add(new JsonIdConverter { Format = Idf.Base64Path2 });
-serializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
-
-var idjs = JsonSerializer.Serialize(id, serializerOptions);
-
-var idjd = JsonSerializer.Deserialize<Id>(idjs);
-
-if (!idjd.Equals(id)) throw new InvalidOperationException();
-
-var myobj = new MyClass { Id = id, Value = 234 };
-
-var myobjser = JsonSerializer.Serialize(myobj, serializerOptions);
-
-myobj = JsonSerializer.Deserialize<MyClass>(myobjser);
-
-if (myobj == null || !myobj.Id.Equals(id)) throw new InvalidOperationException();
-
-#endregion Json
 
 var idCopy2 = new Id(id.Timestamp, id.B, id.C);
 var idCopy3 = new Id(id.Timestamp, id.Machine, id.Pid, id.Increment);
@@ -64,10 +33,6 @@ if (!id.Equals(idCopy2) || !id.Equals(idCopy3) || machine != Id.MachineHash24) t
 var process = Process.GetCurrentProcess();
 
 Console.WriteLine($"{id} = {process.Id} == {id.Pid}, machine = {id.Machine}");
-
-var pid = (short)process.Id;
-
-if (!process.Id.Equals(Environment.ProcessId)) throw new InvalidOperationException();
 
 //byte value6 = 60;
 
@@ -92,10 +57,12 @@ var ulid = ids.Ulid_Decode();
 
 var bytes = ulid.ToByteArray();
 
+#if NETCOREAPP3_1_OR_GREATER
 var base32 = SimpleBase.Base32.Crockford.Encode(bytes);
 
 if (!base32.Equals(ids._ulidString))
     Console.WriteLine($"Ulid '{ids._ulidString}' != Crockford base32 '{base32}'");
+#endif
 
 //var base32_2 = Wiry.Base32.Base32Encoding.Base32.GetString(bytes);
 
@@ -170,83 +137,6 @@ for (int i = 0; i < 10000; i++)
     if (Id.Parse(idn.ToString(Idf.Base58)) != idn) throw new InvalidOperationException("Base58");
 }
 
-var f1 = id.ToString(Idf.Base64Url);
-var f2 = id.ToString(null);
-var f3 = $"{id}";
-var f4 = id.ToString();
-
-if (!f1.Equals(f2) || !f1.Equals(f3) || !f1.Equals(f4) || !id.Equals(Id.Parse(f4)))
-    throw new InvalidOperationException();
-
-f1 = id.ToString(Idf.Base64);
-f2 = id.ToString("/");
-f3 = $"{id:/}";
-
-if (!f1.Equals(f2) || !f1.Equals(f3) || !id.Equals(Id.Parse(f3)))
-    throw new InvalidOperationException();
-
-f1 = id.ToString(Idf.Base85);
-f2 = id.ToString("|");
-f3 = $"{id:|}";
-
-if (!f1.Equals(f2) || !f1.Equals(f3) || !id.Equals(Id.Parse(f3)))
-    throw new InvalidOperationException();
-
-f1 = id.ToString(Idf.Base64Path2);
-f2 = id.ToString("//");
-f3 = $"{id://}";
-
-if (!f1.Equals(f2) || !f1.Equals(f3) || !id.Equals(Id.Parse(f3)))
-    throw new InvalidOperationException();
-
-f1 = id.ToString(Idf.Base64Path3);
-f2 = id.ToString("///");
-f3 = $"{id:///}";
-
-if (!f1.Equals(f2) || !f1.Equals(f3) || !id.Equals(Id.Parse(f3)))
-    throw new InvalidOperationException();
-
-f1 = id.ToString(Idf.Hex);
-f2 = id.ToString("h");
-f3 = $"{id:h}";
-
-if (!f1.Equals(f2) || !f1.Equals(f3) || !id.Equals(Id.Parse(f3)) || !id.Equals(Id.Parse(f3, Idf.Hex)))
-    throw new InvalidOperationException();
-
-f1 = id.ToString(Idf.HexUpper);
-f2 = id.ToString("H");
-f3 = $"{id:H}";
-
-if (!f1.Equals(f2) || !f1.Equals(f3) || !id.Equals(Id.Parse(f3)) || !id.Equals(Id.Parse(f3, Idf.HexUpper)))
-    throw new InvalidOperationException();
-
-f1 = id.ToString(Idf.Base32);
-f2 = id.ToString("v");
-f3 = $"{id:v}";
-f4 = SimpleBase.Base32.Crockford.Encode(id.ToByteArray()).ToLowerInvariant();
-
-if (!f1.Equals(f2) || !f1.Equals(f3) || !f1.Equals(f4) || 
-    !id.Equals(Id.Parse(f2)) || !id.Equals(Id.Parse(f2, Idf.Base32)))
-    throw new InvalidOperationException();
-
-f1 = id.ToString(Idf.Base32Upper);
-f2 = id.ToString("V");
-f3 = $"{id:V}";
-f4 = SimpleBase.Base32.Crockford.Encode(id.ToByteArray());
-
-if (!f1.Equals(f2) || !f1.Equals(f3) || !f1.Equals(f4) ||
-    !id.Equals(Id.Parse(f2)) || !id.Equals(Id.Parse(f2, Idf.Base32)))
-    throw new InvalidOperationException();
-
-f1 = id.ToString(Idf.Base58);
-f2 = id.ToString("i");
-f3 = $"{id:i}";
-f4 = SimpleBase.Base58.Bitcoin.Encode(id.ToByteArray());
-
-if (f1.Length != 17 || !f1.Equals(f2) || !f1.Equals(f3) || !f1.Equals(f4) ||
-    !id.Equals(Id.Parse(f2)) || !id.Equals(Id.Parse(f2, Idf.Base58)))
-    throw new InvalidOperationException();
-
 for (int i = 0; i < 12; i++)
 {
     idBytes[i] = 0;
@@ -254,19 +144,26 @@ for (int i = 0; i < 12; i++)
 
     var id58 = $"{id:i}";
 
-    var id58o = SimpleBase.Base58.Bitcoin.Encode(idBytes);
-
     if (id58.Length != 17 || !id.ToString("i").Equals(id58)) throw new InvalidOperationException();
+
+    if (!id.Equals(Id.Parse(id58))) throw new InvalidOperationException();
+
+    Console.Write($"{i,2} -> {id.Created,19} -> {id58,17}");
+
+#if NETCOREAPP3_1_OR_GREATER
+
+    var id58o = SimpleBase.Base58.Bitcoin.Encode(idBytes);
 
     if (!id58.EndsWith(id58o)) throw new InvalidOperationException();
 
     if (!id.Equals(Id.Parse(id58o, Idf.Base58))) throw new InvalidOperationException();
 
-    if (!id.Equals(Id.Parse(id58))) throw new InvalidOperationException();
-
     //Console.WriteLine($"{i,2} -> {id.Created,19} -> {id,17:58}");
 
-    Console.WriteLine($"{i,2} -> {id.Created,19} -> {id58,17} -> {id58o,17} -> {id58o.Length}");
+    Console.Write($" -> {id58o,17} -> {id58o.Length}");
+#endif
+
+    Console.WriteLine();
 }
 
 /*
@@ -283,20 +180,6 @@ for (int i = 0; i < 12; i++)
 10 -> 01.01.1970  0:00:00 ->     111111111112N -> 13
 11 -> 01.01.1970  0:00:00 ->      111111111111 -> 12
  */
-id = Id.Min;
-//id = Id.New(new DateTime(1998, 3, 5));
-f1 = id.ToString(Idf.Base58);
-f2 = id.ToString("i");
-f3 = $"{id:i}";
-f4 = SimpleBase.Base58.Bitcoin.Encode(id.ToByteArray());
-
-if (!f1.Equals(f2) || !f1.Equals(f3) || !f1.EndsWith(f4))
-    throw new InvalidOperationException();
-
-if (!id.Equals(Id.Parse(f2, Idf.Base58)))
-    throw new InvalidOperationException();
-
-if (f1.Length != 17) throw new InvalidOperationException();
 
 Console.WriteLine("Ok");
 

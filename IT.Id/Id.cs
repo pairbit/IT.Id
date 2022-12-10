@@ -329,13 +329,21 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         _machines = machines;
     }
 
-#region Parse
+    #region Parse
 
 #if NET7_0_OR_GREATER
 
     static Id IParsable<Id>.Parse(String s, IFormatProvider? provider) => Parse(s.AsSpan());
 
     static Id ISpanParsable<Id>.Parse(ReadOnlySpan<Char> chars, IFormatProvider? provider) => Parse(chars);
+
+#endif
+
+#if NETSTANDARD2_0
+
+    public static Id Parse(String str) => Parse(str.AsSpan());
+
+    public static Id Parse(String str, Idf format) => Parse(str.AsSpan(), format);
 
 #endif
 
@@ -463,15 +471,23 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         throw Ex.InvalidFormat(format);
     }
 
-#endregion Parse
+    #endregion Parse
 
-#region TryParse
+    #region TryParse
 
 #if NET7_0_OR_GREATER
 
     static Boolean IParsable<Id>.TryParse(String? s, IFormatProvider? provider, out Id id) => TryParse(s, out id);
 
     static Boolean ISpanParsable<Id>.TryParse(ReadOnlySpan<Char> chars, IFormatProvider? provider, out Id id) => TryParse(chars, out id);
+
+#endif
+
+#if NETSTANDARD2_0
+
+    public static Boolean TryParse(String str, out Id id) => TryParse(str.AsSpan(), out id);
+
+    public static Boolean TryParse(String str, Idf format, out Id id) => TryParse(str.AsSpan(), format, out id);
 
 #endif
 

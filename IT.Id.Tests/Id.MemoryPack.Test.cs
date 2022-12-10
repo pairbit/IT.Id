@@ -1,3 +1,4 @@
+#if NETCOREAPP3_1_OR_GREATER
 using MemoryPack;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -64,3 +65,4 @@ public class IdMemoryPackTest
         Assert.That(obj, Is.EqualTo(obj2));
     }
 }
+#endif

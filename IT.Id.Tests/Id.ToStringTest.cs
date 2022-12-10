@@ -95,10 +95,12 @@ public class IdToStringTest
     {
         byte[] bytes = id.ToByteArray();
 
-        var base85 = SimpleBase.Base85.Z85.Encode(bytes).Replace('&', '_').Replace('<', '~').Replace('>', '|');
-
         CheckString(id, Idf.Base85, 15, 85, "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?_~|()[]{}@%$#",
-            id.ToString("|"), $"{id:|}", base85);
+            id.ToString("|"),
+#if NETCOREAPP3_1_OR_GREATER
+            SimpleBase.Base85.Z85.Encode(bytes).Replace('&', '_').Replace('<', '~').Replace('>', '|'),
+#endif
+            $"{id:|}");
 
         var base64 = Convert.ToBase64String(bytes);
 
@@ -110,11 +112,12 @@ public class IdToStringTest
         CheckString(id, Idf.Base64Url, 16, 64, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_",
             id.ToString(), id.ToString(null), id.ToString("_"), $"{id}", $"{id:_}", base64Url);
 
-        var base58var = SimpleBase.Base58.Bitcoin.Encode(bytes);
-        var base58 = new string('1', 17 - base58var.Length) + base58var;
-
         CheckString(id, Idf.Base58, 17, 58, "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz",
-            id.ToString("i"), $"{id:i}", base58);
+            id.ToString("i"),
+#if NETCOREAPP3_1_OR_GREATER
+            EncodeBase58(bytes),
+#endif
+            $"{id:i}");
 
         var path2 = new string(base64Url.Reverse().ToArray()).Insert(2, "/").Insert(1, "/");
 
@@ -126,39 +129,48 @@ public class IdToStringTest
         CheckString(id, Idf.Base64Path3, 19, 66, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_/\\",
             id.ToString(Idf.Base64Path3), id.ToString("///"), $"{id:///}", path3);
 
-        var base32Upper = SimpleBase.Base32.Crockford.Encode(bytes);
-
-        CheckString(id, Idf.Base32Upper, 20, 32, "0123456789ABCDEFGHJKMNPQRSTVWXYZ", id.ToString("V"), $"{id:V}", base32Upper);
-
-        var base32 = base32Upper.ToLowerInvariant();
-
-        CheckString(id, Idf.Base32, 20, 32, "0123456789abcdefghjkmnpqrstvwxyz", id.ToString("v"), $"{id:v}", base32);
-
-#if NET6_0_OR_GREATER
-        var hexUpper = Convert.ToHexString(bytes);
-#else
-        var hexUpper = SimpleBase.Base16.UpperCase.Encode(bytes);
+        CheckString(id, Idf.Base32Upper, 20, 32, "0123456789ABCDEFGHJKMNPQRSTVWXYZ", id.ToString("V"),
+#if NETCOREAPP3_1_OR_GREATER
+        SimpleBase.Base32.Crockford.Encode(bytes),
 #endif
+            $"{id:V}");
 
-        CheckString(id, Idf.HexUpper, 24, 16, "0123456789ABCDEF", id.ToString("H"), $"{id:H}", hexUpper);
+        CheckString(id, Idf.Base32, 20, 32, "0123456789abcdefghjkmnpqrstvwxyz", id.ToString("v"),
+#if NETCOREAPP3_1_OR_GREATER
+        SimpleBase.Base32.Crockford.Encode(bytes).ToLowerInvariant(),
+#endif
+            $"{id:v}");
 
-        var hex = hexUpper.ToLowerInvariant();
+        CheckString(id, Idf.HexUpper, 24, 16, "0123456789ABCDEF", id.ToString("H"),
+#if NET6_0_OR_GREATER
+        Convert.ToHexString(bytes),
+#endif
+#if NETCOREAPP3_1_OR_GREATER
+        SimpleBase.Base16.UpperCase.Encode(bytes),
+#endif
+        $"{id:H}");
 
-        CheckString(id, Idf.Hex, 24, 16, "0123456789abcdef", id.ToString("h"), $"{id:h}", hex);
+        CheckString(id, Idf.Hex, 24, 16, "0123456789abcdef", id.ToString("h"),
+#if NET6_0_OR_GREATER
+        Convert.ToHexString(bytes).ToLowerInvariant(),
+#endif
+#if NETCOREAPP3_1_OR_GREATER
+        SimpleBase.Base16.LowerCase.Encode(bytes),
+#endif
+            $"{id:h}");
 
         return id;
     }
 
-    private static void CheckString(Id id, Idf format, int length, int alphabetLength, ReadOnlySpan<char> alphabet, params string[] strings)
+    private static void CheckString(Id id, Idf format, int length, int alphabetLength, String alphabet, params string[] strings)
     {
-        Assert.That(alphabet.Length, Is.EqualTo(alphabetLength));
-        
         Assert.Multiple(() =>
         {
             Assert.That(strings, Is.Not.Null);
             Assert.That(strings, Is.Not.Empty);
             Assert.That(length, Is.GreaterThan(0));
             Assert.That(Id.GetLength(format), Is.EqualTo(length));
+            Assert.That(alphabet, Has.Length.EqualTo(alphabetLength));
         });
 
         var s = id.ToString(format);
@@ -167,7 +179,7 @@ public class IdToStringTest
 
         foreach (var ch in s.ToCharArray())
         {
-            Assert.That(alphabet.Contains(ch));
+            Assert.That(alphabet, Does.Contain(ch));
         }
 
         Assert.That(Id.Parse(s).ToString(format), Is.EqualTo(s));
@@ -182,8 +194,8 @@ public class IdToStringTest
         //TryFormat Chars
 
         Span<char> chars = stackalloc char[length];
-        var isDone = id.TryFormat(chars, out var written, formatString);
-        Assert.That(chars.SequenceEqual(s));
+        var isDone = id.TryFormat(chars, out var written, formatString.AsSpan());
+        Assert.That(chars.ToString(), Is.EqualTo(s));
         Assert.Multiple(() =>
         {
             Assert.That(isDone, Is.EqualTo(true));
@@ -194,7 +206,7 @@ public class IdToStringTest
 
         Span<char> chars2 = stackalloc char[length];
         var status = id.TryFormat(chars2, out written, format);
-        Assert.That(chars2.SequenceEqual(s));
+        Assert.That(chars2.ToString(), Is.EqualTo(s));
         Assert.Multiple(() =>
         {
             Assert.That(status, Is.EqualTo(OperationStatus.Done));
@@ -216,7 +228,7 @@ public class IdToStringTest
 
         //DestinationTooSmall -> true
 
-        isDone = id.TryFormat(stackalloc char[length - 1], out written, formatString);
+        isDone = id.TryFormat(stackalloc char[length - 1], out written, formatString.AsSpan());
         Assert.Multiple(() =>
         {
             Assert.That(isDone, Is.EqualTo(false));
@@ -246,4 +258,12 @@ public class IdToStringTest
         var idfromJson = JsonSerializer.Deserialize<Id>(idJson);
         Assert.That(idfromJson, Is.EqualTo(id));
     }
+
+#if NETCOREAPP3_1_OR_GREATER
+    private static String EncodeBase58(byte[] bytes)
+    {
+        var base58var = SimpleBase.Base58.Bitcoin.Encode(bytes);
+        return new string('1', 17 - base58var.Length) + base58var;
+    }
+#endif
 }

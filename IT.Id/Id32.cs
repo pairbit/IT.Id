@@ -77,6 +77,12 @@ public readonly struct Id32 : IComparable<Id32>, IEquatable<Id32>
         _ => throw Ex.InvalidFormat(format, nameof(Id32)),
     };
 
+#if NETSTANDARD2_0
+
+    public static Id32 Parse(String str) => Parse(str.AsSpan());
+
+#endif
+
     public static Id32 Parse(ReadOnlySpan<Char> chars)
     {
         var len = chars.Length;

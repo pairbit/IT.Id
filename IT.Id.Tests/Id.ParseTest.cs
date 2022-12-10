@@ -1,8 +1,4 @@
-﻿using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
-using SimpleBase;
-using System;
-using System.Buffers.Text;
-using System.Text;
+﻿using System.Text;
 
 namespace IT.Tests;
 
@@ -59,7 +55,7 @@ public class IdParseTest
         InvalidFormat(format.ToString(), () => Id.New().TryFormat(Array.Empty<char>(), out _, format));
         InvalidFormat(format.ToString(), () => Id.New().TryFormat(Array.Empty<byte>(), out _, format));
         InvalidFormat("nf", () => Id.New().ToString("nf"));
-        InvalidFormat("nf", () => Id.New().TryFormat(Array.Empty<char>(), out _, "nf"));
+        InvalidFormat("nf", () => Id.New().TryFormat(Array.Empty<char>(), out _, "nf".AsSpan()));
 
         InvalidPath("_aI/-TH145xA0ZPhqY", Idf.Base64Path2, 'a', 1);
         InvalidPath("_/Ib-TH145xA0ZPhqY", Idf.Base64Path2, 'b', 3);
@@ -241,7 +237,7 @@ public class IdParseTest
         {
             for (int i = 0; i < str.Length; i++)
             {
-                Span<char> span = str.ToArray();
+                var span = str.ToArray();
                 span[i] = code;
                 InvalidChar(new string(span), code);
             }
@@ -255,7 +251,7 @@ public class IdParseTest
             for (int i = 0; i < str.Length; i++)
             {
                 if (skip.Contains(i)) continue;
-                Span<char> span = str.ToArray();
+                var span = str.ToArray();
                 span[i] = code;
                 InvalidChar(new string(span), code);
             }
