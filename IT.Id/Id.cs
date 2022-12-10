@@ -54,24 +54,24 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     #endregion Fields
 
-//    static Id()
-//    {
-//#if NETSTANDARD2_0
-//        Console.WriteLine("NETSTANDARD2_0");
-//#endif
+    static Id()
+    {
+#if NETSTANDARD2_0
+        Console.WriteLine("NETSTANDARD2_0");
+#endif
 
-//#if NETSTANDARD2_1
-//        Console.WriteLine("NETSTANDARD2_1");
-//#endif
+#if NETSTANDARD2_1
+        Console.WriteLine("NETSTANDARD2_1");
+#endif
 
-//#if NET6_0
-//        Console.WriteLine("NET6_0");
-//#endif
+#if NET6_0
+        Console.WriteLine("NET6_0");
+#endif
 
-//#if NET7_0
-//        Console.WriteLine("NET7_0");
-//#endif
-//    }
+#if NET7_0
+        Console.WriteLine("NET7_0");
+#endif
+    }
 
     #region Ctors
 
@@ -341,7 +341,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
 #if NETSTANDARD2_0
 
-    public static Id Parse(String str) => Parse(str.AsSpan());
+    public static Id Parse(String str) => Parse((str+"3").AsSpan());
 
     public static Id Parse(String str, Idf format) => Parse(str.AsSpan(), format);
 
