@@ -54,25 +54,6 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     #endregion Fields
 
-    static Id()
-    {
-#if NETSTANDARD2_0
-        Console.WriteLine("NETSTANDARD2_0");
-#endif
-
-#if NETSTANDARD2_1
-        Console.WriteLine("NETSTANDARD2_1");
-#endif
-
-#if NET6_0
-        Console.WriteLine("NET6_0");
-#endif
-
-#if NET7_0
-        Console.WriteLine("NET7_0");
-#endif
-    }
-
     #region Ctors
 
     public Id(ReadOnlySpan<Byte> bytes)
@@ -107,9 +88,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         _c = c;
     }
 
-#endregion Ctors
+    #endregion Ctors
 
-#region Props
+    #region Props
 
     public Int32 Timestamp => _timestamp;
 
@@ -135,9 +116,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
 #endif
 
-#endregion Props
+    #endregion Props
 
-#region Operators
+    #region Operators
 
     public static Boolean operator <(Id left, Id right) => left.CompareTo(right) < 0;
 
@@ -151,11 +132,11 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     public static Boolean operator >(Id left, Id right) => left.CompareTo(right) > 0;
 
-#endregion Operators
+    #endregion Operators
 
-#region Public Methods
+    #region Public Methods
 
-#region New
+    #region New
 
     public static Id New()
     {
@@ -179,9 +160,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         return new Id(timestamp, _machinePid, c);
     }
 
-#endregion New
+    #endregion New
 
-#region NewObjectId
+    #region NewObjectId
 
     /// <summary>
     /// https://www.mongodb.com/docs/manual/reference/method/ObjectId/
@@ -208,7 +189,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         return Create(timestamp, _random, increment);
     }
 
-#endregion NewObjectId
+    #endregion NewObjectId
 
     public static Int32 GetLength(Idf format) => format switch
     {
@@ -341,7 +322,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
 #if NETSTANDARD2_0
 
-    public static Id Parse(String str) => Parse((str+"3").AsSpan());
+    public static Id Parse(String str) => Parse(str.AsSpan());
 
     public static Id Parse(String str, Idf format) => Parse(str.AsSpan(), format);
 
@@ -635,7 +616,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         return false;
     }
 
-#endregion TryParse
+    #endregion TryParse
 
     //public static Byte[] Pack(Int32 timestamp, Int32 machine, Int16 pid, Int32 increment)
     //{
@@ -1219,9 +1200,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         return hash;
     }
 
-#endregion Public Methods
+    #endregion Public Methods
 
-#region Private Methods
+    #region Private Methods
 
     private static long CalculateRandomValue()
     {
@@ -1328,5 +1309,5 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         }
     }
 
-#endregion Private Methods
+    #endregion Private Methods
 }
