@@ -3,7 +3,7 @@
 ## .NET 7 Windows 10
 
 ### Id
-![image](https://user-images.githubusercontent.com/1288091/206904213-21feaa4c-ccd0-4c5f-b9a6-1bcf0be8720b.png)
+![image](https://user-images.githubusercontent.com/1288091/206905870-25ca5e24-0a8c-4b97-9095-bfdceb508641.png)
 
 ### String
 ![image](https://user-images.githubusercontent.com/1288091/206904189-1211b34d-4afb-4d50-a24a-e526b8421a62.png)
