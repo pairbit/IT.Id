@@ -2,7 +2,7 @@
 
 ## .NET 7 Windows 10
 
-### Id
+### Base
 ![image](https://user-images.githubusercontent.com/1288091/206905870-25ca5e24-0a8c-4b97-9095-bfdceb508641.png)
 
 ### String
@@ -16,8 +16,8 @@
 
 ## .NET 6 Windows 10
 
-### Id
-![image](https://user-images.githubusercontent.com/1288091/206904293-d3821250-d6b7-4a7b-aba6-ee2f34159107.png)
+### Base
+![image](https://user-images.githubusercontent.com/1288091/206906485-ddfed4a8-69ee-4873-85ef-a453a62eb7db.png)
 
 ### String
 ![image](https://user-images.githubusercontent.com/1288091/206904263-3679510d-3cab-4db4-82e1-42373b664198.png)
@@ -30,7 +30,7 @@
 
 ## .NET Core 3.1 Windows 10
 
-### Id
+### Base
 ![image](https://user-images.githubusercontent.com/1288091/206904356-5d64bd3b-dc01-4d06-abf9-3cd6867271cb.png)
 
 ### String
@@ -44,7 +44,7 @@
 
 ## .NET Framework 4.8 Windows 10
 
-### Id
+### Base
 ![image](https://user-images.githubusercontent.com/1288091/206904519-5178c7cf-bd25-48a4-80bf-20d9bee1bc24.png)
 
 ### String
