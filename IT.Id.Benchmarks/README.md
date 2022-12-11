@@ -31,7 +31,7 @@
 ## .NET Core 3.1 Windows 10
 
 ### Base
-![image](https://user-images.githubusercontent.com/1288091/206904356-5d64bd3b-dc01-4d06-abf9-3cd6867271cb.png)
+![image](https://user-images.githubusercontent.com/1288091/206907727-934e3132-0308-4b01-8ef2-ae61b375e37e.png)
 
 ### String
 ![image](https://user-images.githubusercontent.com/1288091/206904310-d3580385-5130-4d04-ae00-cc406c73b3e9.png)
