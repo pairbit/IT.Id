@@ -26,7 +26,13 @@ public class IdBenchmark
     public UInt32 Id_XXH32() => _id.XXH32();
 
     [Benchmark]
+    public UInt32 Id_XXH32_2() => _id.XXH32_2();
+
+    [Benchmark]
     public UInt64 Id_XXH64() => _id.XXH64();
+
+    [Benchmark]
+    public UInt64 Id_XXH64_2() => _id.XXH64_2();
 
     #endregion Hashing
 
@@ -50,6 +56,9 @@ public class IdBenchmark
 
     [Benchmark]
     public int Id_GetHashCode() => _id.GetHashCode();
+
+    [Benchmark]
+    public int Id_GetHashCode2() => _id.GetHashCode2();
 
     [Benchmark]
     public int Ulid_GetHashCode() => _ulid.GetHashCode();
@@ -91,6 +100,12 @@ public class IdBenchmark
     public byte[] Id_ToByteArray() => _id.ToByteArray();
 
     [Benchmark]
+    public byte[] Id_ToByteArray2() => _id.ToByteArray2();
+
+    [Benchmark]
+    public byte[] Id_ToByteArray3() => _id.ToByteArray3();
+
+    [Benchmark]
     public byte[] Ulid_ToByteArray() => _ulid.ToByteArray();
 
     [Benchmark]
@@ -106,6 +121,26 @@ public class IdBenchmark
         Span<byte> array = stackalloc byte[12];
 
         _id.TryWrite(array);
+
+        return new Id(array);
+    }
+
+    [Benchmark]
+    public Id Id_Write2()
+    {
+        Span<byte> array = stackalloc byte[12];
+
+        _id.TryWrite2(array);
+
+        return new Id(array);
+    }
+
+    [Benchmark]
+    public Id Id_Write3()
+    {
+        Span<byte> array = stackalloc byte[12];
+
+        _id.TryWrite3(array);
 
         return new Id(array);
     }
