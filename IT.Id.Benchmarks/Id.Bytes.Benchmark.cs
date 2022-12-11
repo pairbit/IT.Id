@@ -13,7 +13,6 @@ public class IdBytesBenchmark
 
     private readonly Id _id;
     private readonly byte[] _idHexLower;
-    private readonly byte[] _idHexUpper;
     internal readonly byte[] _idBase32;
     private readonly byte[] _idBase58;
     private readonly byte[] _idBase64Url;
@@ -25,7 +24,6 @@ public class IdBytesBenchmark
     {
         //_id = Id.Parse("Y14-iRgzgKZclXbw");
         _id = Id.NewObjectId();
-        _idHexUpper = Id_Encode_HexUpper();
         _idHexLower = Id_Encode_HexLower();
         _idBase32 = Id_Encode_Base32();
         _idBase58 = Id_Encode_Base58();

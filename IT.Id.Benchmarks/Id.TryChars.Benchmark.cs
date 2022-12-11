@@ -13,7 +13,6 @@ public class IdTryCharsBenchmark
 
     private readonly Id _id;
     private readonly char[] _idHexLower;
-    private readonly char[] _idHexUpper;
     internal readonly char[] _idBase32;
     private readonly char[] _idBase58;
     private readonly char[] _idBase64;
@@ -25,7 +24,6 @@ public class IdTryCharsBenchmark
     {
         //_id = Id.Parse("Y14-iRgzgKZclXbw");
         _id = Id.NewObjectId();
-        _idHexUpper = Id_Encode_HexUpper();
         _idHexLower = Id_Encode_HexLower();
         _idBase32 = Id_Encode_Base32();
         _idBase58 = Id_Encode_Base58();
