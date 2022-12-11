@@ -45,9 +45,14 @@
 ## .NET Framework 4.8 Windows 10
 
 ### Id
+![image](https://user-images.githubusercontent.com/1288091/206904519-5178c7cf-bd25-48a4-80bf-20d9bee1bc24.png)
 
 ### String
+![image](https://user-images.githubusercontent.com/1288091/206904453-40ff4877-52f6-4adb-985b-adb8deeb01c3.png)
 
 ### Chars
+![image](https://user-images.githubusercontent.com/1288091/206904544-607049d5-514d-47b1-9feb-4c304a18e3f8.png)
 
 ### Bytes
+![image](https://user-images.githubusercontent.com/1288091/206904497-bf97d175-863c-4058-af8f-190007db90e2.png)
+
