@@ -17,7 +17,7 @@
 ## .NET 6 Windows 10
 
 ### Base
-![image](https://user-images.githubusercontent.com/1288091/206906485-ddfed4a8-69ee-4873-85ef-a453a62eb7db.png)
+![image](https://user-images.githubusercontent.com/1288091/206907165-f97a03cc-5598-4efb-b140-eb45d9acd077.png)
 
 ### String
 ![image](https://user-images.githubusercontent.com/1288091/206904263-3679510d-3cab-4db4-82e1-42373b664198.png)
