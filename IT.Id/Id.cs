@@ -143,13 +143,57 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     public Int32 Timestamp => _timestamp0 << 24 | _timestamp1 << 16 | _timestamp2 << 8 | _timestamp3;
 
-    public Int32 Machine => ((_machine0 << 24 | _machine1 << 16 | _machine2 << 8 | _pid0) >> 8) & 0xffffff;
+    public Int32 Machine => (_machine0 << 16 | _machine1 << 8 | _machine2) & 0xffffff;
 
     public String? MachineName => _machines == null ? null : (_machines.TryGetValue(Machine, out var name) ? name : null);
 
     public Int16 Pid => (short)(_pid0 << 8 | _pid1);
 
     public Int32 Increment => (_increment0 << 16 | _increment1 << 8 | _increment2) & 0xffffff;
+
+    internal unsafe Int32 Timestamp2
+    {
+        get
+        {
+            fixed (byte* p = &_timestamp0)
+            {
+                return BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<Int32>(ref *p));
+            }
+        }
+    }
+
+    internal unsafe Int32 Machine2
+    {
+        get
+        {
+            fixed (byte* p = &_machine0)
+            {
+                return (BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<Int32>(ref *p)) >> 8) & 0xffffff;
+            }
+        }
+    }
+
+    internal unsafe Int16 Pid2
+    {
+        get
+        {
+            fixed (byte* p = &_pid0)
+            {
+                return BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<Int16>(ref *p));
+            }
+        }
+    }
+
+    internal unsafe Int32 Increment2
+    {
+        get
+        {
+            fixed (byte* p = &_increment0)
+            {
+                return (BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<Int32>(ref *p)) >> 8) & 0xffffff;
+            }
+        }
+    }
 
     public DateTimeOffset Created => _unixEpoch.AddSeconds((uint)Timestamp);
 

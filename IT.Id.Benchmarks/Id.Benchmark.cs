@@ -20,170 +20,194 @@ public class IdBenchmark
     private readonly static Guid _guid2 = new(_guid.ToByteArray());
     private readonly static byte[] _guidArray = _guid.ToByteArray();
 
-    #region Hashing
+    //[Benchmark]
+    //public int Id_Timestamp() => _id.Timestamp;
 
-    [Benchmark]
-    public UInt32 Id_XXH32() => _id.XXH32();
+    //[Benchmark]
+    //public int Id_Timestamp2() => _id.Timestamp2;
 
-    [Benchmark]
-    public UInt32 Id_XXH32_2() => _id.XXH32_2();
+    //[Benchmark]
+    //public int Id_Machine() => _id.Machine;
 
-    [Benchmark]
-    public UInt64 Id_XXH64() => _id.XXH64();
+    //[Benchmark]
+    //public int Id_Machine2() => _id.Machine2;
 
-    [Benchmark]
-    public UInt64 Id_XXH64_2() => _id.XXH64_2();
+    //[Benchmark]
+    //public int Id_Pid() => _id.Pid;
 
-    #endregion Hashing
+    //[Benchmark]
+    //public int Id_Pid2() => _id.Pid2;
 
-    #region New
+    //[Benchmark]
+    //public int Id_Increment() => _id.Increment;
 
-    [Benchmark]
-    public Id Id_New() => Id.New();
+    //[Benchmark]
+    //public int Id_Increment2() => _id.Increment2;
 
-    [Benchmark]
-    public Id Id_NewObjectId() => Id.NewObjectId();
+    //    #region Hashing
 
-    [Benchmark]
-    public Ulid Ulid_NewUlid() => Ulid.NewUlid();
+    //    [Benchmark]
+    //    public UInt32 Id_XXH32() => _id.XXH32();
 
-    [Benchmark]
-    public Guid Guid_NewGuid() => Guid.NewGuid();
+    //    [Benchmark]
+    //    public UInt32 Id_XXH32_2() => _id.XXH32_2();
 
-    #endregion New
+    //    [Benchmark]
+    //    public UInt64 Id_XXH64() => _id.XXH64();
 
-    #region GetHashCode
+    //    [Benchmark]
+    //    public UInt64 Id_XXH64_2() => _id.XXH64_2();
 
-    [Benchmark]
-    public int Id_GetHashCode() => _id.GetHashCode();
+    //    #endregion Hashing
 
-    [Benchmark]
-    public int Id_GetHashCode2() => _id.GetHashCode2();
+    //    #region New
 
-    [Benchmark]
-    public int Ulid_GetHashCode() => _ulid.GetHashCode();
+    //    [Benchmark]
+    //    public Id Id_New() => Id.New();
 
-    [Benchmark]
-    public int Guid_GetHashCode() => _guid.GetHashCode();
+    //    [Benchmark]
+    //    public Id Id_NewObjectId() => Id.NewObjectId();
 
-    #endregion GetHashCode
+    //    [Benchmark]
+    //    public Ulid Ulid_NewUlid() => Ulid.NewUlid();
 
-    #region Equals
+    //    [Benchmark]
+    //    public Guid Guid_NewGuid() => Guid.NewGuid();
 
-    [Benchmark]
-    public bool Id_Equals() => _id.Equals(_id2);
+    //    #endregion New
 
-    [Benchmark]
-    public bool Ulid_Equals() => _ulid.Equals(_ulid2);
+    //    #region GetHashCode
 
-    [Benchmark]
-    public bool Guid_Equals() => _guid.Equals(_guid2);
+    //    [Benchmark]
+    //    public int Id_GetHashCode() => _id.GetHashCode();
 
-    #endregion Equals
+    //    [Benchmark]
+    //    public int Id_GetHashCode2() => _id.GetHashCode2();
 
-    #region CompareTo
+    //    [Benchmark]
+    //    public int Ulid_GetHashCode() => _ulid.GetHashCode();
 
-    [Benchmark]
-    public int Id_CompareTo() => _id.CompareTo(_id2);
+    //    [Benchmark]
+    //    public int Guid_GetHashCode() => _guid.GetHashCode();
 
-    [Benchmark]
-    public int Ulid_CompareTo() => _ulid.CompareTo(_ulid2);
+    //    #endregion GetHashCode
 
-    [Benchmark]
-    public int Guid_CompareTo() => _guid.CompareTo(_guid2);
+    //    #region Equals
 
-    #endregion CompareTo
+    //    [Benchmark]
+    //    public bool Id_Equals() => _id.Equals(_id2);
 
-    #region ToByteArray
+    //    [Benchmark]
+    //    public bool Ulid_Equals() => _ulid.Equals(_ulid2);
 
-    [Benchmark]
-    public byte[] Id_ToByteArray() => _id.ToByteArray();
+    //    [Benchmark]
+    //    public bool Guid_Equals() => _guid.Equals(_guid2);
 
-    [Benchmark]
-    public byte[] Id_ToByteArray2() => _id.ToByteArray2();
+    //    #endregion Equals
 
-    [Benchmark]
-    public byte[] Id_ToByteArray3() => _id.ToByteArray3();
+    //    #region CompareTo
 
-    [Benchmark]
-    public byte[] Ulid_ToByteArray() => _ulid.ToByteArray();
+    //    [Benchmark]
+    //    public int Id_CompareTo() => _id.CompareTo(_id2);
 
-    [Benchmark]
-    public byte[] Guid_ToByteArray() => _guid.ToByteArray();
+    //    [Benchmark]
+    //    public int Ulid_CompareTo() => _ulid.CompareTo(_ulid2);
 
-    #endregion ToByteArray
+    //    [Benchmark]
+    //    public int Guid_CompareTo() => _guid.CompareTo(_guid2);
 
-    #region TryWrite
+    //    #endregion CompareTo
 
-    [Benchmark]
-    public Id Id_Write()
-    {
-        Span<byte> array = stackalloc byte[12];
+    //    #region ToByteArray
 
-        _id.TryWrite(array);
+    //    [Benchmark]
+    //    public byte[] Id_ToByteArray() => _id.ToByteArray();
 
-        return new Id(array);
-    }
+    //    [Benchmark]
+    //    public byte[] Id_ToByteArray2() => _id.ToByteArray2();
 
-    [Benchmark]
-    public Id Id_Write2()
-    {
-        Span<byte> array = stackalloc byte[12];
+    //    [Benchmark]
+    //    public byte[] Id_ToByteArray3() => _id.ToByteArray3();
 
-        _id.TryWrite2(array);
+    //    [Benchmark]
+    //    public byte[] Ulid_ToByteArray() => _ulid.ToByteArray();
 
-        return new Id(array);
-    }
+    //    [Benchmark]
+    //    public byte[] Guid_ToByteArray() => _guid.ToByteArray();
 
-    [Benchmark]
-    public Id Id_Write3()
-    {
-        Span<byte> array = stackalloc byte[12];
+    //    #endregion ToByteArray
 
-        _id.TryWrite3(array);
+    //    #region TryWrite
 
-        return new Id(array);
-    }
+    //    [Benchmark]
+    //    public Id Id_Write()
+    //    {
+    //        Span<byte> array = stackalloc byte[12];
 
-    [Benchmark]
-    public Ulid Ulid_Write()
-    {
-        Span<byte> array = stackalloc byte[16];
+    //        _id.TryWrite(array);
 
-        _ulid.TryWriteBytes(array);
+    //        return new Id(array);
+    //    }
 
-        return new Ulid(array);
-    }
+    //    [Benchmark]
+    //    public Id Id_Write2()
+    //    {
+    //        Span<byte> array = stackalloc byte[12];
 
-#if NETCOREAPP3_0_OR_GREATER
+    //        _id.TryWrite2(array);
 
-    [Benchmark]
-    public Guid Guid_Write()
-    {
-        Span<byte> array = stackalloc byte[16];
+    //        return new Id(array);
+    //    }
 
-        _guid.TryWriteBytes(array);
+    //    [Benchmark]
+    //    public Id Id_Write3()
+    //    {
+    //        Span<byte> array = stackalloc byte[12];
 
-        return new Guid(array);
-    }
+    //        _id.TryWrite3(array);
 
-#endif
+    //        return new Id(array);
+    //    }
 
-    #endregion TryWrite
+    //    [Benchmark]
+    //    public Ulid Ulid_Write()
+    //    {
+    //        Span<byte> array = stackalloc byte[16];
 
-    #region Ctors
+    //        _ulid.TryWriteBytes(array);
 
-    [Benchmark]
-    public Id Id_CtorInt() => new(_id.Timestamp, _id.Machine, _id.Pid, _id.Increment);
+    //        return new Ulid(array);
+    //    }
 
-    [Benchmark]
-    public Id Id_Ctor() => new(_idArray);
+    //#if NETCOREAPP3_0_OR_GREATER
 
-    [Benchmark]
-    public Ulid Ulid_Ctor() => new(_ulidArray);
+    //    [Benchmark]
+    //    public Guid Guid_Write()
+    //    {
+    //        Span<byte> array = stackalloc byte[16];
 
-    [Benchmark]
-    public Guid Guid_Ctor() => new(_guidArray);
+    //        _guid.TryWriteBytes(array);
 
-    #endregion Ctors
+    //        return new Guid(array);
+    //    }
+
+    //#endif
+
+    //    #endregion TryWrite
+
+    //    #region Ctors
+
+    //    [Benchmark]
+    //    public Id Id_CtorInt() => new(_id.Timestamp, _id.Machine, _id.Pid, _id.Increment);
+
+    //    [Benchmark]
+    //    public Id Id_Ctor() => new(_idArray);
+
+    //    [Benchmark]
+    //    public Ulid Ulid_Ctor() => new(_ulidArray);
+
+    //    [Benchmark]
+    //    public Guid Guid_Ctor() => new(_guidArray);
+
+    //    #endregion Ctors
 }
