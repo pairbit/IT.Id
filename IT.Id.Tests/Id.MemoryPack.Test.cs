@@ -27,8 +27,9 @@ public class IdMemoryPackTest
 
         id.Write(bytes);
 
-        //TODO: 
-        Assert.That(bytes.SequenceEqual(serialized), Is.False);
+        Assert.That(bytes.SequenceEqual(serialized), Is.True);
+
+        Assert.That(id.ToByteArray().SequenceEqual(serialized), Is.True);
 
         var id2 = MemoryPackSerializer.Deserialize<Id>(serialized);
 

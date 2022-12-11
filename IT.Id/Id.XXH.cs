@@ -18,9 +18,9 @@ public readonly partial struct Id
 
     public UInt32 XXH32()
     {
-        var b0 = (uint)((byte)_timestamp << 24 | (byte)(_timestamp >> 8) << 16 | (byte)(_timestamp >> 16) << 8 | (byte)(_timestamp >> 24));
-        var b1 = (uint)((byte)_b << 24 | (byte)(_b >> 8) << 16 | (byte)(_b >> 16) << 8 | (byte)(_b >> 24));
-        var b2 = (uint)((byte)_c << 24 | (byte)(_c >> 8) << 16 | (byte)(_c >> 16) << 8 | (byte)(_c >> 24));
+        var b0 = (uint)(_timestamp3 << 24 | _timestamp2 << 16 | _timestamp1 << 8 | _timestamp0);
+        var b1 = (uint)(_pid0 << 24 | _machine2 << 16 | _machine1 << 8 | _machine0);
+        var b2 = (uint)(_increment2 << 24 | _increment1 << 16 | _increment0 << 8 | _pid1);
         var h32 = PRIME32_5 + 12 + b0 * PRIME32_3;
         h32 = (h32 << 17 | h32 >> 15) * PRIME32_4 + b1 * PRIME32_3;
         h32 = (h32 << 17 | h32 >> 15) * PRIME32_4 + b2 * PRIME32_3;
@@ -32,11 +32,11 @@ public readonly partial struct Id
 
     public UInt64 XXH64()
     {
-        var b0 = (uint)((byte)_timestamp << 24 | (byte)(_timestamp >> 8) << 16 | (byte)(_timestamp >> 16) << 8 | (byte)(_timestamp >> 24));
-        var b1 = (uint)((byte)_b << 24 | (byte)(_b >> 8) << 16 | (byte)(_b >> 16) << 8 | (byte)(_b >> 24));
+        var b0 = (uint)(_timestamp3 << 24 | _timestamp2 << 16 | _timestamp1 << 8 | _timestamp0);
+        var b1 = (uint)(_pid0 << 24 | _machine2 << 16 | _machine1 << 8 | _machine0);
         ulong h64 = (((ulong)b1 << 32) | b0) * PRIME64_2;
         h64 = (PRIME64_5 + 12) ^ ((h64 << 31 | h64 >> 33) * PRIME64_1);
-        h64 = ((h64 << 27 | h64 >> 37) * PRIME64_1 + PRIME64_4) ^ ((uint)((byte)_c << 24 | (byte)(_c >> 8) << 16 | (byte)(_c >> 16) << 8 | (byte)(_c >> 24)) * PRIME64_1);
+        h64 = ((h64 << 27 | h64 >> 37) * PRIME64_1 + PRIME64_4) ^ ((uint)(_increment2 << 24 | _increment1 << 16 | _increment0 << 8 | _pid1) * PRIME64_1);
         h64 = (h64 << 23 | h64 >> 41) * PRIME64_2 + PRIME64_3;
         h64 = (h64 ^ (h64 >> 33)) * PRIME64_2;
         h64 = (h64 ^ (h64 >> 29)) * PRIME64_3;

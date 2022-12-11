@@ -43,14 +43,21 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     public static readonly Id Min = new(0, 0, 0);
     public static readonly Id Max = new(-1, -1, -1);
 
-    [FieldOffset(0)]
-    internal readonly Int32 _timestamp;
+    [FieldOffset(0)] private readonly byte _timestamp0;
+    [FieldOffset(1)] private readonly byte _timestamp1;
+    [FieldOffset(2)] private readonly byte _timestamp2;
+    [FieldOffset(3)] private readonly byte _timestamp3;
 
-    [FieldOffset(4)]
-    internal readonly Int32 _b;
+    [FieldOffset(4)] private readonly byte _machine0;
+    [FieldOffset(5)] private readonly byte _machine1;
+    [FieldOffset(6)] private readonly byte _machine2;
 
-    [FieldOffset(8)]
-    internal readonly Int32 _c;
+    [FieldOffset(7)] private readonly byte _pid0;
+    [FieldOffset(8)] private readonly byte _pid1;
+
+    [FieldOffset(9)] private readonly byte _increment0;
+    [FieldOffset(10)] private readonly byte _increment1;
+    [FieldOffset(11)] private readonly byte _increment2;
 
     #endregion Fields
 
@@ -60,9 +67,37 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     {
         if (bytes.Length != 12) throw new ArgumentException("The byte array must be 12 bytes long.", nameof(bytes));
 
-        _timestamp = (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3];
-        _b = (bytes[4] << 24) | (bytes[5] << 16) | (bytes[6] << 8) | bytes[7];
-        _c = (bytes[8] << 24) | (bytes[9] << 16) | (bytes[10] << 8) | bytes[11];
+        //if (BitConverter.IsLittleEndian)
+        //{
+        //    this = MemoryMarshal.Read<Id>(bytes);
+        //    return;
+        //}
+
+        _timestamp0 = bytes[0];
+        _timestamp1 = bytes[1];
+        _timestamp2 = bytes[2];
+        _timestamp3 = bytes[3];
+
+        _machine0 = bytes[4];
+        _machine1 = bytes[5];
+        _machine2 = bytes[6];
+
+        _pid0 = bytes[7];
+        _pid1 = bytes[8];
+
+        _increment0 = bytes[9];
+        _increment1 = bytes[10];
+        _increment2 = bytes[11];
+
+        //ref var src = ref MemoryMarshal.GetReference(bytes);
+        //Unsafe.WriteUnaligned(ref _timestamp0, Unsafe.As<byte, ulong>(ref src));
+        //Unsafe.WriteUnaligned(ref _pid1, Unsafe.As<byte, uint>(ref Unsafe.Add(ref src, 8)));
+
+        //[StackTraceHidden]
+        //static void ThrowArgumentException()
+        //{
+        //    throw new ArgumentException("The byte array must be 12 bytes long.", nameof(bytes));
+        //}
     }
 
     public Id(DateTime timestamp, Int32 machine, Int16 pid, Int32 increment)
@@ -76,37 +111,63 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if ((increment & 0xff000000) != 0) throw new ArgumentOutOfRangeException(nameof(increment), "The increment value must be between 0 and 16777215 (it must fit in 3 bytes).");
 
-        _timestamp = timestamp;
-        _b = (machine << 8) | ((pid >> 8) & 0xff);
-        _c = (pid << 24) | increment;
+        _timestamp0 = (byte)(timestamp >> 24);
+        _timestamp1 = (byte)(timestamp >> 16);
+        _timestamp2 = (byte)(timestamp >> 8);
+        _timestamp3 = (byte)timestamp;
+
+        _machine0 = (byte)(machine >> 16);
+        _machine1 = (byte)(machine >> 8);
+        _machine2 = (byte)machine;
+
+        _pid0 = (byte)(pid >> 8);
+        _pid1 = (byte)pid;
+
+        _increment0 = (byte)(increment >> 16);
+        _increment1 = (byte)(increment >> 8);
+        _increment2 = (byte)increment;
+
+        //_timestamp = timestamp;
+        //_b = (machine << 8) | ((pid >> 8) & 0xff);
+        //_c = (pid << 24) | increment;
     }
 
-    public Id(Int32 timestamp, Int32 b, Int32 c)
+    public Id(Int32 timestamp, Int32 machinePid, Int32 pidIncrement)
     {
-        _timestamp = timestamp;
-        _b = b;
-        _c = c;
+        //BinaryPrimitives.WriteInt32LittleEndian(this, timestamp);
+
+        _timestamp0 = (byte)(timestamp >> 24);
+        _timestamp1 = (byte)(timestamp >> 16);
+        _timestamp2 = (byte)(timestamp >> 8);
+        _timestamp3 = (byte)timestamp;
+
+        _machine0 = (byte)(machinePid >> 24);
+        _machine1 = (byte)(machinePid >> 16);
+        _machine2 = (byte)(machinePid >> 8);
+
+        _pid0 = (byte)machinePid;
+        _pid1 = (byte)(pidIncrement >> 24);
+
+        _increment0 = (byte)(pidIncrement >> 16);
+        _increment1 = (byte)(pidIncrement >> 8);
+        _increment2 = (byte)pidIncrement;
     }
 
     #endregion Ctors
 
     #region Props
 
-    public Int32 Timestamp => _timestamp;
+    public Int32 Timestamp => _timestamp0 << 24 | _timestamp1 << 16 | _timestamp2 << 8 | _timestamp3;
 
-    public Int32 B => _b;
-
-    public Int32 C => _c;
-
-    public Int32 Machine => (_b >> 8) & 0xffffff;
+    public Int32 Machine => ((_machine0 << 24 | _machine1 << 16 | _machine2 << 8 | _pid0) >> 8) & 0xffffff;
 
     public String? MachineName => _machines == null ? null : (_machines.TryGetValue(Machine, out var name) ? name : null);
 
-    public Int16 Pid => (short)(((_b << 8) & 0xff00) | ((_c >> 24) & 0x00ff));
+    public Int16 Pid => (short)(_pid0 << 8 | _pid1);
 
-    public Int32 Increment => _c & 0xffffff;
+    public Int32 Increment => (_increment0 << 16 | _increment1 << 8 | _increment2) & 0xffffff;
 
-    public DateTimeOffset Created => _unixEpoch.AddSeconds((uint)_timestamp);
+    public DateTimeOffset Created => _unixEpoch.AddSeconds((uint)Timestamp);
 
 #if NET7_0_OR_GREATER
 
@@ -143,9 +204,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         // only use low order 3 bytes
         int increment = Interlocked.Increment(ref _staticIncrement) & 0x00ffffff;
 
-        var c = (_pid << 24) | increment;
+        var pidIncrement = (_pid << 24) | increment;
 
-        return new Id(GetTimestamp(), _machinePid, c);
+        return new Id(GetTimestamp(), _machinePid, pidIncrement);
     }
 
     public static Id New(DateTime timestamp) => New(GetTimestampFromDateTime(timestamp));
@@ -155,9 +216,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         // only use low order 3 bytes
         int increment = Interlocked.Increment(ref _staticIncrement) & 0x00ffffff;
 
-        var c = (_pid << 24) | increment;
+        var pidIncrement = (_pid << 24) | increment;
 
-        return new Id(timestamp, _machinePid, c);
+        return new Id(timestamp, _machinePid, pidIncrement);
     }
 
     #endregion New
@@ -652,51 +713,87 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     //}
 
     public Byte[] ToByteArray() => new[] {
-        (byte)(_timestamp >> 24),
-        (byte)(_timestamp >> 16),
-        (byte)(_timestamp >> 8),
-        (byte)_timestamp,
-        (byte)(_b >> 24),
-        (byte)(_b >> 16),
-        (byte)(_b >> 8),
-        (byte)_b,
-        (byte)(_c >> 24),
-        (byte)(_c >> 16),
-        (byte)(_c >> 8),
-        (byte)_c
+        _timestamp0,
+        _timestamp1,
+        _timestamp2,
+        _timestamp3,
+        _machine0,
+        _machine1,
+        _machine2,
+        _pid0,
+        _pid1,
+        _increment0,
+        _increment1,
+        _increment2
     };
+
+    //Unsafe.WriteUnaligned(ref bytes[0], this);
 
     public void Write(Span<Byte> bytes)
     {
         if (bytes.Length < 12) throw new ArgumentException("There is not enough space in the destination buffer. A minimum of 12 bytes is required.", nameof(bytes));
 
-        bytes[0] = (byte)(_timestamp >> 24);
-        bytes[1] = (byte)(_timestamp >> 16);
-        bytes[2] = (byte)(_timestamp >> 8);
-        bytes[3] = (byte)_timestamp;
-        bytes[4] = (byte)(_b >> 24);
-        bytes[5] = (byte)(_b >> 16);
-        bytes[6] = (byte)(_b >> 8);
-        bytes[7] = (byte)_b;
-        bytes[8] = (byte)(_c >> 24);
-        bytes[9] = (byte)(_c >> 16);
-        bytes[10] = (byte)(_c >> 8);
-        bytes[11] = (byte)_c;
+        bytes[0] = _timestamp0;
+        bytes[1] = _timestamp1;
+        bytes[2] = _timestamp2;
+        bytes[3] = _timestamp3;
+        bytes[4] = _machine0;
+        bytes[5] = _machine1;
+        bytes[6] = _machine2;
+        bytes[7] = _pid0;
+        bytes[8] = _pid1;
+        bytes[9] = _increment0;
+        bytes[10] = _increment1;
+        bytes[11] = _increment2;
+
+        //Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(bytes), this);
     }
 
-    public Int32 CompareTo(Id other)
+    public Int32 CompareTo(Id id)
     {
-        int result = ((uint)_timestamp).CompareTo((uint)other._timestamp);
+        if (_timestamp0 != id._timestamp0) return _timestamp0 < id._timestamp0 ? -1 : 1;
+        if (_timestamp1 != id._timestamp1) return _timestamp1 < id._timestamp1 ? -1 : 1;
+        if (_timestamp2 != id._timestamp2) return _timestamp2 < id._timestamp2 ? -1 : 1;
+        if (_timestamp3 != id._timestamp3) return _timestamp3 < id._timestamp3 ? -1 : 1;
 
-        if (result != 0) return result;
+        if (_machine0 != id._machine0) return _machine0 < id._machine0 ? -1 : 1;
+        if (_machine1 != id._machine1) return _machine1 < id._machine1 ? -1 : 1;
+        if (_machine2 != id._machine2) return _machine2 < id._machine2 ? -1 : 1;
 
-        result = ((uint)_b).CompareTo((uint)other._b);
-        if (result != 0) return result;
+        if (_pid0 != id._pid0) return _pid0 < id._pid0 ? -1 : 1;
+        if (_pid1 != id._pid1) return _pid1 < id._pid1 ? -1 : 1;
 
-        return ((uint)_c).CompareTo((uint)other._c);
+        if (_increment0 != id._increment0) return _increment0 < id._increment0 ? -1 : 1;
+        if (_increment1 != id._increment1) return _increment1 < id._increment1 ? -1 : 1;
+        if (_increment2 != id._increment2) return _increment2 < id._increment2 ? -1 : 1;
+
+        return 0;
+
+        //fixed (byte* a = &_timestamp0)
+        //{
+        //    byte* b = &id._timestamp0;
+
+        //    if (*(ulong*)a != *(ulong*)b) return *(ulong*)a < *(ulong*)b ? -1 : 1;
+
+        //    if (*(uint*)(a + 8) != *(uint*)(b + 8)) return *(uint*)(a + 8) < *(uint*)(b + 8) ? -1 : 1;
+
+        //    return 0;
+        //}
     }
 
-    public Boolean Equals(Id id) => _timestamp == id._timestamp && _b == id._b && _c == id._c;
+    public unsafe Boolean Equals(Id id)
+    {
+        fixed (byte* a = &_timestamp0)
+        {
+            byte* b = &id._timestamp0;
+
+            if (*(ulong*)a != *(ulong*)b) return false;
+
+            if (*(uint*)(a + 8) != *(uint*)(b + 8)) return false;
+
+            return true;
+        }
+    }
 
     public override String ToString() => ToBase64Url();
 
@@ -1191,13 +1288,13 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     public override Boolean Equals(Object? obj) => obj is Id id && Equals(id);
 
-    public override Int32 GetHashCode()
+    public override unsafe Int32 GetHashCode()
     {
-        int hash = 17;
-        hash = 37 * hash + _timestamp.GetHashCode();
-        hash = 37 * hash + _b.GetHashCode();
-        hash = 37 * hash + _c.GetHashCode();
-        return hash;
+        fixed (void* p = &_timestamp0)
+        {
+            var int32 = (int*)p;
+            return (*int32) ^ *(int32 + 1) ^ *(int32 + 2);
+        }
     }
 
     #endregion Public Methods
@@ -1286,12 +1383,12 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         return (int)(uint)secondsSinceEpoch;
     }
 
-    private static void FromByteArray(ReadOnlySpan<byte> bytes, int offset, out int timestamp, out int b, out int c)
-    {
-        timestamp = (bytes[offset] << 24) | (bytes[offset + 1] << 16) | (bytes[offset + 2] << 8) | bytes[offset + 3];
-        b = (bytes[offset + 4] << 24) | (bytes[offset + 5] << 16) | (bytes[offset + 6] << 8) | bytes[offset + 7];
-        c = (bytes[offset + 8] << 24) | (bytes[offset + 9] << 16) | (bytes[offset + 10] << 8) | bytes[offset + 11];
-    }
+    //private static void FromByteArray(ReadOnlySpan<byte> bytes, int offset, out int timestamp, out int b, out int c)
+    //{
+    //    timestamp = (bytes[offset] << 24) | (bytes[offset + 1] << 16) | (bytes[offset + 2] << 8) | bytes[offset + 3];
+    //    b = (bytes[offset + 4] << 24) | (bytes[offset + 5] << 16) | (bytes[offset + 6] << 8) | bytes[offset + 7];
+    //    c = (bytes[offset + 8] << 24) | (bytes[offset + 9] << 16) | (bytes[offset + 10] << 8) | bytes[offset + 11];
+    //}
 
     private static DateTime ToUniversalTime(DateTime dateTime)
     {

@@ -14,6 +14,42 @@ public class IdTest
     }
 
     [Test]
+    public void Ctor()
+    {
+        var id = Id.New();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Id.Parse(id.ToString()), Is.EqualTo(id));
+
+            Assert.That(new Id(id.Timestamp, id.Machine, id.Pid, id.Increment), Is.EqualTo(id));
+
+            Assert.That(new Id(id.ToByteArray()), Is.EqualTo(id));
+
+            Span<byte> span = stackalloc byte[12];
+            id.Write(span);
+            Assert.That(new Id(span), Is.EqualTo(id));
+        });
+    }
+
+    [Test]
+    public void XXH()
+    {
+        for (int i = 0; i < 1000; i++)
+        {
+            var id = Id.New();
+
+            var array = id.ToByteArray();
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(Internal.XXH32.DigestOf(array), Is.EqualTo(id.XXH32()));
+                Assert.That(Internal.XXH64.DigestOf(array), Is.EqualTo(id.XXH64()));
+            });
+        }
+    }
+
+    [Test]
     public void IdMachine()
     {
         var id = Id.New();

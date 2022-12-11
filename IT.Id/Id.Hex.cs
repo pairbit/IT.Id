@@ -14,18 +14,18 @@ public readonly partial struct Id
             fixed (char* hexLowerP = hexLower)
             {
                 uint* dest = (uint*)hexLowerP;
-                dest[0] = map[(byte)(_timestamp >> 24)];
-                dest[1] = map[(byte)(_timestamp >> 16)];
-                dest[2] = map[(byte)(_timestamp >> 8)];
-                dest[3] = map[(byte)(_timestamp)];
-                dest[4] = map[(byte)(_b >> 24)];
-                dest[5] = map[(byte)(_b >> 16)];
-                dest[6] = map[(byte)(_b >> 8)];
-                dest[7] = map[(byte)(_b)];
-                dest[8] = map[(byte)(_c >> 24)];
-                dest[9] = map[(byte)(_c >> 16)];
-                dest[10] = map[(byte)(_c >> 8)];
-                dest[11] = map[(byte)(_c)];
+                dest[0] = map[_timestamp0];
+                dest[1] = map[_timestamp1];
+                dest[2] = map[_timestamp2];
+                dest[3] = map[_timestamp3];
+                dest[4] = map[_machine0];
+                dest[5] = map[_machine1];
+                dest[6] = map[_machine2];
+                dest[7] = map[_pid0];
+                dest[8] = map[_pid1];
+                dest[9] = map[_increment0];
+                dest[10] = map[_increment1];
+                dest[11] = map[_increment2];
             }
         }
         return hexLower;
@@ -40,18 +40,18 @@ public readonly partial struct Id
             fixed (char* hexUpperP = hexUpper)
             {
                 uint* dest = (uint*)hexUpperP;
-                dest[0] = map[(byte)(_timestamp >> 24)];
-                dest[1] = map[(byte)(_timestamp >> 16)];
-                dest[2] = map[(byte)(_timestamp >> 8)];
-                dest[3] = map[(byte)(_timestamp)];
-                dest[4] = map[(byte)(_b >> 24)];
-                dest[5] = map[(byte)(_b >> 16)];
-                dest[6] = map[(byte)(_b >> 8)];
-                dest[7] = map[(byte)(_b)];
-                dest[8] = map[(byte)(_c >> 24)];
-                dest[9] = map[(byte)(_c >> 16)];
-                dest[10] = map[(byte)(_c >> 8)];
-                dest[11] = map[(byte)(_c)];
+                dest[0] = map[_timestamp0];
+                dest[1] = map[_timestamp1];
+                dest[2] = map[_timestamp2];
+                dest[3] = map[_timestamp3];
+                dest[4] = map[_machine0];
+                dest[5] = map[_machine1];
+                dest[6] = map[_machine2];
+                dest[7] = map[_pid0];
+                dest[8] = map[_pid1];
+                dest[9] = map[_increment0];
+                dest[10] = map[_increment1];
+                dest[11] = map[_increment2];
             }
         }
         return hexUpper;
@@ -62,18 +62,18 @@ public readonly partial struct Id
         fixed (char* charsP = chars)
         {
             uint* dest = (uint*)charsP;
-            dest[0] = map[(byte)(_timestamp >> 24)];
-            dest[1] = map[(byte)(_timestamp >> 16)];
-            dest[2] = map[(byte)(_timestamp >> 8)];
-            dest[3] = map[(byte)_timestamp];
-            dest[4] = map[(byte)(_b >> 24)];
-            dest[5] = map[(byte)(_b >> 16)];
-            dest[6] = map[(byte)(_b >> 8)];
-            dest[7] = map[(byte)_b];
-            dest[8] = map[(byte)(_c >> 24)];
-            dest[9] = map[(byte)(_c >> 16)];
-            dest[10] = map[(byte)(_c >> 8)];
-            dest[11] = map[(byte)_c];
+            dest[0] = map[_timestamp0];
+            dest[1] = map[_timestamp1];
+            dest[2] = map[_timestamp2];
+            dest[3] = map[_timestamp3];
+            dest[4] = map[_machine0];
+            dest[5] = map[_machine1];
+            dest[6] = map[_machine2];
+            dest[7] = map[_pid0];
+            dest[8] = map[_pid1];
+            dest[9] = map[_increment0];
+            dest[10] = map[_increment1];
+            dest[11] = map[_increment2];
         }
     }
 
@@ -82,18 +82,18 @@ public readonly partial struct Id
         fixed (byte* bytesP = bytes)
         {
             ushort* dest = (ushort*)bytesP;
-            dest[0] = map[(byte)(_timestamp >> 24)];
-            dest[1] = map[(byte)(_timestamp >> 16)];
-            dest[2] = map[(byte)(_timestamp >> 8)];
-            dest[3] = map[(byte)_timestamp];
-            dest[4] = map[(byte)(_b >> 24)];
-            dest[5] = map[(byte)(_b >> 16)];
-            dest[6] = map[(byte)(_b >> 8)];
-            dest[7] = map[(byte)_b];
-            dest[8] = map[(byte)(_c >> 24)];
-            dest[9] = map[(byte)(_c >> 16)];
-            dest[10] = map[(byte)(_c >> 8)];
-            dest[11] = map[(byte)_c];
+            dest[0] = map[_timestamp0];
+            dest[1] = map[_timestamp1];
+            dest[2] = map[_timestamp2];
+            dest[3] = map[_timestamp3];
+            dest[4] = map[_machine0];
+            dest[5] = map[_machine1];
+            dest[6] = map[_machine2];
+            dest[7] = map[_pid0];
+            dest[8] = map[_pid1];
+            dest[9] = map[_increment0];
+            dest[10] = map[_increment1];
+            dest[11] = map[_increment2];
         }
     }
 

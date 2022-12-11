@@ -7,6 +7,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	<NoWarn>$(NoWarn);1591;IDE1006;IDE0049</NoWarn>
+	<SignAssembly>true</SignAssembly>
+	<AssemblyOriginatorKeyFile>..\IT.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>

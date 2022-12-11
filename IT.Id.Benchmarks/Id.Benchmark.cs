@@ -9,7 +9,7 @@ namespace IT.IdBenchmarks;
 public class IdBenchmark
 {
     private readonly static Id _id = Id.NewObjectId();
-    private readonly static Id _id2 = new(_id.Timestamp, _id.B, _id.C);
+    private readonly static Id _id2 = new(_id.Timestamp, _id.Machine, _id.Pid, _id.Increment);
     private readonly static Ulid _ulid = Ulid.NewUlid();
     private readonly static Ulid _ulid2 = new(_ulid.ToByteArray());
 
@@ -67,7 +67,7 @@ public class IdBenchmark
     }
 
     [Benchmark]
-    public Id Id_Ctor() => new(_id.Timestamp, _id.B, _id.C);
+    public Id Id_Ctor() => new(_id.Timestamp, _id.Machine, _id.Pid, _id.Increment);
 
     [Benchmark]
     public UInt32 Id_XXH32() => _id.XXH32();

@@ -54,7 +54,7 @@ public readonly partial struct Id
                 r0 = 0;
 
             //1
-            int carry = (byte)(_timestamp >> 24);
+            int carry = _timestamp0;
 
             if (carry != 0)
             {
@@ -70,7 +70,7 @@ public readonly partial struct Id
             }
 
             //2
-            carry = (byte)(_timestamp >> 16);
+            carry = _timestamp1;
 
             if (carry != 0 || length > 0)
             {
@@ -92,7 +92,7 @@ public readonly partial struct Id
             }
 
             //3
-            carry = (byte)(_timestamp >> 8);
+            carry = _timestamp2;
 
             if (carry != 0 || length > 0)
             {
@@ -126,7 +126,7 @@ public readonly partial struct Id
             }
 
             //4
-            carry = (byte)_timestamp;
+            carry = _timestamp3;
 
             if (carry != 0 || length > 0)
             {
@@ -166,7 +166,7 @@ public readonly partial struct Id
             }
 
             //5
-            carry = (byte)(_b >> 24);
+            carry = _machine0;
 
             if (carry != 0 || length > 0)
             {
@@ -212,7 +212,7 @@ public readonly partial struct Id
             }
 
             //6
-            carry = (byte)(_b >> 16);
+            carry = _machine1;
 
             if (carry != 0 || length > 0)
             {
@@ -270,7 +270,7 @@ public readonly partial struct Id
             }
 
             //7
-            carry = (byte)(_b >> 8);
+            carry = _machine2;
 
             if (carry != 0 || length > 0)
             {
@@ -334,7 +334,7 @@ public readonly partial struct Id
             }
 
             //8
-            carry = (byte)_b;
+            carry = _pid0;
 
             if (carry != 0 || length > 0)
             {
@@ -404,7 +404,7 @@ public readonly partial struct Id
             }
 
             //9
-            carry = (byte)(_c >> 24);
+            carry = _pid1;
 
             if (carry != 0 || length > 0)
             {
@@ -486,7 +486,7 @@ public readonly partial struct Id
             }
 
             //10
-            carry = (byte)(_c >> 16);
+            carry = _increment0;
 
             if (carry != 0 || length > 0)
             {
@@ -574,7 +574,7 @@ public readonly partial struct Id
             }
 
             //11
-            carry = (byte)(_c >> 8);
+            carry = _increment1;
 
             if (carry != 0 || length > 0)
             {
@@ -674,7 +674,7 @@ public readonly partial struct Id
             }
 
             //12
-            carry = (byte)_c;
+            carry = _increment2;
 
             if (carry != 0 || length > 0)
             {
@@ -1114,7 +1114,7 @@ public readonly partial struct Id
                 r0 = 0;
 
             //1
-            int carry = (byte)(_timestamp >> 24);
+            int carry = _timestamp0;
 
             if (carry != 0)
             {
@@ -1130,7 +1130,7 @@ public readonly partial struct Id
             }
 
             //2
-            carry = (byte)(_timestamp >> 16);
+            carry = _timestamp1;
 
             if (carry != 0 || length > 0)
             {
@@ -1152,7 +1152,7 @@ public readonly partial struct Id
             }
 
             //3
-            carry = (byte)(_timestamp >> 8);
+            carry = _timestamp2;
 
             if (carry != 0 || length > 0)
             {
@@ -1186,7 +1186,7 @@ public readonly partial struct Id
             }
 
             //4
-            carry = (byte)_timestamp;
+            carry = _timestamp3;
 
             if (carry != 0 || length > 0)
             {
@@ -1226,7 +1226,7 @@ public readonly partial struct Id
             }
 
             //5
-            carry = (byte)(_b >> 24);
+            carry = _machine0;
 
             if (carry != 0 || length > 0)
             {
@@ -1272,7 +1272,7 @@ public readonly partial struct Id
             }
 
             //6
-            carry = (byte)(_b >> 16);
+            carry = _machine1;
 
             if (carry != 0 || length > 0)
             {
@@ -1330,7 +1330,7 @@ public readonly partial struct Id
             }
 
             //7
-            carry = (byte)(_b >> 8);
+            carry = _machine2;
 
             if (carry != 0 || length > 0)
             {
@@ -1394,7 +1394,7 @@ public readonly partial struct Id
             }
 
             //8
-            carry = (byte)_b;
+            carry = _pid0;
 
             if (carry != 0 || length > 0)
             {
@@ -1464,7 +1464,7 @@ public readonly partial struct Id
             }
 
             //9
-            carry = (byte)(_c >> 24);
+            carry = _pid1;
 
             if (carry != 0 || length > 0)
             {
@@ -1546,7 +1546,7 @@ public readonly partial struct Id
             }
 
             //10
-            carry = (byte)(_c >> 16);
+            carry = _increment0;
 
             if (carry != 0 || length > 0)
             {
@@ -1634,7 +1634,7 @@ public readonly partial struct Id
             }
 
             //11
-            carry = (byte)(_c >> 8);
+            carry = _increment1;
 
             if (carry != 0 || length > 0)
             {
@@ -1734,7 +1734,7 @@ public readonly partial struct Id
             }
 
             //12
-            carry = (byte)_c;
+            carry = _increment2;
 
             if (carry != 0 || length > 0)
             {

@@ -23,12 +23,11 @@ Console.WriteLine($"SizeOf Id40 - {System.Runtime.InteropServices.Marshal.SizeOf
 var id = Id.Parse("62A84F674031E78D474FE23F");
 //var id = Id.New();
 
-var idCopy2 = new Id(id.Timestamp, id.B, id.C);
-var idCopy3 = new Id(id.Timestamp, id.Machine, id.Pid, id.Increment);
+var idCopy2 = new Id(id.Timestamp, id.Machine, id.Pid, id.Increment);
 
 var machine = Id.New().Machine;
 
-if (!id.Equals(idCopy2) || !id.Equals(idCopy3) || machine != Id.MachineHash24) throw new InvalidOperationException();
+if (!id.Equals(idCopy2) || machine != Id.MachineHash24) throw new InvalidOperationException();
 
 var process = Process.GetCurrentProcess();
 

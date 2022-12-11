@@ -16,36 +16,36 @@ public readonly partial struct Id
         fixed (char* dest = path2)
         fixed (char* map = Base64.tableUrl)
         {
-            var byte0 = (byte)(_timestamp >> 24);
-            var byte1 = (byte)(_timestamp >> 16);
-            var byte2 = (byte)(_timestamp >> 8);
+            var byte0 = _timestamp0;
+            var byte1 = _timestamp1;
+            var byte2 = _timestamp2;
 
             dest[17] = map[(byte0 & 0xfc) >> 2];
             dest[16] = map[((byte0 & 0x03) << 4) | ((byte1 & 0xf0) >> 4)];
             dest[15] = map[((byte1 & 0x0f) << 2) | ((byte2 & 0xc0) >> 6)];
             dest[14] = map[byte2 & 0x3f];
 
-            var byte3 = (byte)_timestamp;
-            var byte4 = (byte)(_b >> 24);
-            var byte5 = (byte)(_b >> 16);
+            var byte3 = _timestamp3;
+            var byte4 = _machine0;
+            var byte5 = _machine1;
 
             dest[13] = map[(byte3 & 0xfc) >> 2];
             dest[12] = map[((byte3 & 0x03) << 4) | ((byte4 & 0xf0) >> 4)];
             dest[11] = map[((byte4 & 0x0f) << 2) | ((byte5 & 0xc0) >> 6)];
             dest[10] = map[byte5 & 0x3f];
 
-            var byte6 = (byte)(_b >> 8);
-            var byte7 = (byte)_b;
-            var byte8 = (byte)(_c >> 24);
+            var byte6 = _machine2;
+            var byte7 = _pid0;
+            var byte8 = _pid1;
 
             dest[9] = map[(byte6 & 0xfc) >> 2];
             dest[8] = map[((byte6 & 0x03) << 4) | ((byte7 & 0xf0) >> 4)];
             dest[7] = map[((byte7 & 0x0f) << 2) | ((byte8 & 0xc0) >> 6)];
             dest[6] = map[byte8 & 0x3f];
 
-            var byte9 = (byte)(_c >> 16);
-            var byte10 = (byte)(_c >> 8);
-            var byte11 = (byte)_c;
+            var byte9 = _increment0;
+            var byte10 = _increment1;
+            var byte11 = _increment2;
 
             dest[5] = map[(byte9 & 0xfc) >> 2];
             dest[4] = map[((byte9 & 0x03) << 4) | ((byte10 & 0xf0) >> 4)];
@@ -62,36 +62,36 @@ public readonly partial struct Id
         fixed (char* dest = chars)
         fixed (char* map = Base64.tableUrl)
         {
-            var byte0 = (byte)(_timestamp >> 24);
-            var byte1 = (byte)(_timestamp >> 16);
-            var byte2 = (byte)(_timestamp >> 8);
+            var byte0 = _timestamp0;
+            var byte1 = _timestamp1;
+            var byte2 = _timestamp2;
 
             dest[17] = map[(byte0 & 0xfc) >> 2];
             dest[16] = map[((byte0 & 0x03) << 4) | ((byte1 & 0xf0) >> 4)];
             dest[15] = map[((byte1 & 0x0f) << 2) | ((byte2 & 0xc0) >> 6)];
             dest[14] = map[byte2 & 0x3f];
 
-            var byte3 = (byte)_timestamp;
-            var byte4 = (byte)(_b >> 24);
-            var byte5 = (byte)(_b >> 16);
+            var byte3 = _timestamp3;
+            var byte4 = _machine0;
+            var byte5 = _machine1;
 
             dest[13] = map[(byte3 & 0xfc) >> 2];
             dest[12] = map[((byte3 & 0x03) << 4) | ((byte4 & 0xf0) >> 4)];
             dest[11] = map[((byte4 & 0x0f) << 2) | ((byte5 & 0xc0) >> 6)];
             dest[10] = map[byte5 & 0x3f];
 
-            var byte6 = (byte)(_b >> 8);
-            var byte7 = (byte)_b;
-            var byte8 = (byte)(_c >> 24);
+            var byte6 = _machine2;
+            var byte7 = _pid0;
+            var byte8 = _pid1;
 
             dest[9] = map[(byte6 & 0xfc) >> 2];
             dest[8] = map[((byte6 & 0x03) << 4) | ((byte7 & 0xf0) >> 4)];
             dest[7] = map[((byte7 & 0x0f) << 2) | ((byte8 & 0xc0) >> 6)];
             dest[6] = map[byte8 & 0x3f];
 
-            var byte9 = (byte)(_c >> 16);
-            var byte10 = (byte)(_c >> 8);
-            var byte11 = (byte)_c;
+            var byte9 = _increment0;
+            var byte10 = _increment1;
+            var byte11 = _increment2;
 
             dest[5] = map[(byte9 & 0xfc) >> 2];
             dest[4] = map[((byte9 & 0x03) << 4) | ((byte10 & 0xf0) >> 4)];
@@ -107,36 +107,36 @@ public readonly partial struct Id
         fixed (byte* dest = bytes)
         fixed (byte* map = Base64.bytesUrl)
         {
-            var byte0 = (byte)(_timestamp >> 24);
-            var byte1 = (byte)(_timestamp >> 16);
-            var byte2 = (byte)(_timestamp >> 8);
+            var byte0 = _timestamp0;
+            var byte1 = _timestamp1;
+            var byte2 = _timestamp2;
 
             dest[17] = map[(byte0 & 0xfc) >> 2];
             dest[16] = map[((byte0 & 0x03) << 4) | ((byte1 & 0xf0) >> 4)];
             dest[15] = map[((byte1 & 0x0f) << 2) | ((byte2 & 0xc0) >> 6)];
             dest[14] = map[byte2 & 0x3f];
 
-            var byte3 = (byte)_timestamp;
-            var byte4 = (byte)(_b >> 24);
-            var byte5 = (byte)(_b >> 16);
+            var byte3 = _timestamp3;
+            var byte4 = _machine0;
+            var byte5 = _machine1;
 
             dest[13] = map[(byte3 & 0xfc) >> 2];
             dest[12] = map[((byte3 & 0x03) << 4) | ((byte4 & 0xf0) >> 4)];
             dest[11] = map[((byte4 & 0x0f) << 2) | ((byte5 & 0xc0) >> 6)];
             dest[10] = map[byte5 & 0x3f];
 
-            var byte6 = (byte)(_b >> 8);
-            var byte7 = (byte)_b;
-            var byte8 = (byte)(_c >> 24);
+            var byte6 = _machine2;
+            var byte7 = _pid0;
+            var byte8 = _pid1;
 
             dest[9] = map[(byte6 & 0xfc) >> 2];
             dest[8] = map[((byte6 & 0x03) << 4) | ((byte7 & 0xf0) >> 4)];
             dest[7] = map[((byte7 & 0x0f) << 2) | ((byte8 & 0xc0) >> 6)];
             dest[6] = map[byte8 & 0x3f];
 
-            var byte9 = (byte)(_c >> 16);
-            var byte10 = (byte)(_c >> 8);
-            var byte11 = (byte)_c;
+            var byte9 = _increment0;
+            var byte10 = _increment1;
+            var byte11 = _increment2;
 
             dest[5] = map[(byte9 & 0xfc) >> 2];
             dest[4] = map[((byte9 & 0x03) << 4) | ((byte10 & 0xf0) >> 4)];

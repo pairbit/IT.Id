@@ -19,7 +19,7 @@ public readonly partial struct Id
             fixed (char* dest = base85)
             fixed (char* map = Base85.Alphabet)
             {
-                uint value0 = (uint)_timestamp;
+                uint value0 = (uint)(_timestamp0 << 24 | _timestamp1 << 16 | _timestamp2 << 8 | _timestamp3);
 
                 dest[0] = map[Mod85(value0 / U85P4)];
                 dest[1] = map[Mod85(value0 / U85P3)];
@@ -27,7 +27,7 @@ public readonly partial struct Id
                 dest[3] = map[Mod85(value0 / U85P1)];
                 dest[4] = map[Mod85(value0)];
 
-                var value1 = (uint)_b;
+                var value1 = (uint)(_machine0 << 24 | _machine1 << 16 | _machine2 << 8 | _pid0);
 
                 dest[5] = map[Mod85(value1 / U85P4)];
                 dest[6] = map[Mod85(value1 / U85P3)];
@@ -35,7 +35,7 @@ public readonly partial struct Id
                 dest[8] = map[Mod85(value1 / U85P1)];
                 dest[9] = map[Mod85(value1)];
 
-                var value2 = (uint)_c;
+                var value2 = (uint)(_pid1 << 24 | _increment0 << 16 | _increment1 << 8 | _increment2);
 
                 dest[10] = map[Mod85(value2 / U85P4)];
                 dest[11] = map[Mod85(value2 / U85P3)];
@@ -52,7 +52,7 @@ public readonly partial struct Id
         fixed (char* dest = chars)
         fixed (char* map = Base85.Alphabet)
         {
-            uint value0 = (uint)_timestamp;
+            uint value0 = (uint)(_timestamp0 << 24 | _timestamp1 << 16 | _timestamp2 << 8 | _timestamp3);
 
             dest[0] = map[Mod85(value0 / U85P4)];
             dest[1] = map[Mod85(value0 / U85P3)];
@@ -60,7 +60,7 @@ public readonly partial struct Id
             dest[3] = map[Mod85(value0 / U85P1)];
             dest[4] = map[Mod85(value0)];
 
-            var value1 = (uint)_b;
+            var value1 = (uint)(_machine0 << 24 | _machine1 << 16 | _machine2 << 8 | _pid0);
 
             dest[5] = map[Mod85(value1 / U85P4)];
             dest[6] = map[Mod85(value1 / U85P3)];
@@ -68,7 +68,7 @@ public readonly partial struct Id
             dest[8] = map[Mod85(value1 / U85P1)];
             dest[9] = map[Mod85(value1)];
 
-            var value2 = (uint)_c;
+            var value2 = (uint)(_pid1 << 24 | _increment0 << 16 | _increment1 << 8 | _increment2);
 
             dest[10] = map[Mod85(value2 / U85P4)];
             dest[11] = map[Mod85(value2 / U85P3)];
@@ -83,7 +83,7 @@ public readonly partial struct Id
         fixed (byte* dest = bytes)
         fixed (byte* map = Base85.EncodeMap)
         {
-            uint value0 = (uint)_timestamp;
+            uint value0 = (uint)(_timestamp0 << 24 | _timestamp1 << 16 | _timestamp2 << 8 | _timestamp3);
 
             dest[0] = map[Mod85(value0 / U85P4)];
             dest[1] = map[Mod85(value0 / U85P3)];
@@ -91,7 +91,7 @@ public readonly partial struct Id
             dest[3] = map[Mod85(value0 / U85P1)];
             dest[4] = map[Mod85(value0)];
 
-            var value1 = (uint)_b;
+            var value1 = (uint)(_machine0 << 24 | _machine1 << 16 | _machine2 << 8 | _pid0);
 
             dest[5] = map[Mod85(value1 / U85P4)];
             dest[6] = map[Mod85(value1 / U85P3)];
@@ -99,7 +99,7 @@ public readonly partial struct Id
             dest[8] = map[Mod85(value1 / U85P1)];
             dest[9] = map[Mod85(value1)];
 
-            var value2 = (uint)_c;
+            var value2 = (uint)(_pid1 << 24 | _increment0 << 16 | _increment1 << 8 | _increment2);
 
             dest[10] = map[Mod85(value2 / U85P4)];
             dest[11] = map[Mod85(value2 / U85P3)];

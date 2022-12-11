@@ -15,11 +15,11 @@ public readonly partial struct Id
             fixed (char* dest = base32)
             fixed (char* map = abc)
             {
-                ulong value = (byte)(_timestamp >> 24);
-                value = (value << 8) | (byte)(_timestamp >> 16);
-                value = (value << 8) | (byte)(_timestamp >> 8);
-                value = (value << 8) | (byte)_timestamp;
-                value = (value << 8) | (byte)(_b >> 24);
+                ulong value = _timestamp0;
+                value = (value << 8) | _timestamp1;
+                value = (value << 8) | _timestamp2;
+                value = (value << 8) | _timestamp3;
+                value = (value << 8) | _machine0;
 
                 //ulong value = ((ulong)_timestamp << 8) | (byte)(_b >> 24);
 
@@ -32,11 +32,11 @@ public readonly partial struct Id
                 dest[6] = map[(value >> 5) & 0x1F];
                 dest[7] = map[value & 0x1F];
 
-                value = (byte)(_b >> 16);
-                value = (value << 8) | (byte)(_b >> 8);
-                value = (value << 8) | (byte)_b;
-                value = (value << 8) | (byte)(_c >> 24);
-                value = (value << 8) | (byte)(_c >> 16);
+                value = _machine1;
+                value = (value << 8) | _machine2;
+                value = (value << 8) | _pid0;
+                value = (value << 8) | _pid1;
+                value = (value << 8) | _increment0;
 
                 dest[8] = map[value >> 35];
                 dest[9] = map[(value >> 30) & 0x1F];
@@ -47,7 +47,7 @@ public readonly partial struct Id
                 dest[14] = map[(value >> 5) & 0x1F];
                 dest[15] = map[value & 0x1F];
 
-                value = (((ulong)(byte)(_c >> 8) << 8) | (byte)_c) << 4;
+                value = (((ulong)_increment1 << 8) | _increment2) << 4;
 
                 dest[16] = map[value >> 15];
                 dest[17] = map[(value >> 10) & 0x1F];
@@ -64,13 +64,11 @@ public readonly partial struct Id
         fixed (char* dest = chars)
         fixed (char* map = abc)
         {
-            ulong value = (byte)(_timestamp >> 24);
-            value = (value << 8) | (byte)(_timestamp >> 16);
-            value = (value << 8) | (byte)(_timestamp >> 8);
-            value = (value << 8) | (byte)_timestamp;
-            value = (value << 8) | (byte)(_b >> 24);
-
-            //ulong value = ((ulong)_timestamp << 8) | (byte)(_b >> 24);
+            ulong value = _timestamp0;
+            value = (value << 8) | _timestamp1;
+            value = (value << 8) | _timestamp2;
+            value = (value << 8) | _timestamp3;
+            value = (value << 8) | _machine0;
 
             dest[0] = map[value >> 35];
             dest[1] = map[(value >> 30) & 0x1F];
@@ -81,11 +79,11 @@ public readonly partial struct Id
             dest[6] = map[(value >> 5) & 0x1F];
             dest[7] = map[value & 0x1F];
 
-            value = (byte)(_b >> 16);
-            value = (value << 8) | (byte)(_b >> 8);
-            value = (value << 8) | (byte)_b;
-            value = (value << 8) | (byte)(_c >> 24);
-            value = (value << 8) | (byte)(_c >> 16);
+            value = _machine1;
+            value = (value << 8) | _machine2;
+            value = (value << 8) | _pid0;
+            value = (value << 8) | _pid1;
+            value = (value << 8) | _increment0;
 
             dest[8] = map[value >> 35];
             dest[9] = map[(value >> 30) & 0x1F];
@@ -96,7 +94,7 @@ public readonly partial struct Id
             dest[14] = map[(value >> 5) & 0x1F];
             dest[15] = map[value & 0x1F];
 
-            value = (((ulong)(byte)(_c >> 8) << 8) | (byte)_c) << 4;
+            value = (((ulong)_increment1 << 8) | _increment2) << 4;
 
             dest[16] = map[value >> 15];
             dest[17] = map[(value >> 10) & 0x1F];
@@ -110,13 +108,11 @@ public readonly partial struct Id
         fixed (byte* dest = bytes)
         fixed (byte* map = abc)
         {
-            ulong value = (byte)(_timestamp >> 24);
-            value = (value << 8) | (byte)(_timestamp >> 16);
-            value = (value << 8) | (byte)(_timestamp >> 8);
-            value = (value << 8) | (byte)_timestamp;
-            value = (value << 8) | (byte)(_b >> 24);
-
-            //ulong value = ((ulong)_timestamp << 8) | (byte)(_b >> 24);
+            ulong value = _timestamp0;
+            value = (value << 8) | _timestamp1;
+            value = (value << 8) | _timestamp2;
+            value = (value << 8) | _timestamp3;
+            value = (value << 8) | _machine0;
 
             dest[0] = map[value >> 35];
             dest[1] = map[(value >> 30) & 0x1F];
@@ -127,11 +123,11 @@ public readonly partial struct Id
             dest[6] = map[(value >> 5) & 0x1F];
             dest[7] = map[value & 0x1F];
 
-            value = (byte)(_b >> 16);
-            value = (value << 8) | (byte)(_b >> 8);
-            value = (value << 8) | (byte)_b;
-            value = (value << 8) | (byte)(_c >> 24);
-            value = (value << 8) | (byte)(_c >> 16);
+            value = _machine1;
+            value = (value << 8) | _machine2;
+            value = (value << 8) | _pid0;
+            value = (value << 8) | _pid1;
+            value = (value << 8) | _increment0;
 
             dest[8] = map[value >> 35];
             dest[9] = map[(value >> 30) & 0x1F];
@@ -142,7 +138,7 @@ public readonly partial struct Id
             dest[14] = map[(value >> 5) & 0x1F];
             dest[15] = map[value & 0x1F];
 
-            value = (((ulong)(byte)(_c >> 8) << 8) | (byte)_c) << 4;
+            value = (((ulong)_increment1 << 8) | _increment2) << 4;
 
             dest[16] = map[value >> 15];
             dest[17] = map[(value >> 10) & 0x1F];
