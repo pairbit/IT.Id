@@ -7,53 +7,47 @@ namespace IT;
 
 public readonly partial struct Id
 {
-    private String ToBase32(String abc)
+    private unsafe String ToBase32(String abc)
     {
         var base32 = new string((char)0, 20);
-        unsafe
+
+        //fixed (byte* t0 = &_timestamp0)
+        //fixed (byte* m1 = &_machine1)
+        fixed (char* dest = base32)
+        fixed (char* map = abc)
         {
-            fixed (char* dest = base32)
-            fixed (char* map = abc)
-            {
-                ulong value = _timestamp0;
-                value = (value << 8) | _timestamp1;
-                value = (value << 8) | _timestamp2;
-                value = (value << 8) | _timestamp3;
-                value = (value << 8) | _machine0;
+            //ulong value = BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref *t0));
+            ulong value = (ulong)(_timestamp0 << 24 | _timestamp1 << 16 | _timestamp2 << 8 | _timestamp3);
+            value = (value << 8) | _machine0;
 
-                //ulong value = ((ulong)_timestamp << 8) | (byte)(_b >> 24);
+            dest[0] = map[value >> 35];
+            dest[1] = map[(value >> 30) & 0x1F];
+            dest[2] = map[(value >> 25) & 0x1F];
+            dest[3] = map[(value >> 20) & 0x1F];
+            dest[4] = map[(value >> 15) & 0x1F];
+            dest[5] = map[(value >> 10) & 0x1F];
+            dest[6] = map[(value >> 5) & 0x1F];
+            dest[7] = map[value & 0x1F];
 
-                dest[0] = map[value >> 35];
-                dest[1] = map[(value >> 30) & 0x1F];
-                dest[2] = map[(value >> 25) & 0x1F];
-                dest[3] = map[(value >> 20) & 0x1F];
-                dest[4] = map[(value >> 15) & 0x1F];
-                dest[5] = map[(value >> 10) & 0x1F];
-                dest[6] = map[(value >> 5) & 0x1F];
-                dest[7] = map[value & 0x1F];
+            //value = BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref *m1));
+            value = (ulong)(_machine1 << 24 | _machine2 << 16 | _pid0 << 8 | _pid1);
+            value = (value << 8) | _machine0;
 
-                value = _machine1;
-                value = (value << 8) | _machine2;
-                value = (value << 8) | _pid0;
-                value = (value << 8) | _pid1;
-                value = (value << 8) | _increment0;
+            dest[8] = map[value >> 35];
+            dest[9] = map[(value >> 30) & 0x1F];
+            dest[10] = map[(value >> 25) & 0x1F];
+            dest[11] = map[(value >> 20) & 0x1F];
+            dest[12] = map[(value >> 15) & 0x1F];
+            dest[13] = map[(value >> 10) & 0x1F];
+            dest[14] = map[(value >> 5) & 0x1F];
+            dest[15] = map[value & 0x1F];
 
-                dest[8] = map[value >> 35];
-                dest[9] = map[(value >> 30) & 0x1F];
-                dest[10] = map[(value >> 25) & 0x1F];
-                dest[11] = map[(value >> 20) & 0x1F];
-                dest[12] = map[(value >> 15) & 0x1F];
-                dest[13] = map[(value >> 10) & 0x1F];
-                dest[14] = map[(value >> 5) & 0x1F];
-                dest[15] = map[value & 0x1F];
+            value = (((ulong)_increment1 << 8) | _increment2) << 4;
 
-                value = (((ulong)_increment1 << 8) | _increment2) << 4;
-
-                dest[16] = map[value >> 15];
-                dest[17] = map[(value >> 10) & 0x1F];
-                dest[18] = map[(value >> 5) & 0x1F];
-                dest[19] = map[value & 0x1F];
-            }
+            dest[16] = map[value >> 15];
+            dest[17] = map[(value >> 10) & 0x1F];
+            dest[18] = map[(value >> 5) & 0x1F];
+            dest[19] = map[value & 0x1F];
         }
 
         return base32;

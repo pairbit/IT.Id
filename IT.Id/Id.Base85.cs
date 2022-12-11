@@ -11,39 +11,42 @@ public readonly partial struct Id
     private const uint U85P3 = 85u * 85u * 85u;
     private const uint U85P4 = 85u * 85u * 85u * 85u;
 
-    private String ToBase85()
+    private unsafe String ToBase85()
     {
         var base85 = new string((char)0, 15);
-        unsafe
+
+        //fixed (byte* p = &_timestamp0)
+        fixed (char* dest = base85)
+        fixed (char* map = Base85.Alphabet)
         {
-            fixed (char* dest = base85)
-            fixed (char* map = Base85.Alphabet)
-            {
-                uint value0 = (uint)(_timestamp0 << 24 | _timestamp1 << 16 | _timestamp2 << 8 | _timestamp3);
+            //uint value0 = BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref *p));
+            uint value0 = (uint)(_timestamp0 << 24 | _timestamp1 << 16 | _timestamp2 << 8 | _timestamp3);
 
-                dest[0] = map[Mod85(value0 / U85P4)];
-                dest[1] = map[Mod85(value0 / U85P3)];
-                dest[2] = map[Mod85(value0 / U85P2)];
-                dest[3] = map[Mod85(value0 / U85P1)];
-                dest[4] = map[Mod85(value0)];
+            dest[0] = map[Mod85(value0 / U85P4)];
+            dest[1] = map[Mod85(value0 / U85P3)];
+            dest[2] = map[Mod85(value0 / U85P2)];
+            dest[3] = map[Mod85(value0 / U85P1)];
+            dest[4] = map[Mod85(value0)];
+            
+            //var value1 = BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref *(p + 4)));
+            var value1 = (uint)(_machine0 << 24 | _machine1 << 16 | _machine2 << 8 | _pid0);
 
-                var value1 = (uint)(_machine0 << 24 | _machine1 << 16 | _machine2 << 8 | _pid0);
+            dest[5] = map[Mod85(value1 / U85P4)];
+            dest[6] = map[Mod85(value1 / U85P3)];
+            dest[7] = map[Mod85(value1 / U85P2)];
+            dest[8] = map[Mod85(value1 / U85P1)];
+            dest[9] = map[Mod85(value1)];
+            
+            //var value2 = BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref *(p + 8)));
+            var value2 = (uint)(_pid1 << 24 | _increment0 << 16 | _increment1 << 8 | _increment2);
 
-                dest[5] = map[Mod85(value1 / U85P4)];
-                dest[6] = map[Mod85(value1 / U85P3)];
-                dest[7] = map[Mod85(value1 / U85P2)];
-                dest[8] = map[Mod85(value1 / U85P1)];
-                dest[9] = map[Mod85(value1)];
-
-                var value2 = (uint)(_pid1 << 24 | _increment0 << 16 | _increment1 << 8 | _increment2);
-
-                dest[10] = map[Mod85(value2 / U85P4)];
-                dest[11] = map[Mod85(value2 / U85P3)];
-                dest[12] = map[Mod85(value2 / U85P2)];
-                dest[13] = map[Mod85(value2 / U85P1)];
-                dest[14] = map[Mod85(value2)];
-            }
+            dest[10] = map[Mod85(value2 / U85P4)];
+            dest[11] = map[Mod85(value2 / U85P3)];
+            dest[12] = map[Mod85(value2 / U85P2)];
+            dest[13] = map[Mod85(value2 / U85P1)];
+            dest[14] = map[Mod85(value2)];
         }
+
         return base85;
     }
 

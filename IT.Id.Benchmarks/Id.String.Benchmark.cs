@@ -25,7 +25,7 @@ public class IdStringBenchmark
         //_id = Id.Parse("Y14-iRgzgKZclXbw");
         _id = Id.NewObjectId();
         _idHexLower = Id_Encode_HexLower();
-        _idBase32 = Id_Encode_Base32Lower();
+        _idBase32 = Id_Encode_Base32();
         _idBase58 = Id_Encode_Base58();
         _idBase64Url = Id_Encode_Base64();
         _idBase85 = Id_Encode_Base85();
@@ -36,25 +36,25 @@ public class IdStringBenchmark
         _ulidString = Ulid_Encode();
     }
 
-    [Benchmark]
+    //[Benchmark]
     public String Id_Encode_HexLower() => _id.ToString(Idf.Hex);
 
-    [Benchmark]
+    //[Benchmark]
     public Id Id_Decode_Hex() => Id.Parse(_idHexLower);
 
-    [Benchmark]
+    //[Benchmark]
     public String Id_Encode_HexUpper() => _id.ToString(Idf.HexUpper);
 
     [Benchmark]
-    public String Id_Encode_Base32Lower() => _id.ToString(Idf.Base32);
+    public String Id_Encode_Base32() => _id.ToString(Idf.Base32);
 
-    [Benchmark]
+    //[Benchmark]
     public String Id_Encode_Base32Upper() => _id.ToString(Idf.Base32Upper);
 
-    [Benchmark]
+    //[Benchmark]
     public Id Id_Decode_Base32() => Id.Parse(_idBase32);
 
-    [Benchmark]
+    //[Benchmark]
     public String Id_Encode_Base58() => _id.ToString(Idf.Base58);
 
 #if NETCOREAPP3_1_OR_GREATER
@@ -65,36 +65,36 @@ public class IdStringBenchmark
     public Id Id_Decode_Base58_SimpleBase() => new(SimpleBase.Base58.Bitcoin.Decode(_idBase58));
 #endif
 
-    [Benchmark]
+    //[Benchmark]
     public Id Id_Decode_Base58() => Id.Parse(_idBase58);
 
-    [Benchmark]
+    //[Benchmark]
     public String Id_Encode_Base64() => _id.ToString();
 
-    [Benchmark]
+    //[Benchmark]
     public Id Id_Decode_Base64() => Id.Parse(_idBase64Url);
 
-    [Benchmark]
+    //[Benchmark]
     public String Id_Encode_Base85() => _id.ToString(Idf.Base85);
 
-    [Benchmark]
+    //[Benchmark]
     public Id Id_Decode_Base85() => Id.Parse(_idBase85);
 
-    [Benchmark]
+    //[Benchmark]
     public String Id_Encode_Base64Path2() => _id.ToString(Idf.Base64Path2);
 
-    [Benchmark]
+    //[Benchmark]
     public Id Id_Decode_Base64Path2() => Id.Parse(_idPath2);
 
-    [Benchmark]
+    //[Benchmark]
     public String Id_Encode_Base64Path3() => _id.ToString(Idf.Base64Path3);
 
-    [Benchmark]
+    //[Benchmark]
     public Id Id_Decode_Base64Path3() => Id.Parse(_idPath3);
 
-    [Benchmark]
+    //[Benchmark]
     public String Ulid_Encode() => _ulid.ToString();
 
-    [Benchmark]
+    //[Benchmark]
     public Ulid Ulid_Decode() => Ulid.Parse(_ulidString);
 }
