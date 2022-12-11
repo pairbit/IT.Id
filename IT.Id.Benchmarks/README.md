@@ -45,7 +45,7 @@
 ## .NET Framework 4.8 Windows 10
 
 ### Base
-![image](https://user-images.githubusercontent.com/1288091/206904519-5178c7cf-bd25-48a4-80bf-20d9bee1bc24.png)
+![image](https://user-images.githubusercontent.com/1288091/206908305-d65bbc5c-8fd6-4923-93ea-7752988dd758.png)
 
 ### String
 ![image](https://user-images.githubusercontent.com/1288091/206904453-40ff4877-52f6-4adb-985b-adb8deeb01c3.png)
