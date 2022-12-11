@@ -25,7 +25,7 @@ public class IdStringBenchmark
         //_id = Id.Parse("Y14-iRgzgKZclXbw");
         _id = Id.NewObjectId();
         _idHexLower = Id_Encode_HexLower();
-        _idBase32 = Id_Encode_Base32();
+        _idBase32 = Id_Encode_Base32Lower();
         _idBase58 = Id_Encode_Base58();
         _idBase64Url = Id_Encode_Base64();
         _idBase85 = Id_Encode_Base85();
@@ -37,12 +37,6 @@ public class IdStringBenchmark
     }
 
     [Benchmark]
-    public UInt32 Id_XXH32() => _id.XXH32();
-
-    [Benchmark]
-    public UInt64 Id_XXH64() => _id.XXH64();
-
-    [Benchmark]
     public String Id_Encode_HexLower() => _id.ToString(Idf.Hex);
 
     [Benchmark]
@@ -52,7 +46,10 @@ public class IdStringBenchmark
     public String Id_Encode_HexUpper() => _id.ToString(Idf.HexUpper);
 
     [Benchmark]
-    public String Id_Encode_Base32() => _id.ToString(Idf.Base32);
+    public String Id_Encode_Base32Lower() => _id.ToString(Idf.Base32);
+
+    [Benchmark]
+    public String Id_Encode_Base32Upper() => _id.ToString(Idf.Base32Upper);
 
     [Benchmark]
     public Id Id_Decode_Base32() => Id.Parse(_idBase32);
