@@ -25,7 +25,7 @@ public class IdMemoryPackTest
 
         Assert.That(bytes.SequenceEqual(serialized), Is.True);
 
-        id.Write(bytes);
+        id.TryWrite(bytes);
 
         Assert.That(bytes.SequenceEqual(serialized), Is.True);
 

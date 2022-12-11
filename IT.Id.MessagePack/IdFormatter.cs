@@ -39,7 +39,7 @@ public class IdFormatter : IMessagePackFormatter<Id>
 
         var buffer = writer.GetSpan(Length);
 
-        id.Write(buffer);
+        id.TryWrite(buffer);
 
         writer.Advance(Length);
     }

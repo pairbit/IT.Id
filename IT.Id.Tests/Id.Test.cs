@@ -27,7 +27,7 @@ public class IdTest
             Assert.That(new Id(id.ToByteArray()), Is.EqualTo(id));
 
             Span<byte> span = stackalloc byte[12];
-            id.Write(span);
+            id.TryWrite(span);
             Assert.That(new Id(span), Is.EqualTo(id));
         });
     }

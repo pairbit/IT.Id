@@ -729,10 +729,10 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     //Unsafe.WriteUnaligned(ref bytes[0], this);
 
-    public void Write(Span<Byte> bytes)
+    public Boolean TryWrite(Span<Byte> bytes)
     {
-        if (bytes.Length < 12) throw new ArgumentException("There is not enough space in the destination buffer. A minimum of 12 bytes is required.", nameof(bytes));
-
+        if (bytes.Length < 12) return false;
+        
         bytes[0] = _timestamp0;
         bytes[1] = _timestamp1;
         bytes[2] = _timestamp2;
@@ -747,6 +747,8 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         bytes[11] = _increment2;
 
         //Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(bytes), this);
+
+        return true;
     }
 
     public Int32 CompareTo(Id id)
