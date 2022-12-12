@@ -62,6 +62,20 @@ public readonly partial struct Id
     {
         fixed (byte* p = &_timestamp0)
         {
+            ulong h64 = *(ulong*)p * PRIME64_2;
+            h64 = (PRIME64_5 + 12) ^ ((h64 << 31 | h64 >> 33) * PRIME64_1);
+            h64 = ((h64 << 27 | h64 >> 37) * PRIME64_1 + PRIME64_4) ^ (*(uint*)(p + 8) * PRIME64_1);
+            h64 = (h64 << 23 | h64 >> 41) * PRIME64_2 + PRIME64_3;
+            h64 = (h64 ^ (h64 >> 33)) * PRIME64_2;
+            h64 = (h64 ^ (h64 >> 29)) * PRIME64_3;
+            return h64 ^ (h64 >> 32);
+        }
+    }
+
+    internal unsafe UInt64 XXH64_3()
+    {
+        fixed (byte* p = &_timestamp0)
+        {
             var i = (uint*)p;
             ulong h64 = (((ulong)(*(i + 1)) << 32) | (*i)) * PRIME64_2;
             h64 = (PRIME64_5 + 12) ^ ((h64 << 31 | h64 >> 33) * PRIME64_1);

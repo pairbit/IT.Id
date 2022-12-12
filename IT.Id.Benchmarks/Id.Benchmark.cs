@@ -44,21 +44,24 @@ public class IdBenchmark
     //[Benchmark]
     //public int Id_Increment2() => _id.Increment2;
 
-    //    #region Hashing
+    #region Hashing
 
-    //    [Benchmark]
-    //    public UInt32 Id_XXH32() => _id.XXH32();
+    [Benchmark]
+    public UInt32 Id_XXH32() => _id.XXH32();
 
-    //    [Benchmark]
-    //    public UInt32 Id_XXH32_2() => _id.XXH32_2();
+    [Benchmark]
+    public UInt32 Id_XXH32_2() => _id.XXH32_2();
 
-    //    [Benchmark]
-    //    public UInt64 Id_XXH64() => _id.XXH64();
+    [Benchmark]
+    public UInt64 Id_XXH64() => _id.XXH64();
 
-    //    [Benchmark]
-    //    public UInt64 Id_XXH64_2() => _id.XXH64_2();
+    [Benchmark]
+    public UInt64 Id_XXH64_2() => _id.XXH64_2();
 
-    //    #endregion Hashing
+    [Benchmark]
+    public UInt64 Id_XXH64_3() => _id.XXH64_3();
+
+    #endregion Hashing
 
     //    #region New
 

@@ -50,6 +50,7 @@ public class IdTest
 
                 Assert.That(id.XXH32_2(), Is.EqualTo(id.XXH32()));
                 Assert.That(id.XXH64_2(), Is.EqualTo(id.XXH64()));
+                Assert.That(id.XXH64_3(), Is.EqualTo(id.XXH64()));
             });
         }
     }

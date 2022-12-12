@@ -11,7 +11,7 @@ public class IdTryFormatCharsBenchmark
     private readonly Ulid _ulid;
     internal readonly char[] _ulidChars;
 
-    private readonly Id _id;
+    internal readonly Id _id;
     private readonly char[] _idHexLower;
     internal readonly char[] _idBase32;
     private readonly char[] _idBase58;

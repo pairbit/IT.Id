@@ -11,7 +11,7 @@ public class IdTryFormatBytesBenchmark
     private readonly Ulid _ulid;
     internal readonly byte[] _ulidBase32;
 
-    private readonly Id _id;
+    internal readonly Id _id;
     private readonly byte[] _idHexLower;
     internal readonly byte[] _idBase32;
     private readonly byte[] _idBase58;
