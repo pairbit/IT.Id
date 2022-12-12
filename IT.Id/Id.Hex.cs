@@ -5,60 +5,57 @@ namespace IT;
 
 public readonly partial struct Id
 {
-    internal String ToHexLower()
+    public unsafe string ToHex()
     {
         var hexLower = new string((char)0, 24);
-        unsafe
+        var map = Hex.Lower32.Map;
+        fixed (char* hexLowerP = hexLower)
         {
-            var map = Hex.Lower32.Map;
-            fixed (char* hexLowerP = hexLower)
-            {
-                uint* dest = (uint*)hexLowerP;
-                dest[0] = map[_timestamp0];
-                dest[1] = map[_timestamp1];
-                dest[2] = map[_timestamp2];
-                dest[3] = map[_timestamp3];
-                dest[4] = map[_machine0];
-                dest[5] = map[_machine1];
-                dest[6] = map[_machine2];
-                dest[7] = map[_pid0];
-                dest[8] = map[_pid1];
-                dest[9] = map[_increment0];
-                dest[10] = map[_increment1];
-                dest[11] = map[_increment2];
-            }
+            uint* dest = (uint*)hexLowerP;
+            dest[0] = map[_timestamp0];
+            dest[1] = map[_timestamp1];
+            dest[2] = map[_timestamp2];
+            dest[3] = map[_timestamp3];
+            dest[4] = map[_machine0];
+            dest[5] = map[_machine1];
+            dest[6] = map[_machine2];
+            dest[7] = map[_pid0];
+            dest[8] = map[_pid1];
+            dest[9] = map[_increment0];
+            dest[10] = map[_increment1];
+            dest[11] = map[_increment2];
         }
         return hexLower;
     }
 
-    private String ToHexUpper()
+    public unsafe string ToHexUpper()
     {
         var hexUpper = new string((char)0, 24);
-        unsafe
+        var map = Hex.Upper32.Map;
+        fixed (char* hexUpperP = hexUpper)
         {
-            var map = Hex.Upper32.Map;
-            fixed (char* hexUpperP = hexUpper)
-            {
-                uint* dest = (uint*)hexUpperP;
-                dest[0] = map[_timestamp0];
-                dest[1] = map[_timestamp1];
-                dest[2] = map[_timestamp2];
-                dest[3] = map[_timestamp3];
-                dest[4] = map[_machine0];
-                dest[5] = map[_machine1];
-                dest[6] = map[_machine2];
-                dest[7] = map[_pid0];
-                dest[8] = map[_pid1];
-                dest[9] = map[_increment0];
-                dest[10] = map[_increment1];
-                dest[11] = map[_increment2];
-            }
+            uint* dest = (uint*)hexUpperP;
+            dest[0] = map[_timestamp0];
+            dest[1] = map[_timestamp1];
+            dest[2] = map[_timestamp2];
+            dest[3] = map[_timestamp3];
+            dest[4] = map[_machine0];
+            dest[5] = map[_machine1];
+            dest[6] = map[_machine2];
+            dest[7] = map[_pid0];
+            dest[8] = map[_pid1];
+            dest[9] = map[_increment0];
+            dest[10] = map[_increment1];
+            dest[11] = map[_increment2];
         }
         return hexUpper;
     }
 
-    private unsafe void ToHex(Span<Char> chars, uint* map)
+    public unsafe bool TryToHex(Span<char> chars)
     {
+        if (chars.Length < 24) return false;
+
+        uint* map = Hex.Lower32.Map;
         fixed (char* charsP = chars)
         {
             uint* dest = (uint*)charsP;
@@ -75,10 +72,40 @@ public readonly partial struct Id
             dest[10] = map[_increment1];
             dest[11] = map[_increment2];
         }
+
+        return true;
     }
 
-    private unsafe void ToHex(Span<Byte> bytes, ushort* map)
+    public unsafe bool TryToHexUpper(Span<char> chars)
     {
+        if (chars.Length < 24) return false;
+
+        uint* map = Hex.Upper32.Map;
+        fixed (char* charsP = chars)
+        {
+            uint* dest = (uint*)charsP;
+            dest[0] = map[_timestamp0];
+            dest[1] = map[_timestamp1];
+            dest[2] = map[_timestamp2];
+            dest[3] = map[_timestamp3];
+            dest[4] = map[_machine0];
+            dest[5] = map[_machine1];
+            dest[6] = map[_machine2];
+            dest[7] = map[_pid0];
+            dest[8] = map[_pid1];
+            dest[9] = map[_increment0];
+            dest[10] = map[_increment1];
+            dest[11] = map[_increment2];
+        }
+
+        return true;
+    }
+
+    public unsafe bool TryToHex(Span<byte> bytes)
+    {
+        if (bytes.Length < 24) return false;
+
+        ushort* map = Hex.Lower16.Map;
         fixed (byte* bytesP = bytes)
         {
             ushort* dest = (ushort*)bytesP;
@@ -95,9 +122,36 @@ public readonly partial struct Id
             dest[10] = map[_increment1];
             dest[11] = map[_increment2];
         }
+
+        return true;
     }
 
-    private static bool TryParseHex(ReadOnlySpan<Char> chars, out Id id)
+    public unsafe bool TryToHexUpper(Span<byte> bytes)
+    {
+        if (bytes.Length < 24) return false;
+
+        ushort* map = Hex.Upper16.Map;
+        fixed (byte* bytesP = bytes)
+        {
+            ushort* dest = (ushort*)bytesP;
+            dest[0] = map[_timestamp0];
+            dest[1] = map[_timestamp1];
+            dest[2] = map[_timestamp2];
+            dest[3] = map[_timestamp3];
+            dest[4] = map[_machine0];
+            dest[5] = map[_machine1];
+            dest[6] = map[_machine2];
+            dest[7] = map[_pid0];
+            dest[8] = map[_pid1];
+            dest[9] = map[_increment0];
+            dest[10] = map[_increment1];
+            dest[11] = map[_increment2];
+        }
+
+        return true;
+    }
+
+    private static bool TryParseHex(ReadOnlySpan<char> chars, out Id id)
     {
         ReadOnlySpan<byte> map = Hex.DecodeMap;
 
@@ -253,7 +307,7 @@ public readonly partial struct Id
         return false;
     }
 
-    private static bool TryParseHex(ReadOnlySpan<Byte> bytes, out Id id)
+    private static bool TryParseHex(ReadOnlySpan<byte> bytes, out Id id)
     {
         ReadOnlySpan<byte> map = Hex.DecodeMap;
 
@@ -325,7 +379,7 @@ public readonly partial struct Id
         return false;
     }
 
-    private static Id ParseHex(ReadOnlySpan<Char> chars)
+    private static Id ParseHex(ReadOnlySpan<char> chars)
     {
         ReadOnlySpan<byte> map = Hex.DecodeMap;
 
@@ -476,7 +530,7 @@ public readonly partial struct Id
         return new Id(timestamp, b, c);
     }
 
-    private static Id ParseHex(ReadOnlySpan<Byte> bytes)
+    private static Id ParseHex(ReadOnlySpan<byte> bytes)
     {
         ReadOnlySpan<byte> map = Hex.DecodeMap;
 

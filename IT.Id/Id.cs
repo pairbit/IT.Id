@@ -900,7 +900,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         IFormatProvider? provider = null) => format switch
         {
             null or "_" => ToBase64Url(),
-            "h" => ToHexLower(),
+            "h" => ToHex(),
             "H" => ToHexUpper(),
             "v" => ToBase32(Base32.LowerAlphabet),
             "V" => ToBase32(Base32.UpperAlphabet),
@@ -915,7 +915,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     /// <exception cref="FormatException"/>
     public String ToString(Idf format) => format switch
     {
-        Idf.Hex => ToHexLower(),
+        Idf.Hex => ToHex(),
         Idf.HexUpper => ToHexUpper(),
         Idf.Base32 => ToBase32(Base32.LowerAlphabet),
         Idf.Base32Upper => ToBase32(Base32.UpperAlphabet),
@@ -932,30 +932,16 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     {
         if (format == Idf.Hex)
         {
-            if (bytes.Length < 24)
-            {
-                written = 0;
-                return OperationStatus.DestinationTooSmall;
-            }
-            unsafe
-            {
-                ToHex(bytes, Hex.Lower16.Map);
-            }
+            if (!TryToHex(bytes)) goto fail;
+
             written = 24;
             return OperationStatus.Done;
         }
 
         if (format == Idf.HexUpper)
         {
-            if (bytes.Length < 24)
-            {
-                written = 0;
-                return OperationStatus.DestinationTooSmall;
-            }
-            unsafe
-            {
-                ToHex(bytes, Hex.Upper16.Map);
-            }
+            if (!TryToHexUpper(bytes)) goto fail;
+
             written = 24;
             return OperationStatus.Done;
         }
@@ -1059,30 +1045,16 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     {
         if (format == Idf.Hex)
         {
-            if (chars.Length < 24)
-            {
-                written = 0;
-                return OperationStatus.DestinationTooSmall;
-            }
-            unsafe
-            {
-                ToHex(chars, Hex.Lower32.Map);
-            }
+            if (!TryToHex(chars)) goto fail;
+
             written = 24;
             return OperationStatus.Done;
         }
 
         if (format == Idf.HexUpper)
         {
-            if (chars.Length < 24)
-            {
-                written = 0;
-                return OperationStatus.DestinationTooSmall;
-            }
-            unsafe
-            {
-                ToHex(chars, Hex.Upper32.Map);
-            }
+            if (!TryToHexUpper(chars)) goto fail;
+
             written = 24;
             return OperationStatus.Done;
         }
@@ -1250,31 +1222,17 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
             if (f == Hex.FormatLower)
             {
-                if (chars.Length < 24)
-                {
-                    written = 0;
-                    return false;
-                }
+                if (!TryToHex(chars)) goto fail;
+
                 written = 24;
-                unsafe
-                {
-                    ToHex(chars, Hex.Lower32.Map);
-                }
                 return true;
             }
 
             if (f == Hex.FormatUpper)
             {
-                if (chars.Length < 24)
-                {
-                    written = 0;
-                    return false;
-                }
+                if (!TryToHexUpper(chars)) goto fail;
+
                 written = 24;
-                unsafe
-                {
-                    ToHex(chars, Hex.Upper32.Map);
-                }
                 return true;
             }
 

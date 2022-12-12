@@ -48,7 +48,7 @@ public class IdStringBenchmark
     public String Id_ToString_HexLower() => _id.ToString(Idf.Hex);
 
     [Benchmark]
-    public String Id_ToHexLower() => _id.ToHexLower();
+    public String Id_ToHexLower() => _id.ToHex();
 
     //[Benchmark]
     public String Id_ToString_HexUpper() => _id.ToString(Idf.HexUpper);
