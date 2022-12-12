@@ -7,7 +7,7 @@ namespace IT;
 
 public readonly partial struct Id
 {
-    private unsafe String ToBase64Path3()
+    public unsafe string ToBase64Path3(char separator = DirectorySeparatorChar)
     {
         var path3 = new string((char)0, 19);
 
@@ -46,18 +46,20 @@ public readonly partial struct Id
             var byte11 = _increment2;
 
             dest[6] = map[(byte9 & 0xfc) >> 2];
-            dest[5] = DirectorySeparatorChar;
+            dest[5] = separator;
             dest[4] = map[((byte9 & 0x03) << 4) | ((byte10 & 0xf0) >> 4)];
-            dest[3] = DirectorySeparatorChar;
+            dest[3] = separator;
             dest[2] = map[((byte10 & 0x0f) << 2) | ((byte11 & 0xc0) >> 6)];
-            dest[1] = DirectorySeparatorChar;
+            dest[1] = separator;
             dest[0] = map[byte11 & 0x3f];
         }
         return path3;
     }
 
-    private unsafe void ToBase64Path3(Span<Char> chars)
+    public unsafe bool TryToBase64Path3(Span<Char> chars, char separator = DirectorySeparatorChar)
     {
+        if (chars.Length < 19) return false;
+
         fixed (char* dest = chars)
         fixed (char* map = Base64.tableUrl)
         {
@@ -93,17 +95,21 @@ public readonly partial struct Id
             var byte11 = _increment2;
 
             dest[6] = map[(byte9 & 0xfc) >> 2];
-            dest[5] = DirectorySeparatorChar;
+            dest[5] = separator;
             dest[4] = map[((byte9 & 0x03) << 4) | ((byte10 & 0xf0) >> 4)];
-            dest[3] = DirectorySeparatorChar;
+            dest[3] = separator;
             dest[2] = map[((byte10 & 0x0f) << 2) | ((byte11 & 0xc0) >> 6)];
-            dest[1] = DirectorySeparatorChar;
+            dest[1] = separator;
             dest[0] = map[byte11 & 0x3f];
         }
+
+        return true;
     }
 
-    private unsafe void ToBase64Path3(Span<Byte> bytes)
+    public unsafe bool TryToBase64Path3(Span<Byte> bytes, byte separator = DirectorySeparatorByte)
     {
+        if (bytes.Length < 19) return false;
+
         fixed (byte* dest = bytes)
         fixed (byte* map = Base64.bytesUrl)
         {
@@ -139,13 +145,15 @@ public readonly partial struct Id
             var byte11 = _increment2;
 
             dest[6] = map[(byte9 & 0xfc) >> 2];
-            dest[5] = DirectorySeparatorByte;
+            dest[5] = separator;
             dest[4] = map[((byte9 & 0x03) << 4) | ((byte10 & 0xf0) >> 4)];
-            dest[3] = DirectorySeparatorByte;
+            dest[3] = separator;
             dest[2] = map[((byte10 & 0x0f) << 2) | ((byte11 & 0xc0) >> 6)];
-            dest[1] = DirectorySeparatorByte;
+            dest[1] = separator;
             dest[0] = map[byte11 & 0x3f];
         }
+
+        return true;
     }
 
     private static bool TryParseBase64Path3(ReadOnlySpan<Char> chars, out Id id)

@@ -10,7 +10,7 @@ public readonly partial struct Id
     private const char DirectorySeparatorChar = '/';
     private const byte DirectorySeparatorByte = (byte)DirectorySeparatorChar;
 
-    private unsafe String ToBase64Path2()
+    public unsafe String ToBase64Path2(char separator = DirectorySeparatorChar)
     {
         var path2 = new string((char)0, 18);
         fixed (char* dest = path2)
@@ -49,16 +49,18 @@ public readonly partial struct Id
 
             dest[5] = map[(byte9 & 0xfc) >> 2];
             dest[4] = map[((byte9 & 0x03) << 4) | ((byte10 & 0xf0) >> 4)];
-            dest[3] = DirectorySeparatorChar;
+            dest[3] = separator;
             dest[2] = map[((byte10 & 0x0f) << 2) | ((byte11 & 0xc0) >> 6)];
-            dest[1] = DirectorySeparatorChar;
+            dest[1] = separator;
             dest[0] = map[byte11 & 0x3f];
         }
         return path2;
     }
 
-    private unsafe void ToBase64Path2(Span<Char> chars)
+    public unsafe bool TryToBase64Path2(Span<Char> chars, char separator = DirectorySeparatorChar)
     {
+        if (chars.Length < 18) return false;
+
         fixed (char* dest = chars)
         fixed (char* map = Base64.tableUrl)
         {
@@ -95,15 +97,19 @@ public readonly partial struct Id
 
             dest[5] = map[(byte9 & 0xfc) >> 2];
             dest[4] = map[((byte9 & 0x03) << 4) | ((byte10 & 0xf0) >> 4)];
-            dest[3] = DirectorySeparatorChar;
+            dest[3] = separator;
             dest[2] = map[((byte10 & 0x0f) << 2) | ((byte11 & 0xc0) >> 6)];
-            dest[1] = DirectorySeparatorChar;
+            dest[1] = separator;
             dest[0] = map[byte11 & 0x3f];
         }
+
+        return true;
     }
 
-    private unsafe void ToBase64Path2(Span<Byte> bytes)
+    public unsafe bool TryToBase64Path2(Span<Byte> bytes, byte separator = DirectorySeparatorByte)
     {
+        if (bytes.Length < 18) return false;
+
         fixed (byte* dest = bytes)
         fixed (byte* map = Base64.bytesUrl)
         {
@@ -140,11 +146,13 @@ public readonly partial struct Id
 
             dest[5] = map[(byte9 & 0xfc) >> 2];
             dest[4] = map[((byte9 & 0x03) << 4) | ((byte10 & 0xf0) >> 4)];
-            dest[3] = DirectorySeparatorByte;
+            dest[3] = separator;
             dest[2] = map[((byte10 & 0x0f) << 2) | ((byte11 & 0xc0) >> 6)];
-            dest[1] = DirectorySeparatorByte;
+            dest[1] = separator;
             dest[0] = map[byte11 & 0x3f];
         }
+
+        return true;
     }
 
     private static bool TryParseBase64Path2(ReadOnlySpan<Char> chars, out Id id)

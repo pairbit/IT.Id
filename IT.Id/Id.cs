@@ -436,7 +436,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         throw Ex.InvalidLengthChars(len);
     }
-    
+
     //=> chars.Length switch
     //{
     //    15 => ParseBase85(chars),
@@ -1034,29 +1034,25 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Base64Path2)
         {
-            if (bytes.Length < 18)
-            {
-                written = 0;
-                return OperationStatus.DestinationTooSmall;
-            }
-            ToBase64Path2(bytes);
+            if (!TryToBase64Path2(bytes)) goto fail;
+
             written = 18;
             return OperationStatus.Done;
         }
 
         if (format == Idf.Base64Path3)
         {
-            if (bytes.Length < 19)
-            {
-                written = 0;
-                return OperationStatus.DestinationTooSmall;
-            }
-            ToBase64Path3(bytes);
+            if (!TryToBase64Path3(bytes)) goto fail;
+
             written = 19;
             return OperationStatus.Done;
         }
 
         throw Ex.InvalidFormat(format.ToString());
+
+    fail:
+        written = 0;
+        return OperationStatus.DestinationTooSmall;
     }
 
     public OperationStatus TryFormat(Span<Char> chars, out Int32 written, Idf format)
@@ -1165,29 +1161,25 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Base64Path2)
         {
-            if (chars.Length < 18)
-            {
-                written = 0;
-                return OperationStatus.DestinationTooSmall;
-            }
-            ToBase64Path2(chars);
+            if (!TryToBase64Path2(chars)) goto fail;
+
             written = 18;
             return OperationStatus.Done;
         }
 
         if (format == Idf.Base64Path3)
         {
-            if (chars.Length < 19)
-            {
-                written = 0;
-                return OperationStatus.DestinationTooSmall;
-            }
-            ToBase64Path3(chars);
+            if (!TryToBase64Path3(chars)) goto fail;
+
             written = 19;
             return OperationStatus.Done;
         }
 
         throw Ex.InvalidFormat(format.ToString());
+
+    fail:
+        written = 0;
+        return OperationStatus.DestinationTooSmall;
     }
 
     /// <param name="format">
@@ -1339,13 +1331,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         {
             if (format[0] == '/' && format[1] == '/')
             {
-                if (chars.Length < 18)
-                {
-                    written = 0;
-                    return false;
-                }
+                if (!TryToBase64Path2(chars)) goto fail;
+
                 written = 18;
-                ToBase64Path2(chars);
                 return true;
             }
         }
@@ -1354,18 +1342,18 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         {
             if (format[0] == '/' && format[1] == '/' && format[2] == '/')
             {
-                if (chars.Length < 19)
-                {
-                    written = 0;
-                    return false;
-                }
+                if (!TryToBase64Path3(chars)) goto fail;
+
                 written = 19;
-                ToBase64Path3(chars);
                 return true;
             }
         }
 
         throw Ex.InvalidFormat(format.ToString());
+
+    fail:
+        written = 0;
+        return false;
     }
 
     public override Boolean Equals(Object? obj) => obj is Id id && Equals(id);
