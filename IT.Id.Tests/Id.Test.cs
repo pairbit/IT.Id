@@ -20,6 +20,8 @@ public class IdTest
 
         Assert.Multiple(() =>
         {
+            //Assert.That(Id.ParseBase64(id.ToString().AsSpan()), Is.EqualTo(Id.ParseBase64_2(id.ToString().AsSpan())));
+
             Assert.That(Id.Parse(id.ToString()), Is.EqualTo(id));
 
             Assert.That(new Id(id.Timestamp, id.Machine, id.Pid, id.Increment), Is.EqualTo(id));

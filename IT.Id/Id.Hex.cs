@@ -5,7 +5,7 @@ namespace IT;
 
 public readonly partial struct Id
 {
-    private String ToHexLower()
+    internal String ToHexLower()
     {
         var hexLower = new string((char)0, 24);
         unsafe

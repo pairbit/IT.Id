@@ -295,7 +295,7 @@ public readonly partial struct Id
         return false;
     }
 
-    private static Id ParseBase64Path2(ReadOnlySpan<Char> chars)
+    internal static Id ParseBase64Path2(ReadOnlySpan<Char> chars)
     {
         var sep = chars[1];
         if (sep != '\\' && sep != '/') throw Ex.InvalidCharIndex(Idf.Base64Path2, 1, sep, '/', '\\');

@@ -418,17 +418,32 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 #endif
 
     /// <exception cref="FormatException"/>
-    public static Id Parse(ReadOnlySpan<Char> chars) => chars.Length switch
+    public static Id Parse(ReadOnlySpan<Char> chars)
     {
-        15 => ParseBase85(chars),
-        16 => ParseBase64(chars),
-        17 => ParseBase58(chars),
-        18 => ParseBase64Path2(chars),
-        19 => ParseBase64Path3(chars),
-        20 => ParseBase32(chars),
-        24 => ParseHex(chars),
-        _ => throw Ex.InvalidLengthChars(chars.Length)
-    };
+        var len = chars.Length;
+
+        if (len == 15) return ParseBase85(chars);
+        if (len == 16) return ParseBase64(chars);
+        if (len == 17) return ParseBase58(chars);
+        if (len == 18) return ParseBase64Path2(chars);
+        if (len == 19) return ParseBase64Path3(chars);
+        if (len == 20) return ParseBase32(chars);
+        if (len == 24) return ParseHex(chars);
+
+        throw Ex.InvalidLengthChars(len);
+    }
+    
+    //=> chars.Length switch
+    //{
+    //    15 => ParseBase85(chars),
+    //    16 => ParseBase64(chars),
+    //    17 => ParseBase58(chars),
+    //    18 => ParseBase64Path2(chars),
+    //    19 => ParseBase64Path3(chars),
+    //    20 => ParseBase32(chars),
+    //    24 => ParseHex(chars),
+    //    _ => throw Ex.InvalidLengthChars(chars.Length)
+    //};
 
     /// <exception cref="FormatException"/>
     public static Id Parse(ReadOnlySpan<Char> chars, Idf format)

@@ -31,7 +31,7 @@ public readonly partial struct Id
 
             //value = BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref *m1));
             value = (ulong)(_machine1 << 24 | _machine2 << 16 | _pid0 << 8 | _pid1);
-            value = (value << 8) | _machine0;
+            value = (value << 8) | _increment0;
 
             dest[8] = map[value >> 35];
             dest[9] = map[(value >> 30) & 0x1F];
