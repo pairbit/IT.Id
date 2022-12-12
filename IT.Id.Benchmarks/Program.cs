@@ -206,9 +206,9 @@ Console.WriteLine("Ok");
 
 //BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdBenchmark));
 
-//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdBytesBenchmark));
+BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryFormatBytesBenchmark));
 
-//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryFormatBenchmark));
+BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryFormatCharsBenchmark));
 
 BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdStringBenchmark));
 

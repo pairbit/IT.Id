@@ -24,6 +24,7 @@ public class IdTryFormatCharsBenchmark
     private readonly Guid _guid;
     internal readonly char[] _guidChars;
 #endif
+
     public IdTryFormatCharsBenchmark()
     {
         //_id = Id.Parse("Y14-iRgzgKZclXbw");
