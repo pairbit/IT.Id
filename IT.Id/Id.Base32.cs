@@ -16,6 +16,7 @@ public readonly partial struct Id
         fixed (char* dest = base32)
         fixed (char* map = abc)
         {
+            //System.AccessViolationException: Attempted to read or write protected memory. This is often an indication that other memory is corrupt.
             //ulong value = BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref *t0));
             //ulong value = (ulong)(_timestamp0 << 24 | _timestamp1 << 16 | _timestamp2 << 8 | _timestamp3);
 

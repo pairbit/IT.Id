@@ -19,9 +19,9 @@ public class IdStringBenchmark
     internal readonly String _idBase32;
     private readonly String _idBase58;
     private readonly String _idBase64Url;
+    private readonly String _idBase64Path2;
+    private readonly String _idBase64Path3;
     private readonly String _idBase85;
-    private readonly String _idPath2;
-    private readonly String _idPath3;
 
     public IdStringBenchmark()
     {
@@ -31,9 +31,9 @@ public class IdStringBenchmark
         _idBase32 = Id_ToString_Base32Lower();
         _idBase58 = Id_ToString_Base58();
         _idBase64Url = Id_ToString_Base64();
+        _idBase64Path2 = Id_ToString_Base64Path2();
+        _idBase64Path3 = Id_ToString_Base64Path3();
         _idBase85 = Id_ToString_Base85();
-        _idPath2 = Id_ToString_Base64Path2();
-        _idPath3 = Id_ToString_Base64Path3();
 
         _ulid = Ulid.NewUlid();
         _ulidString = Ulid_ToString();
@@ -117,13 +117,13 @@ public class IdStringBenchmark
     public Id Id_ParseBase64() => Id.ParseBase64(_idBase64Url);
 
     [Benchmark]
-    public Id Id_Parse_Base64Path2() => Id.Parse(_idPath2, Idf.Base64Path2);
+    public Id Id_Parse_Base64Path2() => Id.Parse(_idBase64Path2, Idf.Base64Path2);
 
     [Benchmark]
-    public Id Id_ParseBase64Path2() => Id.ParseBase64Path2(_idPath2);
+    public Id Id_ParseBase64Path2() => Id.ParseBase64Path2(_idBase64Path2);
 
     [Benchmark]
-    public Id Id_Parse_Base64Path3() => Id.Parse(_idPath3, Idf.Base64Path3);
+    public Id Id_Parse_Base64Path3() => Id.Parse(_idBase64Path3, Idf.Base64Path3);
 
     [Benchmark]
     public Id Id_Parse_Base85() => Id.Parse(_idBase85, Idf.Base85);
@@ -151,10 +151,10 @@ public class IdStringBenchmark
     public Id Id_Parse_ByLen_Base64() => Id.Parse(_idBase64Url);
 
     [Benchmark]
-    public Id Id_Parse_ByLen_Base64Path2() => Id.Parse(_idPath2);
+    public Id Id_Parse_ByLen_Base64Path2() => Id.Parse(_idBase64Path2);
 
     [Benchmark]
-    public Id Id_Parse_ByLen_Base64Path3() => Id.Parse(_idPath3);
+    public Id Id_Parse_ByLen_Base64Path3() => Id.Parse(_idBase64Path3);
 
     [Benchmark]
     public Id Id_Parse_ByLen_Base85() => Id.Parse(_idBase85);
