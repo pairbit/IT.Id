@@ -52,7 +52,7 @@ Console.WriteLine($"{id} = {process.Id} == {id.Pid}, machine = {id.Machine}");
 
 var ids = new IdStringBenchmark();
 
-var ulid = ids.Ulid_Decode();
+var ulid = ids.Ulid_Parse();
 
 var bytes = ulid.ToByteArray();
 
@@ -65,28 +65,35 @@ if (!base32.Equals(ids._ulidString))
 
 //var base32_2 = Wiry.Base32.Base32Encoding.Base32.GetString(bytes);
 
-var id1 = ids.Id_Decode_Hex();
-var id2 = ids.Id_Decode_Base64();
-var id3 = ids.Id_Decode_Base85();
-var id4 = ids.Id_Decode_Base64Path2();
-var id5 = ids.Id_Decode_Base64Path3();
-var id6 = ids.Id_Decode_Base32();
-var id7 = ids.Id_Decode_Base58();
+if (!ids.Id_ParseBase64().Equals(ids._id)) throw new InvalidOperationException();
+if (!ids.Id_ParseBase64Path2().Equals(ids._id)) throw new InvalidOperationException();
 
-//if (!idb._idBase32.Equals("CDF3X28R6E0ACQ4NEVR0")) throw new InvalidOperationException();
+if (!ids.Id_Parse_Hex().Equals(ids._id)) throw new InvalidOperationException();
+if (!ids.Id_Parse_Base32().Equals(ids._id)) throw new InvalidOperationException();
+if (!ids.Id_Parse_Base58().Equals(ids._id)) throw new InvalidOperationException();
+if (!ids.Id_Parse_Base64().Equals(ids._id)) throw new InvalidOperationException();
+if (!ids.Id_Parse_Base64Path2().Equals(ids._id)) throw new InvalidOperationException();
+if (!ids.Id_Parse_Base64Path3().Equals(ids._id)) throw new InvalidOperationException();
+if (!ids.Id_Parse_Base85().Equals(ids._id)) throw new InvalidOperationException();
+if (!ids.Id_Parse_Base85().Equals(ids._id)) throw new InvalidOperationException();
 
-if (!id1.Equals(id2) || !id1.Equals(id3) || !id1.Equals(id4) || 
-    !id1.Equals(id5) || !id1.Equals(id6) || !id1.Equals(id7)) throw new InvalidOperationException();
+if (!ids.Id_Parse_ByLen_Hex().Equals(ids._id)) throw new InvalidOperationException();
+if (!ids.Id_Parse_ByLen_Base32().Equals(ids._id)) throw new InvalidOperationException();
+if (!ids.Id_Parse_ByLen_Base58().Equals(ids._id)) throw new InvalidOperationException();
+if (!ids.Id_Parse_ByLen_Base64().Equals(ids._id)) throw new InvalidOperationException();
+if (!ids.Id_Parse_ByLen_Base64Path2().Equals(ids._id)) throw new InvalidOperationException();
+if (!ids.Id_Parse_ByLen_Base64Path3().Equals(ids._id)) throw new InvalidOperationException();
+if (!ids.Id_Parse_ByLen_Base85().Equals(ids._id)) throw new InvalidOperationException();
 
 var idb = new IdBytesBenchmark();
 
-id1 = idb.Id_Decode_Hex();
-id2 = idb.Id_Decode_Base32();
-id3 = idb.Id_Decode_Base58();
-id4 = idb.Id_Decode_Base64();
-id5 = idb.Id_Decode_Base64Path2();
-id6 = idb.Id_Decode_Base64Path3();
-id7 = idb.Id_Decode_Base85();
+var id1 = idb.Id_Decode_Hex();
+var id2 = idb.Id_Decode_Base32();
+var id3 = idb.Id_Decode_Base58();
+var id4 = idb.Id_Decode_Base64();
+var id5 = idb.Id_Decode_Base64Path2();
+var id6 = idb.Id_Decode_Base64Path3();
+var id7 = idb.Id_Decode_Base85();
 
 if (!id1.Equals(id2) || !id1.Equals(id3) || !id1.Equals(id4) ||
     !id1.Equals(id5) || !id1.Equals(id6) || !id1.Equals(id7)) throw new InvalidOperationException();

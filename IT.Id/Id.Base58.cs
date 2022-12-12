@@ -5,7 +5,7 @@ namespace IT;
 
 public readonly partial struct Id
 {
-    private String ToBase58()
+    internal String ToBase58()
     {
         var base58 = new string('\0', 17);
 

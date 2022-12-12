@@ -7,7 +7,7 @@ namespace IT;
 
 public readonly partial struct Id
 {
-    private String ToBase64Url()
+    internal String ToBase64Url()
     {
         var base64Url = new string((char)0, 16);
 
@@ -496,4 +496,11 @@ public readonly partial struct Id
 
         return id;
     }
+
+#if NETSTANDARD2_0
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Id ParseBase64(String str) => ParseBase64(str.AsSpan());
+
+#endif
 }

@@ -432,4 +432,11 @@ public readonly partial struct Id
 
         return new Id(timestamp, b, c | val);
     }
+
+#if NETSTANDARD2_0
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Id ParseBase64Path2(String str) => ParseBase64Path2(str.AsSpan());
+
+#endif
 }

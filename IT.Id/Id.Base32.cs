@@ -17,7 +17,12 @@ public readonly partial struct Id
         fixed (char* map = abc)
         {
             //ulong value = BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref *t0));
-            ulong value = (ulong)(_timestamp0 << 24 | _timestamp1 << 16 | _timestamp2 << 8 | _timestamp3);
+            //ulong value = (ulong)(_timestamp0 << 24 | _timestamp1 << 16 | _timestamp2 << 8 | _timestamp3);
+
+            ulong value = _timestamp0;
+            value = (value << 8) | _timestamp1;
+            value = (value << 8) | _timestamp2;
+            value = (value << 8) | _timestamp3;
             value = (value << 8) | _machine0;
 
             dest[0] = map[value >> 35];
@@ -30,7 +35,11 @@ public readonly partial struct Id
             dest[7] = map[value & 0x1F];
 
             //value = BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref *m1));
-            value = (ulong)(_machine1 << 24 | _machine2 << 16 | _pid0 << 8 | _pid1);
+            //value = (ulong)(_machine1 << 24 | _machine2 << 16 | _pid0 << 8 | _pid1);
+            value = _machine1;
+            value = (value << 8) | _machine2;
+            value = (value << 8) | _pid0;
+            value = (value << 8) | _pid1;
             value = (value << 8) | _increment0;
 
             dest[8] = map[value >> 35];

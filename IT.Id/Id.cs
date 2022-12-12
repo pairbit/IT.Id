@@ -403,16 +403,20 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
 #if NET7_0_OR_GREATER
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     static Id IParsable<Id>.Parse(String s, IFormatProvider? provider) => Parse(s.AsSpan());
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     static Id ISpanParsable<Id>.Parse(ReadOnlySpan<Char> chars, IFormatProvider? provider) => Parse(chars);
 
 #endif
 
 #if NETSTANDARD2_0
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Id Parse(String str) => Parse(str.AsSpan());
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Id Parse(String str, Idf format) => Parse(str.AsSpan(), format);
 
 #endif
