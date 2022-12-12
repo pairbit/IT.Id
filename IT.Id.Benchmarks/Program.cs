@@ -206,11 +206,11 @@ Console.WriteLine("Ok");
 
 BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdBenchmark));
 
-//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryFormatBytesBenchmark));
+BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryFormatBytesBenchmark));
 
-//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryFormatCharsBenchmark));
+BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryFormatCharsBenchmark));
 
-//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdStringBenchmark));
+BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdStringBenchmark));
 
 class MyClass
 {
