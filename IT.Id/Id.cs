@@ -899,24 +899,16 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Base64)
         {
-            if (bytes.Length < 16)
-            {
-                written = 0;
-                return OperationStatus.DestinationTooSmall;
-            }
-            ToBase64(bytes, Base64.bytes);
+            if (!TryToBase64(bytes)) goto fail;
+
             written = 16;
             return OperationStatus.Done;
         }
 
         if (format == Idf.Base64Url)
         {
-            if (bytes.Length < 16)
-            {
-                written = 0;
-                return OperationStatus.DestinationTooSmall;
-            }
-            ToBase64(bytes, Base64.bytesUrl);
+            if (!TryToBase64Url(bytes)) goto fail;
+
             written = 16;
             return OperationStatus.Done;
         }
@@ -996,24 +988,16 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Base64)
         {
-            if (chars.Length < 16)
-            {
-                written = 0;
-                return OperationStatus.DestinationTooSmall;
-            }
-            ToBase64(chars, Base64.table);
+            if (!TryToBase64(chars)) goto fail;
+
             written = 16;
             return OperationStatus.Done;
         }
 
         if (format == Idf.Base64Url)
         {
-            if (chars.Length < 16)
-            {
-                written = 0;
-                return OperationStatus.DestinationTooSmall;
-            }
-            ToBase64(chars, Base64.tableUrl);
+            if (!TryToBase64Url(chars)) goto fail;
+
             written = 16;
             return OperationStatus.Done;
         }
@@ -1077,13 +1061,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (len == 0)
         {
-            if (chars.Length < 16)
-            {
-                written = 0;
-                return false;
-            }
+            if (!TryToBase64Url(chars)) goto fail;
+
             written = 16;
-            ToBase64(chars, Base64.tableUrl);
             return true;
         }
 
@@ -1093,25 +1073,17 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
             if (f == Base64.Format)
             {
-                if (chars.Length < 16)
-                {
-                    written = 0;
-                    return false;
-                }
+                if (!TryToBase64(chars)) goto fail;
+
                 written = 16;
-                ToBase64(chars, Base64.table);
                 return true;
             }
 
             if (f == Base64.FormatUrl)
             {
-                if (chars.Length < 16)
-                {
-                    written = 0;
-                    return false;
-                }
+                if (!TryToBase64Url(chars)) goto fail;
+
                 written = 16;
-                ToBase64(chars, Base64.tableUrl);
                 return true;
             }
 
@@ -1292,10 +1264,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     private static int GetTimestampFromDateTime(DateTime timestamp)
     {
         var secondsSinceEpoch = (long)Math.Floor((ToUniversalTime(timestamp) - _unixEpoch).TotalSeconds);
-        if (secondsSinceEpoch < uint.MinValue || secondsSinceEpoch > uint.MaxValue)
-        {
-            throw new ArgumentOutOfRangeException(nameof(timestamp));
-        }
+
+        if (secondsSinceEpoch < uint.MinValue || secondsSinceEpoch > uint.MaxValue) throw new ArgumentOutOfRangeException(nameof(timestamp));
+
         return (int)(uint)secondsSinceEpoch;
     }
 
@@ -1308,18 +1279,11 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     private static DateTime ToUniversalTime(DateTime dateTime)
     {
-        if (dateTime == DateTime.MinValue)
-        {
-            return DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc);
-        }
-        else if (dateTime == DateTime.MaxValue)
-        {
-            return DateTime.SpecifyKind(DateTime.MaxValue, DateTimeKind.Utc);
-        }
-        else
-        {
-            return dateTime.ToUniversalTime();
-        }
+        if (dateTime == DateTime.MinValue) return DateTime.SpecifyKind(DateTime.MinValue, DateTimeKind.Utc);
+
+        if (dateTime == DateTime.MaxValue) return DateTime.SpecifyKind(DateTime.MaxValue, DateTimeKind.Utc);
+
+        return dateTime.ToUniversalTime();
     }
 
     #endregion Private Methods

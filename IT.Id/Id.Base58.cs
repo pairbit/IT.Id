@@ -1117,6 +1117,18 @@ public readonly partial struct Id
         return new Id(timestamp, b, c);
     }
 
+#if NETSTANDARD2_0
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool TryParseBase58(String? str, out Id id) => TryParseBase58(str.AsSpan(), out id);
+
+    /// <exception cref="ArgumentNullException"/>
+    /// <exception cref="FormatException"/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Id ParseBase58(String str) => ParseBase58((str ?? throw new ArgumentNullException(nameof(str))).AsSpan());
+
+#endif
+
     private unsafe void ToBase58(char* dest)
     {
         fixed (char* map = Base58.Alphabet)
@@ -1886,16 +1898,4 @@ public readonly partial struct Id
             *(dest + 16) = map[r16];
         }
     }
-
-#if NETSTANDARD2_0
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryParseBase58(String? str, out Id id) => TryParseBase58(str.AsSpan(), out id);
-
-    /// <exception cref="ArgumentNullException"/>
-    /// <exception cref="FormatException"/>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Id ParseBase58(String str) => ParseBase58((str ?? throw new ArgumentNullException(nameof(str))).AsSpan());
-
-#endif
 }

@@ -846,18 +846,6 @@ public readonly partial struct Id
         return new Id(timestamp, b, c);
     }
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static byte Map32(ref byte map, char c)
-    {
-        if (c < Base32.Min || c > Base32.Max) throw Ex.InvalidChar(Idf.Base32, c);
-
-        var value = Unsafe.Add(ref map, c);
-
-        if (value == 0xFF) throw Ex.InvalidChar(Idf.Base32, c);
-
-        return value;
-    }
-
 #if NETSTANDARD2_0
 
     /// <exception cref="ArgumentNullException"/>
@@ -879,4 +867,16 @@ public readonly partial struct Id
     public Id ParseBase32(String str) => ParseBase32((str ?? throw new ArgumentNullException(nameof(str))).AsSpan());
 
 #endif
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static byte Map32(ref byte map, char c)
+    {
+        if (c < Base32.Min || c > Base32.Max) throw Ex.InvalidChar(Idf.Base32, c);
+
+        var value = Unsafe.Add(ref map, c);
+
+        if (value == 0xFF) throw Ex.InvalidChar(Idf.Base32, c);
+
+        return value;
+    }
 }
