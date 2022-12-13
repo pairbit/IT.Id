@@ -10,7 +10,7 @@ public readonly partial struct Id
     private const char DirectorySeparatorChar = '/';
     private const byte DirectorySeparatorByte = (byte)DirectorySeparatorChar;
 
-    public unsafe String ToBase64Path2(char separator = DirectorySeparatorChar)
+    public unsafe string ToBase64Path2(char separator = DirectorySeparatorChar)
     {
         var path2 = new string((char)0, 18);
         fixed (char* dest = path2)
@@ -57,7 +57,7 @@ public readonly partial struct Id
         return path2;
     }
 
-    public unsafe bool TryToBase64Path2(Span<Char> chars, char separator = DirectorySeparatorChar)
+    public unsafe bool TryToBase64Path2(Span<char> chars, char separator = DirectorySeparatorChar)
     {
         if (chars.Length < 18) return false;
 
@@ -106,7 +106,7 @@ public readonly partial struct Id
         return true;
     }
 
-    public unsafe bool TryToBase64Path2(Span<Byte> bytes, byte separator = DirectorySeparatorByte)
+    public unsafe bool TryToBase64Path2(Span<byte> bytes, byte separator = DirectorySeparatorByte)
     {
         if (bytes.Length < 18) return false;
 
@@ -155,8 +155,10 @@ public readonly partial struct Id
         return true;
     }
 
-    private static bool TryParseBase64Path2(ReadOnlySpan<Char> chars, out Id id)
+    public static bool TryParseBase64Path2(ReadOnlySpan<char> chars, out Id id)
     {
+        if (chars.Length != 18) goto fail;
+
         var sep = chars[1];
         if (sep != '\\' && sep != '/') goto fail;
 
@@ -229,8 +231,10 @@ public readonly partial struct Id
         return false;
     }
 
-    private static bool TryParseBase64Path2(ReadOnlySpan<Byte> bytes, out Id id)
+    public static bool TryParseBase64Path2(ReadOnlySpan<byte> bytes, out Id id)
     {
+        if (bytes.Length != 18) goto fail;
+
         var sep = bytes[1];
         if (sep != '\\' && sep != '/') goto fail;
 
@@ -303,8 +307,11 @@ public readonly partial struct Id
         return false;
     }
 
-    internal static Id ParseBase64Path2(ReadOnlySpan<Char> chars)
+    /// <exception cref="FormatException"/>
+    public static Id ParseBase64Path2(ReadOnlySpan<char> chars)
     {
+        if (chars.Length != 18) throw Ex.InvalidLengthChars(Idf.Base64Path2, chars.Length);
+
         var sep = chars[1];
         if (sep != '\\' && sep != '/') throw Ex.InvalidCharIndex(Idf.Base64Path2, 1, sep, '/', '\\');
 
@@ -372,8 +379,11 @@ public readonly partial struct Id
         return new Id(timestamp, b, c | val);
     }
 
-    private static Id ParseBase64Path2(ReadOnlySpan<Byte> bytes)
+    /// <exception cref="FormatException"/>
+    public static Id ParseBase64Path2(ReadOnlySpan<byte> bytes)
     {
+        if (bytes.Length != 18) throw Ex.InvalidLengthBytes(Idf.Base64Path2, bytes.Length);
+
         var sep = bytes[1];
         if (sep != '\\' && sep != '/') throw Ex.InvalidByteIndex(Idf.Base64Path2, 1, sep, '/', '\\');
 
@@ -444,7 +454,12 @@ public readonly partial struct Id
 #if NETSTANDARD2_0
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Id ParseBase64Path2(String str) => ParseBase64Path2(str.AsSpan());
+    public bool TryParseBase64Path2(string? str, out Id id) => TryParseBase64Path2(str.AsSpan(), out id);
+
+    /// <exception cref="ArgumentNullException"/>
+    /// <exception cref="FormatException"/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Id ParseBase64Path2(string str) => ParseBase64Path2((str ?? throw new ArgumentNullException(nameof(str))).AsSpan());
 
 #endif
 }

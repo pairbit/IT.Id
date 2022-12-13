@@ -156,8 +156,10 @@ public readonly partial struct Id
         return true;
     }
 
-    private static bool TryParseBase64Path3(ReadOnlySpan<Char> chars, out Id id)
+    public static bool TryParseBase64Path3(ReadOnlySpan<Char> chars, out Id id)
     {
+        if (chars.Length != 19) goto fail;
+
         var sep = chars[1];
         if (sep != '\\' && sep != '/') goto fail;
 
@@ -233,8 +235,10 @@ public readonly partial struct Id
         return false;
     }
 
-    private static bool TryParseBase64Path3(ReadOnlySpan<Byte> bytes, out Id id)
+    public static bool TryParseBase64Path3(ReadOnlySpan<Byte> bytes, out Id id)
     {
+        if (bytes.Length != 19) goto fail;
+
         var sep = bytes[1];
         if (sep != '\\' && sep != '/') goto fail;
 
@@ -310,8 +314,11 @@ public readonly partial struct Id
         return false;
     }
 
-    private static Id ParseBase64Path3(ReadOnlySpan<Char> chars)
+    /// <exception cref="FormatException"/>
+    public static Id ParseBase64Path3(ReadOnlySpan<Char> chars)
     {
+        if (chars.Length != 19) throw Ex.InvalidLengthChars(Idf.Base64Path3, chars.Length);
+
         var sep = chars[1];
         if (sep != '\\' && sep != '/') throw Ex.InvalidCharIndex(Idf.Base64Path3, 1, sep, '/', '\\');
 
@@ -382,8 +389,11 @@ public readonly partial struct Id
         return new Id(timestamp, b, c | val);
     }
 
-    private static Id ParseBase64Path3(ReadOnlySpan<Byte> bytes)
+    /// <exception cref="FormatException"/>
+    public static Id ParseBase64Path3(ReadOnlySpan<Byte> bytes)
     {
+        if (bytes.Length != 19) throw Ex.InvalidLengthBytes(Idf.Base64Path3, bytes.Length);
+
         var sep = bytes[1];
         if (sep != '\\' && sep != '/') throw Ex.InvalidByteIndex(Idf.Base64Path3, 1, sep, '/', '\\');
 
@@ -453,4 +463,16 @@ public readonly partial struct Id
 
         return new Id(timestamp, b, c | val);
     }
+
+#if NETSTANDARD2_0
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool TryParseBase64Path3(string? str, out Id id) => TryParseBase64Path3(str.AsSpan(), out id);
+
+    /// <exception cref="ArgumentNullException"/>
+    /// <exception cref="FormatException"/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Id ParseBase64Path3(string str) => ParseBase64Path3((str ?? throw new ArgumentNullException(nameof(str))).AsSpan());
+
+#endif
 }

@@ -469,17 +469,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Base85) return ParseBase85(chars);
 
-        if (format == Idf.Base64Path2)
-        {
-            if (chars.Length != 18) throw Ex.InvalidLengthChars(format, chars.Length);
-            return ParseBase64Path2(chars);
-        }
+        if (format == Idf.Base64Path2) return ParseBase64Path2(chars);
 
-        if (format == Idf.Base64Path3)
-        {
-            if (chars.Length != 19) throw Ex.InvalidLengthChars(format, chars.Length);
-            return ParseBase64Path3(chars);
-        }
+        if (format == Idf.Base64Path3) return ParseBase64Path3(chars);
 
         throw Ex.InvalidFormat(format);
     }
@@ -510,17 +502,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Base85) return ParseBase85(bytes);
 
-        if (format == Idf.Base64Path2)
-        {
-            if (bytes.Length != 18) throw Ex.InvalidLengthBytes(format, bytes.Length);
-            return ParseBase64Path2(bytes);
-        }
+        if (format == Idf.Base64Path2) return ParseBase64Path2(bytes);
 
-        if (format == Idf.Base64Path3)
-        {
-            if (bytes.Length != 19) throw Ex.InvalidLengthBytes(format, bytes.Length);
-            return ParseBase64Path3(bytes);
-        }
+        if (format == Idf.Base64Path3) return ParseBase64Path3(bytes);
 
         throw Ex.InvalidFormat(format);
     }
@@ -571,7 +555,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         return false;
     }
 
-    public static Boolean TryParse(ReadOnlySpan<Char> chars, Idf format, out Id id)
+    public static Boolean TryParse(ReadOnlySpan<char> chars, Idf format, out Id id)
     {
         if (format == Idf.Hex || format == Idf.HexUpper) return TryParseHex(chars, out id);
 
@@ -583,24 +567,15 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Base85) return TryParseBase85(chars, out id);
 
-        if (format == Idf.Base64Path2)
-        {
-            if (chars.Length != 18) goto fail;
-            return TryParseBase64Path2(chars, out id);
-        }
+        if (format == Idf.Base64Path2) return TryParseBase64Path2(chars, out id);
 
-        if (format == Idf.Base64Path3)
-        {
-            if (chars.Length != 19) goto fail;
-            return TryParseBase64Path3(chars, out id);
-        }
+        if (format == Idf.Base64Path3) return TryParseBase64Path3(chars, out id);
 
-    fail:
         id = default;
         return false;
     }
 
-    public static Boolean TryParse(ReadOnlySpan<Byte> bytes, out Id id)
+    public static Boolean TryParse(ReadOnlySpan<byte> bytes, out Id id)
     {
         var len = bytes.Length;
 
@@ -622,7 +597,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         return false;
     }
 
-    public static Boolean TryParse(ReadOnlySpan<Byte> bytes, Idf format, out Id id)
+    public static Boolean TryParse(ReadOnlySpan<byte> bytes, Idf format, out Id id)
     {
         if (format == Idf.Hex || format == Idf.HexUpper) return TryParseHex(bytes, out id);
 
@@ -634,19 +609,10 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Base85) return TryParseBase85(bytes, out id);
 
-        if (format == Idf.Base64Path2)
-        {
-            if (bytes.Length != 18) goto fail;
-            return TryParseBase64Path2(bytes, out id);
-        }
+        if (format == Idf.Base64Path2) return TryParseBase64Path2(bytes, out id);
 
-        if (format == Idf.Base64Path3)
-        {
-            if (bytes.Length != 19) goto fail;
-            return TryParseBase64Path3(bytes, out id);
-        }
+        if (format == Idf.Base64Path3) return TryParseBase64Path3(bytes, out id);
 
-    fail:
         id = default;
         return false;
     }
