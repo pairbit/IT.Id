@@ -1,35 +1,39 @@
 ﻿using IT.Internal;
 using System;
+using System.Runtime.CompilerServices;
 
 namespace IT;
 
 public readonly partial struct Id
 {
-    internal String ToBase58()
+    public unsafe string ToBase58()
     {
         var base58 = new string('\0', 17);
 
-        unsafe
+        fixed (char* dest = base58)
         {
-            fixed (char* dest = base58)
-            {
-                ToBase58(dest);
-            }
+            ToBase58(dest);
         }
 
         return base58;
     }
 
-    private unsafe void ToBase58(Span<Char> chars)
+    public unsafe bool TryToBase58(Span<char> chars)
     {
+        if (chars.Length < 17) return false;
+
         fixed (char* dest = chars)
         {
             ToBase58(dest);
         }
+
+        return true;
     }
 
-    private unsafe void ToBase58(Span<Byte> bytes)
+    public unsafe bool TryToBase58(Span<byte> bytes)
     {
+        if (bytes.Length < 17) return false;
+
         fixed (byte* dest = bytes)
         fixed (byte* map = Base58.EncodeMap)
         {
@@ -63,7 +67,7 @@ public readonly partial struct Id
                 if (carry != 0)
                 {
                     carry = Math.DivRem(carry, 58, out r15);
-                    if (carry != 0) throw CarryException(1, 2, carry);
+                    if (carry != 0) throw Ex.InvalidCarry(1, 2, carry);
                     length = 2;
                 }
                 else length = 1;
@@ -83,7 +87,7 @@ public readonly partial struct Id
                     if (carry != 0)
                     {
                         carry = Math.DivRem(carry + (r14 << 8), 58, out r14);
-                        if (carry != 0) throw CarryException(2, 3, carry);
+                        if (carry != 0) throw Ex.InvalidCarry(2, 3, carry);
                         length = 3;
                     }
                     else length = 2;
@@ -113,7 +117,7 @@ public readonly partial struct Id
                             if (carry != 0)
                             {
                                 carry = Math.DivRem(carry + (r12 << 8), 58, out r12);
-                                if (carry != 0) throw CarryException(3, 5, carry);
+                                if (carry != 0) throw Ex.InvalidCarry(3, 5, carry);
                                 length = 5;
                             }
                             else length = 4;
@@ -151,7 +155,7 @@ public readonly partial struct Id
                                 if (carry != 0)
                                 {
                                     carry = Math.DivRem(carry + (r11 << 8), 58, out r11);
-                                    if (carry != 0) throw CarryException(4, 6, carry);
+                                    if (carry != 0) throw Ex.InvalidCarry(4, 6, carry);
                                     length = 6;
                                 }
                                 else length = 5;
@@ -195,7 +199,7 @@ public readonly partial struct Id
                                     if (carry != 0)
                                     {
                                         carry = Math.DivRem(carry + (r10 << 8), 58, out r10);
-                                        if (carry != 0) throw CarryException(5, 7, carry);
+                                        if (carry != 0) throw Ex.InvalidCarry(5, 7, carry);
                                         length = 7;
                                     }
                                     else length = 6;
@@ -249,7 +253,7 @@ public readonly partial struct Id
                                             if (carry != 0)
                                             {
                                                 carry = Math.DivRem(carry + (r8 << 8), 58, out r8);
-                                                if (carry != 0) throw CarryException(6, 9, carry);
+                                                if (carry != 0) throw Ex.InvalidCarry(6, 9, carry);
                                                 length = 9;
                                             }
                                             else length = 8;
@@ -311,7 +315,7 @@ public readonly partial struct Id
                                                 if (carry != 0)
                                                 {
                                                     carry = Math.DivRem(carry + (r7 << 8), 58, out r7);
-                                                    if (carry != 0) throw CarryException(7, 10, carry);
+                                                    if (carry != 0) throw Ex.InvalidCarry(7, 10, carry);
                                                     length = 10;
                                                 }
                                                 else length = 9;
@@ -379,7 +383,7 @@ public readonly partial struct Id
                                                     if (carry != 0)
                                                     {
                                                         carry = Math.DivRem(carry + (r6 << 8), 58, out r6);
-                                                        if (carry != 0) throw CarryException(8, 11, carry);
+                                                        if (carry != 0) throw Ex.InvalidCarry(8, 11, carry);
                                                         length = 11;
                                                     }
                                                     else length = 10;
@@ -457,7 +461,7 @@ public readonly partial struct Id
                                                             if (carry != 0)
                                                             {
                                                                 carry = Math.DivRem(carry + (r4 << 8), 58, out r4);
-                                                                if (carry != 0) throw CarryException(9, 13, carry);
+                                                                if (carry != 0) throw Ex.InvalidCarry(9, 13, carry);
                                                                 length = 13;
                                                             }
                                                             else length = 12;
@@ -543,7 +547,7 @@ public readonly partial struct Id
                                                                 if (carry != 0)
                                                                 {
                                                                     carry = Math.DivRem(carry + (r3 << 8), 58, out r3);
-                                                                    if (carry != 0) throw CarryException(10, 14, carry);
+                                                                    if (carry != 0) throw Ex.InvalidCarry(10, 14, carry);
                                                                     length = 14;
                                                                 }
                                                                 else length = 13;
@@ -639,7 +643,7 @@ public readonly partial struct Id
                                                                         if (carry != 0)
                                                                         {
                                                                             carry = Math.DivRem(carry + (r1 << 8), 58, out r1);
-                                                                            if (carry != 0) throw CarryException(11, 16, carry);
+                                                                            if (carry != 0) throw Ex.InvalidCarry(11, 16, carry);
                                                                             length = 16;
                                                                         }
                                                                         else length = 15;
@@ -743,7 +747,7 @@ public readonly partial struct Id
                                                                             if (carry != 0)
                                                                             {
                                                                                 carry = Math.DivRem(carry + (r0 << 8), 58, out r0);
-                                                                                if (carry != 0) throw CarryException(12, 17, carry);
+                                                                                if (carry != 0) throw Ex.InvalidCarry(12, 17, carry);
                                                                                 length = 17;
                                                                             }
                                                                             else length = 16;
@@ -797,10 +801,19 @@ public readonly partial struct Id
             *(dest + 15) = map[r15];
             *(dest + 16) = map[r16];
         }
+
+        return true;
     }
 
-    private static bool TryParseBase58(ReadOnlySpan<Char> chars, out Id id)
+    public static bool TryParseBase58(ReadOnlySpan<char> chars, out Id id)
     {
+        var len = chars.Length;
+        if (len < 12 || len > 17)
+        {
+            id = default;
+            return false;
+        }
+
         var map = Base58.DecodeMap;
 
         byte b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, b7 = 0, b8 = 0, b9 = 0, b10 = 0, b11 = 0;
@@ -879,8 +892,15 @@ public readonly partial struct Id
         return true;
     }
 
-    private static bool TryParseBase58(ReadOnlySpan<Byte> bytes, out Id id)
+    public static bool TryParseBase58(ReadOnlySpan<byte> bytes, out Id id)
     {
+        var len = bytes.Length;
+        if (len < 12 || len > 17)
+        {
+            id = default;
+            return false;
+        }
+
         var map = Base58.DecodeMap;
 
         byte b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, b7 = 0, b8 = 0, b9 = 0, b10 = 0, b11 = 0;
@@ -951,8 +971,11 @@ public readonly partial struct Id
         return true;
     }
 
-    private static Id ParseBase58(ReadOnlySpan<Char> chars)
+    public static Id ParseBase58(ReadOnlySpan<char> chars)
     {
+        var len = chars.Length;
+        if (len < 12 || len > 17) throw Ex.InvalidLengthChars(Idf.Base58, len, 12, 17);
+
         var map = Base58.DecodeMap;
 
         byte b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, b7 = 0, b8 = 0, b9 = 0, b10 = 0, b11 = 0;
@@ -1022,8 +1045,11 @@ public readonly partial struct Id
         return new Id(timestamp, b, c);
     }
 
-    private static Id ParseBase58(ReadOnlySpan<Byte> bytes)
+    public static Id ParseBase58(ReadOnlySpan<byte> bytes)
     {
+        var len = bytes.Length;
+        if (len < 12 || len > 17) throw Ex.InvalidLengthBytes(Idf.Base58, len, 12, 17);
+
         var map = Base58.DecodeMap;
 
         byte b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0, b7 = 0, b8 = 0, b9 = 0, b10 = 0, b11 = 0;
@@ -1123,7 +1149,7 @@ public readonly partial struct Id
                 if (carry != 0)
                 {
                     carry = Math.DivRem(carry, 58, out r15);
-                    if (carry != 0) throw CarryException(1, 2, carry);
+                    if (carry != 0) throw Ex.InvalidCarry(1, 2, carry);
                     length = 2;
                 }
                 else length = 1;
@@ -1143,7 +1169,7 @@ public readonly partial struct Id
                     if (carry != 0)
                     {
                         carry = Math.DivRem(carry + (r14 << 8), 58, out r14);
-                        if (carry != 0) throw CarryException(2, 3, carry);
+                        if (carry != 0) throw Ex.InvalidCarry(2, 3, carry);
                         length = 3;
                     }
                     else length = 2;
@@ -1173,7 +1199,7 @@ public readonly partial struct Id
                             if (carry != 0)
                             {
                                 carry = Math.DivRem(carry + (r12 << 8), 58, out r12);
-                                if (carry != 0) throw CarryException(3, 5, carry);
+                                if (carry != 0) throw Ex.InvalidCarry(3, 5, carry);
                                 length = 5;
                             }
                             else length = 4;
@@ -1211,7 +1237,7 @@ public readonly partial struct Id
                                 if (carry != 0)
                                 {
                                     carry = Math.DivRem(carry + (r11 << 8), 58, out r11);
-                                    if (carry != 0) throw CarryException(4, 6, carry);
+                                    if (carry != 0) throw Ex.InvalidCarry(4, 6, carry);
                                     length = 6;
                                 }
                                 else length = 5;
@@ -1255,7 +1281,7 @@ public readonly partial struct Id
                                     if (carry != 0)
                                     {
                                         carry = Math.DivRem(carry + (r10 << 8), 58, out r10);
-                                        if (carry != 0) throw CarryException(5, 7, carry);
+                                        if (carry != 0) throw Ex.InvalidCarry(5, 7, carry);
                                         length = 7;
                                     }
                                     else length = 6;
@@ -1309,7 +1335,7 @@ public readonly partial struct Id
                                             if (carry != 0)
                                             {
                                                 carry = Math.DivRem(carry + (r8 << 8), 58, out r8);
-                                                if (carry != 0) throw CarryException(6, 9, carry);
+                                                if (carry != 0) throw Ex.InvalidCarry(6, 9, carry);
                                                 length = 9;
                                             }
                                             else length = 8;
@@ -1371,7 +1397,7 @@ public readonly partial struct Id
                                                 if (carry != 0)
                                                 {
                                                     carry = Math.DivRem(carry + (r7 << 8), 58, out r7);
-                                                    if (carry != 0) throw CarryException(7, 10, carry);
+                                                    if (carry != 0) throw Ex.InvalidCarry(7, 10, carry);
                                                     length = 10;
                                                 }
                                                 else length = 9;
@@ -1439,7 +1465,7 @@ public readonly partial struct Id
                                                     if (carry != 0)
                                                     {
                                                         carry = Math.DivRem(carry + (r6 << 8), 58, out r6);
-                                                        if (carry != 0) throw CarryException(8, 11, carry);
+                                                        if (carry != 0) throw Ex.InvalidCarry(8, 11, carry);
                                                         length = 11;
                                                     }
                                                     else length = 10;
@@ -1517,7 +1543,7 @@ public readonly partial struct Id
                                                             if (carry != 0)
                                                             {
                                                                 carry = Math.DivRem(carry + (r4 << 8), 58, out r4);
-                                                                if (carry != 0) throw CarryException(9, 13, carry);
+                                                                if (carry != 0) throw Ex.InvalidCarry(9, 13, carry);
                                                                 length = 13;
                                                             }
                                                             else length = 12;
@@ -1603,7 +1629,7 @@ public readonly partial struct Id
                                                                 if (carry != 0)
                                                                 {
                                                                     carry = Math.DivRem(carry + (r3 << 8), 58, out r3);
-                                                                    if (carry != 0) throw CarryException(10, 14, carry);
+                                                                    if (carry != 0) throw Ex.InvalidCarry(10, 14, carry);
                                                                     length = 14;
                                                                 }
                                                                 else length = 13;
@@ -1699,7 +1725,7 @@ public readonly partial struct Id
                                                                         if (carry != 0)
                                                                         {
                                                                             carry = Math.DivRem(carry + (r1 << 8), 58, out r1);
-                                                                            if (carry != 0) throw CarryException(11, 16, carry);
+                                                                            if (carry != 0) throw Ex.InvalidCarry(11, 16, carry);
                                                                             length = 16;
                                                                         }
                                                                         else length = 15;
@@ -1803,7 +1829,7 @@ public readonly partial struct Id
                                                                             if (carry != 0)
                                                                             {
                                                                                 carry = Math.DivRem(carry + (r0 << 8), 58, out r0);
-                                                                                if (carry != 0) throw CarryException(12, 17, carry);
+                                                                                if (carry != 0) throw Ex.InvalidCarry(12, 17, carry);
                                                                                 length = 17;
                                                                             }
                                                                             else length = 16;
@@ -1859,6 +1885,13 @@ public readonly partial struct Id
         }
     }
 
-    private static Exception CarryException(Int32 bytes, Int32 length, Int32 carry)
-        => new NotImplementedException($"{bytes} bytes, {length} length, carry ({carry}) != 0");
+#if NETSTANDARD2_0
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool TryParseBase58(String str, out Id id) => TryParseBase58(str.AsSpan(), out id);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Id ParseBase58(String str) => ParseBase58(str.AsSpan());
+
+#endif
 }
