@@ -467,11 +467,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Base64 || format == Idf.Base64Url) return ParseBase64(chars);
 
-        if (format == Idf.Base85)
-        {
-            if (chars.Length != 15) throw Ex.InvalidLengthChars(format, chars.Length);
-            return ParseBase85(chars);
-        }
+        if (format == Idf.Base85) return ParseBase85(chars);
 
         if (format == Idf.Base64Path2)
         {
@@ -512,11 +508,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Base64 || format == Idf.Base64Url) return ParseBase64(bytes);
 
-        if (format == Idf.Base85)
-        {
-            if (bytes.Length != 15) throw Ex.InvalidLengthBytes(format, bytes.Length);
-            return ParseBase85(bytes);
-        }
+        if (format == Idf.Base85) return ParseBase85(bytes);
 
         if (format == Idf.Base64Path2)
         {
@@ -589,11 +581,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Base64 || format == Idf.Base64Url) return TryParseBase64(chars, out id);
 
-        if (format == Idf.Base85)
-        {
-            if (chars.Length != 15) goto fail;
-            return TryParseBase85(chars, out id);
-        }
+        if (format == Idf.Base85) return TryParseBase85(chars, out id);
 
         if (format == Idf.Base64Path2)
         {
@@ -644,11 +632,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Base64 || format == Idf.Base64Url) return TryParseBase64(bytes, out id);
 
-        if (format == Idf.Base85)
-        {
-            if (bytes.Length != 15) goto fail;
-            return TryParseBase85(bytes, out id);
-        }
+        if (format == Idf.Base85) return TryParseBase85(bytes, out id);
 
         if (format == Idf.Base64Path2)
         {
@@ -939,12 +923,8 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Base85)
         {
-            if (bytes.Length < 15)
-            {
-                written = 0;
-                return OperationStatus.DestinationTooSmall;
-            }
-            ToBase85(bytes);
+            if (!TryToBase85(bytes)) goto fail;
+
             written = 15;
             return OperationStatus.Done;
         }
@@ -1040,12 +1020,8 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Base85)
         {
-            if (chars.Length < 15)
-            {
-                written = 0;
-                return OperationStatus.DestinationTooSmall;
-            }
-            ToBase85(chars);
+            if (!TryToBase85(chars)) goto fail;
+
             written = 15;
             return OperationStatus.Done;
         }
@@ -1181,13 +1157,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
             if (f == Base85.Format)
             {
-                if (chars.Length < 15)
-                {
-                    written = 0;
-                    return false;
-                }
+                if (!TryToBase85(chars)) goto fail;
+
                 written = 15;
-                ToBase85(chars);
                 return true;
             }
         }

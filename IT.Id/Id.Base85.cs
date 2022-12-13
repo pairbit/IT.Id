@@ -11,7 +11,7 @@ public readonly partial struct Id
     private const uint U85P3 = 85u * 85u * 85u;
     private const uint U85P4 = 85u * 85u * 85u * 85u;
 
-    private unsafe String ToBase85()
+    public unsafe string ToBase85()
     {
         var base85 = new string((char)0, 15);
 
@@ -27,7 +27,7 @@ public readonly partial struct Id
             dest[2] = map[Mod85(value0 / U85P2)];
             dest[3] = map[Mod85(value0 / U85P1)];
             dest[4] = map[Mod85(value0)];
-            
+
             //var value1 = BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref *(p + 4)));
             var value1 = (uint)(_machine0 << 24 | _machine1 << 16 | _machine2 << 8 | _pid0);
 
@@ -36,7 +36,7 @@ public readonly partial struct Id
             dest[7] = map[Mod85(value1 / U85P2)];
             dest[8] = map[Mod85(value1 / U85P1)];
             dest[9] = map[Mod85(value1)];
-            
+
             //var value2 = BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref *(p + 8)));
             var value2 = (uint)(_pid1 << 24 | _increment0 << 16 | _increment1 << 8 | _increment2);
 
@@ -50,8 +50,10 @@ public readonly partial struct Id
         return base85;
     }
 
-    private unsafe void ToBase85(Span<Char> chars)
+    public unsafe bool TryToBase85(Span<char> chars)
     {
+        if (chars.Length < 15) return false;
+
         fixed (char* dest = chars)
         fixed (char* map = Base85.Alphabet)
         {
@@ -79,10 +81,14 @@ public readonly partial struct Id
             dest[13] = map[Mod85(value2 / U85P1)];
             dest[14] = map[Mod85(value2)];
         }
+
+        return true;
     }
 
-    private unsafe void ToBase85(Span<Byte> bytes)
+    public unsafe bool TryToBase85(Span<byte> bytes)
     {
+        if (bytes.Length < 15) return false;
+
         fixed (byte* dest = bytes)
         fixed (byte* map = Base85.EncodeMap)
         {
@@ -110,10 +116,14 @@ public readonly partial struct Id
             dest[13] = map[Mod85(value2 / U85P1)];
             dest[14] = map[Mod85(value2)];
         }
+
+        return true;
     }
 
-    private static unsafe bool TryParseBase85(ReadOnlySpan<Char> chars, out Id id)
+    public static unsafe bool TryParseBase85(ReadOnlySpan<char> chars, out Id id)
     {
+        if (chars.Length != 15) goto fail;
+
         var map = Base85.DecodeMap;
 
         var ch = chars[0];
@@ -214,8 +224,10 @@ public readonly partial struct Id
         return false;
     }
 
-    private static unsafe bool TryParseBase85(ReadOnlySpan<Byte> bytes, out Id id)
+    public static unsafe bool TryParseBase85(ReadOnlySpan<byte> bytes, out Id id)
     {
+        if (bytes.Length != 15) goto fail;
+
         var map = Base85.DecodeMap;
 
         var by = map[bytes[0]];
@@ -286,8 +298,11 @@ public readonly partial struct Id
         return false;
     }
 
-    private static unsafe Id ParseBase85(ReadOnlySpan<Char> chars)
+    /// <exception cref="FormatException"/>
+    public static unsafe Id ParseBase85(ReadOnlySpan<char> chars)
     {
+        if (chars.Length != 15) throw Ex.InvalidLengthChars(Idf.Base85, chars.Length);
+
         fixed (char* src = chars)
         fixed (byte* map = Base85.DecodeMap)
         {
@@ -314,8 +329,11 @@ public readonly partial struct Id
         }
     }
 
-    private static unsafe Id ParseBase85(ReadOnlySpan<Byte> bytes)
+    /// <exception cref="FormatException"/>
+    public static unsafe Id ParseBase85(ReadOnlySpan<byte> bytes)
     {
+        if (bytes.Length != 15) throw Ex.InvalidLengthBytes(Idf.Base85, bytes.Length);
+
         var map = Base85.DecodeMap;
 
         var by = map[bytes[0]];
@@ -380,6 +398,18 @@ public readonly partial struct Id
 
         return new Id((int)timestamp, (int)b, (int)c);
     }
+
+#if NETSTANDARD2_0
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool TryParseBase85(String? str, out Id id) => TryParseBase85(str.AsSpan(), out id);
+
+    /// <exception cref="ArgumentNullException"/>
+    /// <exception cref="FormatException"/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Id ParseBase85(String str) => ParseBase85((str ?? throw new ArgumentNullException(nameof(str))).AsSpan());
+
+#endif
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static unsafe byte Map85(byte* map, char c)
