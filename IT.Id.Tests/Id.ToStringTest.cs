@@ -96,7 +96,7 @@ public class IdToStringTest
         byte[] bytes = id.ToByteArray();
 
         CheckString(id, Idf.Base85, 15, 85, "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?_~|()[]{}@%$#",
-            id.ToString("|"),
+            id.ToString("|"), id.ToBase85(),
 #if NETCOREAPP3_1_OR_GREATER
             SimpleBase.Base85.Z85.Encode(bytes).Replace('&', '_').Replace('<', '~').Replace('>', '|'),
 #endif
@@ -105,15 +105,15 @@ public class IdToStringTest
         var base64 = Convert.ToBase64String(bytes);
 
         CheckString(id, Idf.Base64, 16, 64, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
-            id.ToString("/"), $"{id:/}", base64);
+            id.ToString("/"), $"{id:/}", id.ToBase64(), base64);
 
         var base64Url = base64.Replace('/', '_').Replace('+', '-');
 
         CheckString(id, Idf.Base64Url, 16, 64, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_",
-            id.ToString(), id.ToString(null), id.ToString("_"), $"{id}", $"{id:_}", base64Url);
+            id.ToString(), id.ToString(null), id.ToString("_"), $"{id}", $"{id:_}", id.ToBase64Url(), base64Url);
 
         CheckString(id, Idf.Base58, 17, 58, "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz",
-            id.ToString("i"),
+            id.ToString("i"), id.ToBase58(),
 #if NETCOREAPP3_1_OR_GREATER
             EncodeBase58(bytes),
 #endif
@@ -122,26 +122,26 @@ public class IdToStringTest
         var path2 = new string(base64Url.Reverse().ToArray()).Insert(2, "/").Insert(1, "/");
 
         CheckString(id, Idf.Base64Path2, 18, 66, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_/\\",
-            id.ToString("//"), $"{id://}", path2);
+            id.ToString("//"), $"{id://}", id.ToBase64Path2(), path2);
 
         var path3 = path2.Insert(5, "/");
 
         CheckString(id, Idf.Base64Path3, 19, 66, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_/\\",
-            id.ToString(Idf.Base64Path3), id.ToString("///"), $"{id:///}", path3);
+            id.ToString(Idf.Base64Path3), id.ToString("///"), $"{id:///}", id.ToBase64Path3(), path3);
 
-        CheckString(id, Idf.Base32Upper, 20, 32, "0123456789ABCDEFGHJKMNPQRSTVWXYZ", id.ToString("V"),
+        CheckString(id, Idf.Base32Upper, 20, 32, "0123456789ABCDEFGHJKMNPQRSTVWXYZ", id.ToString("V"), id.ToBase32Upper(),
 #if NETCOREAPP3_1_OR_GREATER
         SimpleBase.Base32.Crockford.Encode(bytes),
 #endif
             $"{id:V}");
 
-        CheckString(id, Idf.Base32, 20, 32, "0123456789abcdefghjkmnpqrstvwxyz", id.ToString("v"),
+        CheckString(id, Idf.Base32, 20, 32, "0123456789abcdefghjkmnpqrstvwxyz", id.ToString("v"), id.ToBase32(),
 #if NETCOREAPP3_1_OR_GREATER
         SimpleBase.Base32.Crockford.Encode(bytes).ToLowerInvariant(),
 #endif
             $"{id:v}");
 
-        CheckString(id, Idf.HexUpper, 24, 16, "0123456789ABCDEF", id.ToString("H"),
+        CheckString(id, Idf.HexUpper, 24, 16, "0123456789ABCDEF", id.ToString("H"), id.ToHexUpper(),
 #if NET6_0_OR_GREATER
         Convert.ToHexString(bytes),
 #endif
@@ -150,7 +150,7 @@ public class IdToStringTest
 #endif
         $"{id:H}");
 
-        CheckString(id, Idf.Hex, 24, 16, "0123456789abcdef", id.ToString("h"),
+        CheckString(id, Idf.Hex, 24, 16, "0123456789abcdef", id.ToString("h"), id.ToHex(),
 #if NET6_0_OR_GREATER
         Convert.ToHexString(bytes).ToLowerInvariant(),
 #endif
