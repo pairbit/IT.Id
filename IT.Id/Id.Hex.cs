@@ -1,5 +1,6 @@
 ﻿using IT.Internal;
 using System;
+using System.Runtime.CompilerServices;
 
 namespace IT;
 
@@ -151,8 +152,10 @@ public readonly partial struct Id
         return true;
     }
 
-    private static bool TryParseHex(ReadOnlySpan<char> chars, out Id id)
+    public static bool TryParseHex(ReadOnlySpan<char> chars, out Id id)
     {
+        if (chars.Length != 24) goto fail;
+
         ReadOnlySpan<byte> map = Hex.DecodeMap;
 
         var cHi = chars[0];
@@ -307,8 +310,10 @@ public readonly partial struct Id
         return false;
     }
 
-    private static bool TryParseHex(ReadOnlySpan<byte> bytes, out Id id)
+    public static bool TryParseHex(ReadOnlySpan<byte> bytes, out Id id)
     {
+        if (bytes.Length != 24) goto fail;
+
         ReadOnlySpan<byte> map = Hex.DecodeMap;
 
         var h = map[bytes[0]];
@@ -379,8 +384,11 @@ public readonly partial struct Id
         return false;
     }
 
-    private static Id ParseHex(ReadOnlySpan<char> chars)
+    /// <exception cref="FormatException"/>
+    public static Id ParseHex(ReadOnlySpan<char> chars)
     {
+        if (chars.Length != 24) throw Ex.InvalidLengthChars(Idf.Hex, chars.Length);
+
         ReadOnlySpan<byte> map = Hex.DecodeMap;
 
         var cHi = chars[0];
@@ -530,8 +538,11 @@ public readonly partial struct Id
         return new Id(timestamp, b, c);
     }
 
-    private static Id ParseHex(ReadOnlySpan<byte> bytes)
+    /// <exception cref="FormatException"/>
+    public static Id ParseHex(ReadOnlySpan<byte> bytes)
     {
+        if (bytes.Length != 24) throw Ex.InvalidLengthBytes(Idf.Hex, bytes.Length);
+
         ReadOnlySpan<byte> map = Hex.DecodeMap;
 
         var h = map[bytes[0]];
@@ -596,4 +607,14 @@ public readonly partial struct Id
 
         return new Id(timestamp, b, c);
     }
+
+#if NETSTANDARD2_0
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool TryParseHex(String str, out Id id) => TryParseHex(str.AsSpan(), out id);
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Id ParseHex(String str) => ParseHex(str.AsSpan());
+
+#endif
 }

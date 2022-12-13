@@ -452,17 +452,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     /// <exception cref="FormatException"/>
     public static Id Parse(ReadOnlySpan<Char> chars, Idf format)
     {
-        if (format == Idf.Hex || format == Idf.HexUpper)
-        {
-            if (chars.Length != 24) throw Ex.InvalidLengthChars(format, chars.Length);
-            return ParseHex(chars);
-        }
+        if (format == Idf.Hex || format == Idf.HexUpper) return ParseHex(chars);
 
-        if (format == Idf.Base32 || format == Idf.Base32Upper)
-        {
-            if (chars.Length != 20) throw Ex.InvalidLengthChars(format, chars.Length);
-            return ParseBase32(chars);
-        }
+        if (format == Idf.Base32 || format == Idf.Base32Upper) return ParseBase32(chars);
 
         if (format == Idf.Base58) return ParseBase58(chars);
 
@@ -509,17 +501,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     /// <exception cref="FormatException"/>
     public static Id Parse(ReadOnlySpan<Byte> bytes, Idf format)
     {
-        if (format == Idf.Hex || format == Idf.HexUpper)
-        {
-            if (bytes.Length != 24) throw Ex.InvalidLengthBytes(format, bytes.Length);
-            return ParseHex(bytes);
-        }
+        if (format == Idf.Hex || format == Idf.HexUpper) return ParseHex(bytes);
 
-        if (format == Idf.Base32 || format == Idf.Base32Upper)
-        {
-            if (bytes.Length != 20) throw Ex.InvalidLengthBytes(format, bytes.Length);
-            return ParseBase32(bytes);
-        }
+        if (format == Idf.Base32 || format == Idf.Base32Upper) return ParseBase32(bytes);
 
         if (format == Idf.Base58) return ParseBase58(bytes);
 
@@ -556,16 +540,20 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
 #if NET7_0_OR_GREATER
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     static Boolean IParsable<Id>.TryParse(String? s, IFormatProvider? provider, out Id id) => TryParse(s, out id);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     static Boolean ISpanParsable<Id>.TryParse(ReadOnlySpan<Char> chars, IFormatProvider? provider, out Id id) => TryParse(chars, out id);
 
 #endif
 
 #if NETSTANDARD2_0
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Boolean TryParse(String str, out Id id) => TryParse(str.AsSpan(), out id);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Boolean TryParse(String str, Idf format, out Id id) => TryParse(str.AsSpan(), format, out id);
 
 #endif
@@ -594,17 +582,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     public static Boolean TryParse(ReadOnlySpan<Char> chars, Idf format, out Id id)
     {
-        if (format == Idf.Hex || format == Idf.HexUpper)
-        {
-            if (chars.Length != 24) goto fail;
-            return TryParseHex(chars, out id);
-        }
+        if (format == Idf.Hex || format == Idf.HexUpper) return TryParseHex(chars, out id);
 
-        if (format == Idf.Base32 || format == Idf.Base32Upper)
-        {
-            if (chars.Length != 20) goto fail;
-            return TryParseBase32(chars, out id);
-        }
+        if (format == Idf.Base32 || format == Idf.Base32Upper) return TryParseBase32(chars, out id);
 
         if (format == Idf.Base58) return TryParseBase58(chars, out id);
 
@@ -661,17 +641,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     public static Boolean TryParse(ReadOnlySpan<Byte> bytes, Idf format, out Id id)
     {
-        if (format == Idf.Hex || format == Idf.HexUpper)
-        {
-            if (bytes.Length != 24) goto fail;
-            return TryParseHex(bytes, out id);
-        }
+        if (format == Idf.Hex || format == Idf.HexUpper) return TryParseHex(bytes, out id);
 
-        if (format == Idf.Base32 || format == Idf.Base32Upper)
-        {
-            if (bytes.Length != 20) goto fail;
-            return TryParseBase32(bytes, out id);
-        }
+        if (format == Idf.Base32 || format == Idf.Base32Upper) return TryParseBase32(bytes, out id);
 
         if (format == Idf.Base58) return TryParseBase58(bytes, out id);
 

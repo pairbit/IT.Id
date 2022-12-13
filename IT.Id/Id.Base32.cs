@@ -451,8 +451,10 @@ public readonly partial struct Id
         return true;
     }
 
-    private static bool TryParseBase32(ReadOnlySpan<char> chars, out Id id)
+    public static bool TryParseBase32(ReadOnlySpan<char> chars, out Id id)
     {
+        if (chars.Length != 20) goto fail;
+
         ReadOnlySpan<byte> map = Base32.DecodeMap;
 
         var ch = chars[0];
@@ -593,8 +595,10 @@ public readonly partial struct Id
         return false;
     }
 
-    private static bool TryParseBase32(ReadOnlySpan<byte> bytes, out Id id)
+    public static bool TryParseBase32(ReadOnlySpan<byte> bytes, out Id id)
     {
+        if (bytes.Length != 20) goto fail;
+
         ReadOnlySpan<byte> map = Base32.DecodeMap;
 
         var by = map[bytes[0]];
@@ -695,8 +699,11 @@ public readonly partial struct Id
         return false;
     }
 
-    private static Id ParseBase32(ReadOnlySpan<char> chars)
+    /// <exception cref="FormatException"/>
+    public static Id ParseBase32(ReadOnlySpan<char> chars)
     {
+        if (chars.Length != 20) throw Ex.InvalidLengthChars(Idf.Base32, chars.Length);
+
         ReadOnlySpan<byte> mapSpan = Base32.DecodeMap;
         ref byte map = ref MemoryMarshal.GetReference(mapSpan);
 
@@ -736,8 +743,11 @@ public readonly partial struct Id
         return new Id(timestamp, b, c);
     }
 
-    private static Id ParseBase32(ReadOnlySpan<byte> bytes)
+    /// <exception cref="FormatException"/>
+    public static Id ParseBase32(ReadOnlySpan<byte> bytes)
     {
+        if (bytes.Length != 20) throw Ex.InvalidLengthBytes(Idf.Base32, bytes.Length);
+
         ReadOnlySpan<byte> map = Base32.DecodeMap;
 
         var by = map[bytes[0]];
@@ -852,6 +862,13 @@ public readonly partial struct Id
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public bool TryToBase32(Span<char> chars, String abc) => TryToBase32(chars, abc.AsSpan());
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool TryParseBase32(String str, out Id id) => TryParseBase32(str.AsSpan(), out id);
+
+    /// <exception cref="FormatException"/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public Id ParseBase32(String str) => ParseBase32(str.AsSpan());
 
 #endif
 }
