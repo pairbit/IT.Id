@@ -12,56 +12,59 @@ public class IdParseTest
     [Test]
     public void InvalidLength()
     {
-        Assert.IsFalse(Id.TryGetFormat(1, out var format));
-        Assert.That(format, Is.EqualTo((Idf)0));
+        Assert.Multiple(() =>
+        {
+            Assert.That(Id.TryGetFormat(1, out var format), Is.False);
+            Assert.That(format, Is.EqualTo((Idf)0));
 
-        FormatException(() => Id.GetFormat(1),
-            $"The length of Id cannot be 1. It must be 24 or between 15 and 20.");
+            FormatException(() => Id.GetFormat(1),
+                $"The length of Id cannot be 1. It must be 24 or between 15 and 20.");
 
-        FormatException(() => Id.Parse(default(ReadOnlySpan<char>)), 
-            $"The length of Id cannot be 0 characters. It must be 24 or between 15 and 20 characters.");
+            FormatException(() => Id.Parse(default(ReadOnlySpan<char>)),
+                $"The length of Id cannot be 0 characters. It must be 24 or between 15 and 20 characters.");
 
-        FormatException(() => Id.Parse("1234"),
-            $"The length of Id cannot be 4 characters. It must be 24 or between 15 and 20 characters.");
+            FormatException(() => Id.Parse("1234"),
+                $"The length of Id cannot be 4 characters. It must be 24 or between 15 and 20 characters.");
 
-        FormatException(() => Id.Parse(default(ReadOnlySpan<byte>)), 
-            $"The length of Id cannot be 0 bytes. It must be 24 or between 15 and 20 bytes.");
+            FormatException(() => Id.Parse(default(ReadOnlySpan<byte>)),
+                $"The length of Id cannot be 0 bytes. It must be 24 or between 15 and 20 bytes.");
 
-        FormatException(() => Id.Parse(new byte[] { 1, 2, 3, 4, 5 }),
-            $"The length of Id cannot be 5 bytes. It must be 24 or between 15 and 20 bytes.");
+            FormatException(() => Id.Parse(new byte[] { 1, 2, 3, 4, 5 }),
+                $"The length of Id cannot be 5 bytes. It must be 24 or between 15 and 20 bytes.");
 
-        InvalidLength(Idf.Hex, "abc憨");
-        InvalidLength(Idf.HexUpper, "abc憨");
-        InvalidLength(Idf.Base32, "abc憨");
-        InvalidLength(Idf.Base32Upper, "abc憨");
-        InvalidLength(Idf.Base64, "abc憨");
-        InvalidLength(Idf.Base64Url, "abc憨");
-        InvalidLength(Idf.Base64Path2, "abc憨");
-        InvalidLength(Idf.Base64Path3, "abc憨");
-        InvalidLength(Idf.Base85, "abc憨");
+            InvalidLength(Idf.Hex, "abc憨");
+            InvalidLength(Idf.HexUpper, "abc憨");
+            InvalidLength(Idf.Base32, "abc憨");
+            InvalidLength(Idf.Base32Upper, "abc憨");
+            InvalidLength(Idf.Base64, "abc憨");
+            InvalidLength(Idf.Base64Url, "abc憨");
+            InvalidLength(Idf.Base64Path2, "abc憨");
+            InvalidLength(Idf.Base64Path3, "abc憨");
+            InvalidLength(Idf.Base85, "abc憨");
 
-        FormatException(() => Id.Parse("abc", Idf.Base58),
-            $"The length of Id in Base58 format cannot be 3 characters. It must be between 12 to 17 characters long.");
+            FormatException(() => Id.Parse("abc", Idf.Base58),
+                $"The length of Id in Base58 format cannot be 3 characters. It must be between 12 to 17 characters long.");
 
-        FormatException(() => Id.Parse(new byte[] { 1, 2, 3, 4 }, Idf.Base58),
-            $"The length of Id in Base58 format cannot be 4 bytes. It must be between 12 to 17 bytes long.");
+            FormatException(() => Id.Parse(new byte[] { 1, 2, 3, 4 }, Idf.Base58),
+                $"The length of Id in Base58 format cannot be 4 bytes. It must be between 12 to 17 bytes long.");
 
-        format = (Idf)123123;
+            format = (Idf)123123;
 
-        InvalidFormat(format.ToString(), () => Id.Parse(Array.Empty<char>(), format));
-        InvalidFormat(format.ToString(), () => Id.Parse(Array.Empty<byte>(), format));
-        InvalidFormat(format.ToString(), () => Id.GetLength(format));
-        InvalidFormat(format.ToString(), () => Id.New().ToString(format));
-        InvalidFormat(format.ToString(), () => Id.New().TryFormat(Array.Empty<char>(), out _, format));
-        InvalidFormat(format.ToString(), () => Id.New().TryFormat(Array.Empty<byte>(), out _, format));
-        InvalidFormat("nf", () => Id.New().ToString("nf"));
-        InvalidFormat("nf", () => Id.New().TryFormat(Array.Empty<char>(), out _, "nf".AsSpan()));
+            InvalidFormat(format.ToString(), () => Id.Parse(Array.Empty<char>(), format));
+            InvalidFormat(format.ToString(), () => Id.Parse(Array.Empty<byte>(), format));
+            InvalidFormat(format.ToString(), () => Id.GetLength(format));
+            InvalidFormat(format.ToString(), () => Id.New().ToString(format));
+            InvalidFormat(format.ToString(), () => Id.New().TryFormat(Array.Empty<char>(), out _, format));
+            InvalidFormat(format.ToString(), () => Id.New().TryFormat(Array.Empty<byte>(), out _, format));
+            InvalidFormat("nf", () => Id.New().ToString("nf"));
+            InvalidFormat("nf", () => Id.New().TryFormat(Array.Empty<char>(), out _, "nf".AsSpan()));
 
-        InvalidPath("_aI/-TH145xA0ZPhqY", Idf.Base64Path2, 'a', 1);
-        InvalidPath("_/Ib-TH145xA0ZPhqY", Idf.Base64Path2, 'b', 3);
-        InvalidPath("_cI/-/TH145xA0ZPhqY", Idf.Base64Path3, 'c', 1);
-        InvalidPath("_/Id-/TH145xA0ZPhqY", Idf.Base64Path3, 'd', 3);
-        InvalidPath("_/I/-eTH145xA0ZPhqY", Idf.Base64Path3, 'e', 5);
+            InvalidPath("_aI/-TH145xA0ZPhqY", Idf.Base64Path2, 'a', 1);
+            InvalidPath("_/Ib-TH145xA0ZPhqY", Idf.Base64Path2, 'b', 3);
+            InvalidPath("_cI/-/TH145xA0ZPhqY", Idf.Base64Path3, 'c', 1);
+            InvalidPath("_/Id-/TH145xA0ZPhqY", Idf.Base64Path3, 'd', 3);
+            InvalidPath("_/I/-eTH145xA0ZPhqY", Idf.Base64Path3, 'e', 5);
+        });
     }
 
     [Test]
@@ -265,23 +268,29 @@ public class IdParseTest
     {
         var format = Id.GetFormat(str.Length);
 
-        Assert.IsTrue(Id.TryGetFormat(str.Length, out var format2));
-
-        Assert.That(format, Is.EqualTo(format2));
-
-        Assert.IsFalse(Id.TryParse(str, out var id));
-        Assert.That(id, Is.EqualTo((Id)default));
-
-        Assert.IsFalse(Id.TryParse(str, format, out id));
-        Assert.That(id, Is.EqualTo((Id)default));
-
         var message = $"The Id in {format} format cannot contain character code {(int)code}.";
 
-        var ex = Assert.Throws<FormatException>(() => Id.Parse(str));
-        Assert.That(ex.Message, Is.EqualTo(message));
+        Assert.Multiple(() =>
+        {
+            Assert.That(Id.TryGetFormat(str.Length, out var format2), Is.True);
 
-        ex = Assert.Throws<FormatException>(() => Id.Parse(str, format));
-        Assert.That(ex.Message, Is.EqualTo(message));
+            Assert.That(format, Is.EqualTo(format2));
+
+            Assert.That(Id.TryParse(str, out var id), Is.False);
+            Assert.That(id, Is.EqualTo((Id)default));
+
+            Assert.That(Id.TryParse(str, format, out id), Is.False);
+
+            Assert.That(id, Is.EqualTo((Id)default));
+
+            var ex = Assert.Throws<FormatException>(() => Id.Parse(str));
+            Assert.That(ex, Is.Not.Null);
+            Assert.That(ex!.Message, Is.EqualTo(message));
+
+            ex = Assert.Throws<FormatException>(() => Id.Parse(str, format));
+            Assert.That(ex, Is.Not.Null);
+            Assert.That(ex!.Message, Is.EqualTo(message));
+        });
 
         var codeBytes = Encoding.UTF8.GetBytes(code.ToString());
 
@@ -290,19 +299,25 @@ public class IdParseTest
             message = $"The Id in {format} format cannot contain byte {(int)code}.";
 
             var bytes = Encoding.UTF8.GetBytes(str);
-            Assert.That(bytes, Has.Length.EqualTo(str.Length));
+            Assert.Multiple(() =>
+            {
+                Assert.That(bytes, Has.Length.EqualTo(str.Length));
 
-            Assert.IsFalse(Id.TryParse(bytes, out id));
-            Assert.That(id, Is.EqualTo((Id)default));
+                Assert.That(Id.TryParse(bytes, out var id), Is.False);
+                Assert.That(id, Is.EqualTo((Id)default));
 
-            Assert.IsFalse(Id.TryParse(bytes, format, out id));
-            Assert.That(id, Is.EqualTo((Id)default));
+                Assert.That(Id.TryParse(bytes, format, out id), Is.False);
 
-            ex = Assert.Throws<FormatException>(() => Id.Parse(bytes));
-            Assert.That(ex.Message, Is.EqualTo(message));
+                Assert.That(id, Is.EqualTo((Id)default));
 
-            ex = Assert.Throws<FormatException>(() => Id.Parse(bytes, format));
-            Assert.That(ex.Message, Is.EqualTo(message));
+                var ex = Assert.Throws<FormatException>(() => Id.Parse(bytes));
+                Assert.That(ex, Is.Not.Null);
+                Assert.That(ex!.Message, Is.EqualTo(message));
+
+                ex = Assert.Throws<FormatException>(() => Id.Parse(bytes, format));
+                Assert.That(ex, Is.Not.Null);
+                Assert.That(ex!.Message, Is.EqualTo(message));
+            });
         }
     }
 
@@ -337,25 +352,28 @@ public class IdParseTest
 
     private void InvalidPath(string str, Idf format, int code, int index)
     {
-        Assert.IsFalse(Id.TryParse(str, out var id));
-        Assert.That(id, Is.EqualTo((Id)default));
-
-        Assert.IsFalse(Id.TryParse(str, format, out id));
-        Assert.That(id, Is.EqualTo((Id)default));
+        var bytes = Encoding.UTF8.GetBytes(str);
 
         RequiredChars(() => Id.Parse(str), format.ToString(), code, index);
         RequiredChars(() => Id.Parse(str, format), format.ToString(), code, index);
 
-        var bytes = Encoding.UTF8.GetBytes(str);
-
-        Assert.IsFalse(Id.TryParse(bytes, out id));
-        Assert.That(id, Is.EqualTo((Id)default));
-
-        Assert.IsFalse(Id.TryParse(bytes, format, out id));
-        Assert.That(id, Is.EqualTo((Id)default));
-
         RequiredBytes(() => Id.Parse(bytes), format.ToString(), code, index);
         RequiredBytes(() => Id.Parse(bytes, format), format.ToString(), code, index);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(Id.TryParse(str, out var id), Is.False);
+            Assert.That(id, Is.EqualTo((Id)default));
+
+            Assert.That(Id.TryParse(str, format, out id), Is.False);
+            Assert.That(id, Is.EqualTo((Id)default));
+
+            Assert.That(Id.TryParse(bytes, out id), Is.False);
+            Assert.That(id, Is.EqualTo((Id)default));
+
+            Assert.That(Id.TryParse(bytes, format, out id), Is.False);
+            Assert.That(id, Is.EqualTo((Id)default));
+        });
     }
 
     private void InvalidFormat<T>(string format, Func<T> func)
