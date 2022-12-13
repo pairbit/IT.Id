@@ -608,7 +608,7 @@ public readonly partial struct Id
 #if NETSTANDARD2_0
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryParseBase64(string? str, out Id id) => TryParseBase64(str.AsSpan(), out id);
+    public static bool TryParseBase64(string? str, out Id id) => TryParseBase64(str.AsSpan(), out id);
 
     /// <exception cref="ArgumentNullException"/>
     /// <exception cref="FormatException"/>

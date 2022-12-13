@@ -611,12 +611,12 @@ public readonly partial struct Id
 #if NETSTANDARD2_0
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryParseHex(String? str, out Id id) => TryParseHex(str.AsSpan(), out id);
+    public static bool TryParseHex(String? str, out Id id) => TryParseHex(str.AsSpan(), out id);
 
     /// <exception cref="ArgumentNullException"/>
     /// <exception cref="FormatException"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Id ParseHex(String str) => ParseHex((str ?? throw new ArgumentNullException(nameof(str))).AsSpan());
+    public static Id ParseHex(String str) => ParseHex((str ?? throw new ArgumentNullException(nameof(str))).AsSpan());
 
 #endif
 }

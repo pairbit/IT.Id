@@ -50,14 +50,23 @@ public class IdStringBenchmark
     [Benchmark]
     public String Id_ToHexLower() => _id.ToHex();
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToString_HexUpper() => _id.ToString(Idf.HexUpper);
+
+    [Benchmark]
+    public String Id_ToHexUpper() => _id.ToHexUpper();
 
     [Benchmark]
     public String Id_ToString_Base32Lower() => _id.ToString(Idf.Base32);
 
     [Benchmark]
+    public String Id_ToBase32Lower() => _id.ToBase32();
+
+    [Benchmark]
     public String Id_ToString_Base32Upper() => _id.ToString(Idf.Base32Upper);
+
+    [Benchmark]
+    public String Id_ToBase32Upper() => _id.ToBase32Upper();
 
     [Benchmark]
     public String Id_ToString_Base58() => _id.ToString(Idf.Base58);
@@ -69,19 +78,34 @@ public class IdStringBenchmark
     public String Id_ToString() => _id.ToString();
 
     [Benchmark]
-    public String Id_ToString_Base64() => _id.ToString(Idf.Base64Url);
+    public String Id_ToString_Base64Url() => _id.ToString(Idf.Base64Url);
 
     [Benchmark]
     public String Id_ToBase64Url() => _id.ToBase64Url();
 
     [Benchmark]
+    public String Id_ToString_Base64() => _id.ToString(Idf.Base64);
+
+    [Benchmark]
+    public String Id_ToBase64() => _id.ToBase64();
+
+    [Benchmark]
     public String Id_ToString_Base85() => _id.ToString(Idf.Base85);
+
+    [Benchmark]
+    public String Id_ToBase85() => _id.ToBase85();
 
     [Benchmark]
     public String Id_ToString_Base64Path2() => _id.ToString(Idf.Base64Path2);
 
     [Benchmark]
+    public String Id_ToBase64Path2() => _id.ToBase64Path2();
+
+    [Benchmark]
     public String Id_ToString_Base64Path3() => _id.ToString(Idf.Base64Path3);
+
+    [Benchmark]
+    public String Id_ToBase64Path3() => _id.ToBase64Path3();
 
     [Benchmark]
     public String Ulid_ToString() => _ulid.ToString();
@@ -105,10 +129,19 @@ public class IdStringBenchmark
     public Id Id_Parse_Hex() => Id.Parse(_idHexLower, Idf.Hex);
 
     [Benchmark]
+    public Id Id_ParseHex() => Id.ParseHex(_idHexLower);
+
+    [Benchmark]
     public Id Id_Parse_Base32() => Id.Parse(_idBase32, Idf.Base32);
 
     [Benchmark]
+    public Id Id_ParseBase32() => Id.ParseBase32(_idBase32);
+
+    [Benchmark]
     public Id Id_Parse_Base58() => Id.Parse(_idBase58, Idf.Base58);
+
+    [Benchmark]
+    public Id Id_ParseBase58() => Id.ParseBase58(_idBase58);
 
     [Benchmark]
     public Id Id_Parse_Base64() => Id.Parse(_idBase64Url, Idf.Base64);
@@ -126,7 +159,13 @@ public class IdStringBenchmark
     public Id Id_Parse_Base64Path3() => Id.Parse(_idBase64Path3, Idf.Base64Path3);
 
     [Benchmark]
+    public Id Id_ParseBase64Path3() => Id.ParseBase64Path3(_idBase64Path3);
+
+    [Benchmark]
     public Id Id_Parse_Base85() => Id.Parse(_idBase85, Idf.Base85);
+
+    [Benchmark]
+    public Id Id_ParseBase85() => Id.ParseBase85(_idBase85);
 
     [Benchmark]
     public Ulid Ulid_Parse() => Ulid.Parse(_ulidString);

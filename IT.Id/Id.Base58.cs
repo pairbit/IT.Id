@@ -1120,12 +1120,12 @@ public readonly partial struct Id
 #if NETSTANDARD2_0
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryParseBase58(String? str, out Id id) => TryParseBase58(str.AsSpan(), out id);
+    public static bool TryParseBase58(String? str, out Id id) => TryParseBase58(str.AsSpan(), out id);
 
     /// <exception cref="ArgumentNullException"/>
     /// <exception cref="FormatException"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Id ParseBase58(String str) => ParseBase58((str ?? throw new ArgumentNullException(nameof(str))).AsSpan());
+    public static Id ParseBase58(String str) => ParseBase58((str ?? throw new ArgumentNullException(nameof(str))).AsSpan());
 
 #endif
 

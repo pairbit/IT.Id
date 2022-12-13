@@ -859,12 +859,12 @@ public readonly partial struct Id
     public bool TryToBase32(Span<char> chars, String abc) => TryToBase32(chars, (abc ?? throw new ArgumentNullException(nameof(abc))).AsSpan());
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryParseBase32(String? str, out Id id) => TryParseBase32(str.AsSpan(), out id);
+    public static bool TryParseBase32(String? str, out Id id) => TryParseBase32(str.AsSpan(), out id);
 
     /// <exception cref="ArgumentNullException"/>
     /// <exception cref="FormatException"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Id ParseBase32(String str) => ParseBase32((str ?? throw new ArgumentNullException(nameof(str))).AsSpan());
+    public static Id ParseBase32(String str) => ParseBase32((str ?? throw new ArgumentNullException(nameof(str))).AsSpan());
 
 #endif
 
