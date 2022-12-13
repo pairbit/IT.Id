@@ -210,25 +210,28 @@ public class IdParseTest
     private void Valid(string str, Idf format, string tostring)
     {
         var id = Id.Parse(str, format);
-        Assert.That(id.ToString(format), Is.EqualTo(tostring));
-        Assert.That(id, Is.EqualTo(Id.Parse(str)));
-
-        Assert.IsTrue(Id.TryParse(str, format, out var id2));
-        Assert.That(id, Is.EqualTo(id2));
-
-        Assert.IsTrue(Id.TryParse(str, out var id3));
-        Assert.That(id, Is.EqualTo(id3));
-
         var bytes = Encoding.UTF8.GetBytes(str);
 
-        Assert.That(id, Is.EqualTo(Id.Parse(bytes, format)));
-        Assert.That(id, Is.EqualTo(Id.Parse(bytes)));
+        Assert.Multiple(() =>
+        {
+            Assert.That(id.ToString(format), Is.EqualTo(tostring));
+            Assert.That(id, Is.EqualTo(Id.Parse(str)));
 
-        Assert.IsTrue(Id.TryParse(bytes, format, out var id4));
-        Assert.That(id, Is.EqualTo(id4));
+            Assert.That(Id.TryParse(str, format, out var id2), Is.True);
+            Assert.That(id, Is.EqualTo(id2));
 
-        Assert.IsTrue(Id.TryParse(bytes, out var id5));
-        Assert.That(id, Is.EqualTo(id5));
+            Assert.That(Id.TryParse(str, out var id3), Is.True);
+            Assert.That(id, Is.EqualTo(id3));
+
+            Assert.That(id, Is.EqualTo(Id.Parse(bytes, format)));
+            Assert.That(id, Is.EqualTo(Id.Parse(bytes)));
+
+            Assert.That(Id.TryParse(bytes, format, out var id4), Is.True);
+            Assert.That(id, Is.EqualTo(id4));
+
+            Assert.That(Id.TryParse(bytes, out var id5), Is.True);
+            Assert.That(id, Is.EqualTo(id5));
+        });
     }
 
     private void InvalidAllChar(string str, params char[] codes)
@@ -305,25 +308,31 @@ public class IdParseTest
 
     private void InvalidLength(Idf format, string str)
     {
-        FormatException(() => Id.Parse(str, format),
-            $"The length of Id in {format} format cannot be {str.Length} characters. It must be {Id.GetLength(format)} characters long.");
-
-        Assert.IsFalse(Id.TryParse(str, out var id));
-        Assert.That(id, Is.EqualTo((Id)default));
-
-        Assert.IsFalse(Id.TryParse(str, format, out id));
-        Assert.That(id, Is.EqualTo((Id)default));
-
+        var len = Id.GetLength(format);
+        var f = Id.GetFormat(len);
         var bytes = Encoding.UTF8.GetBytes(str);
 
+        FormatException(() => Id.Parse(str, format),
+            $"The length of Id in {f} format cannot be {str.Length} characters. It must be {len} characters long.");
+
         FormatException(() => Id.Parse(bytes, format),
-            $"The length of Id in {format} format cannot be {bytes.Length} bytes. It must be {Id.GetLength(format)} bytes long.");
+            $"The length of Id in {f} format cannot be {bytes.Length} bytes. It must be {len} bytes long.");
+        
+        Assert.Multiple(() =>
+        {
+            Assert.That(Id.TryParse(str, out var id), Is.False);
+            Assert.That(id, Is.EqualTo((Id)default));
 
-        Assert.IsFalse(Id.TryParse(bytes, out id));
-        Assert.That(id, Is.EqualTo((Id)default));
+            Assert.That(Id.TryParse(str, format, out id), Is.False);
 
-        Assert.IsFalse(Id.TryParse(bytes, format, out id));
-        Assert.That(id, Is.EqualTo((Id)default));
+            Assert.That(id, Is.EqualTo((Id)default));
+
+            Assert.That(Id.TryParse(bytes, out id), Is.False);
+            Assert.That(id, Is.EqualTo((Id)default));
+
+            Assert.That(Id.TryParse(bytes, format, out id), Is.False);
+            Assert.That(id, Is.EqualTo((Id)default));
+        });
     }
 
     private void InvalidPath(string str, Idf format, int code, int index)

@@ -971,6 +971,7 @@ public readonly partial struct Id
         return true;
     }
 
+    /// <exception cref="FormatException"/>
     public static Id ParseBase58(ReadOnlySpan<char> chars)
     {
         var len = chars.Length;
@@ -1045,6 +1046,7 @@ public readonly partial struct Id
         return new Id(timestamp, b, c);
     }
 
+    /// <exception cref="FormatException"/>
     public static Id ParseBase58(ReadOnlySpan<byte> bytes)
     {
         var len = bytes.Length;
@@ -1888,10 +1890,12 @@ public readonly partial struct Id
 #if NETSTANDARD2_0
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryParseBase58(String str, out Id id) => TryParseBase58(str.AsSpan(), out id);
+    public bool TryParseBase58(String? str, out Id id) => TryParseBase58(str.AsSpan(), out id);
 
+    /// <exception cref="ArgumentNullException"/>
+    /// <exception cref="FormatException"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Id ParseBase58(String str) => ParseBase58(str.AsSpan());
+    public Id ParseBase58(String str) => ParseBase58((str ?? throw new ArgumentNullException(nameof(str))).AsSpan());
 
 #endif
 }

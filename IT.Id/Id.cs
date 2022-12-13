@@ -280,6 +280,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     #endregion NewObjectId
 
+    /// <exception cref="FormatException"/>
     public static Int32 GetLength(Idf format) => format switch
     {
         Idf.Base85 => 15,
@@ -304,6 +305,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     /// Base64 Path3 -> "///" <br/>
     /// Base85 -> "|" <br/>
     /// </summary>
+    /// <exception cref="FormatException"/>
     public static String GetFormatString(Idf format) => format switch
     {
         Idf.Base85 => "|",
@@ -319,6 +321,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         _ => throw Ex.InvalidFormat(format)
     };
 
+    /// <exception cref="FormatException"/>
     public static Idf GetFormat(Int32 length) => length switch
     {
         15 => Idf.Base85,
@@ -404,7 +407,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 #if NET7_0_OR_GREATER
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    static Id IParsable<Id>.Parse(String s, IFormatProvider? provider) => Parse(s.AsSpan());
+    static Id IParsable<Id>.Parse(String s, IFormatProvider? provider) => Parse(s ?? throw new ArgumentNullException(nameof(s)));
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     static Id ISpanParsable<Id>.Parse(ReadOnlySpan<Char> chars, IFormatProvider? provider) => Parse(chars);
@@ -413,11 +416,15 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
 #if NETSTANDARD2_0
 
+    /// <exception cref="ArgumentNullException"/>
+    /// <exception cref="FormatException"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Id Parse(String str) => Parse(str.AsSpan());
+    public static Id Parse(String str) => Parse((str ?? throw new ArgumentNullException(nameof(str))).AsSpan());
 
+    /// <exception cref="ArgumentNullException"/>
+    /// <exception cref="FormatException"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Id Parse(String str, Idf format) => Parse(str.AsSpan(), format);
+    public static Id Parse(String str, Idf format) => Parse((str ?? throw new ArgumentNullException(nameof(str))).AsSpan(), format);
 
 #endif
 
@@ -458,11 +465,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Base58) return ParseBase58(chars);
 
-        if (format == Idf.Base64 || format == Idf.Base64Url)
-        {
-            if (chars.Length != 16) throw Ex.InvalidLengthChars(format, chars.Length);
-            return ParseBase64(chars);
-        }
+        if (format == Idf.Base64 || format == Idf.Base64Url) return ParseBase64(chars);
 
         if (format == Idf.Base85)
         {
@@ -507,11 +510,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Base58) return ParseBase58(bytes);
 
-        if (format == Idf.Base64 || format == Idf.Base64Url)
-        {
-            if (bytes.Length != 16) throw Ex.InvalidLengthBytes(format, bytes.Length);
-            return ParseBase64(bytes);
-        }
+        if (format == Idf.Base64 || format == Idf.Base64Url) return ParseBase64(bytes);
 
         if (format == Idf.Base85)
         {
@@ -588,11 +587,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Base58) return TryParseBase58(chars, out id);
 
-        if (format == Idf.Base64 || format == Idf.Base64Url)
-        {
-            if (chars.Length != 16) goto fail;
-            return TryParseBase64(chars, out id);
-        }
+        if (format == Idf.Base64 || format == Idf.Base64Url) return TryParseBase64(chars, out id);
 
         if (format == Idf.Base85)
         {
@@ -647,11 +642,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Base58) return TryParseBase58(bytes, out id);
 
-        if (format == Idf.Base64 || format == Idf.Base64Url)
-        {
-            if (bytes.Length != 16) goto fail;
-            return TryParseBase64(bytes, out id);
-        }
+        if (format == Idf.Base64 || format == Idf.Base64Url) return TryParseBase64(bytes, out id);
 
         if (format == Idf.Base85)
         {

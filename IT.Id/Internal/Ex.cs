@@ -8,8 +8,8 @@ internal static class Ex
     public static Exception InvalidCarry(int bytes, int length, int carry)
         => new NotImplementedException($"{bytes} bytes, {length} length, carry ({carry}) != 0");
 
-    public static Exception InvalidLengthAbc(Idf format, int length)
-        => new FormatException($"The length of Id cannot be {length}. It must be 24 or between 15 and 20.");
+    public static Exception InvalidLengthAbc(Idf format, int length, string paramName)
+        => new ArgumentException($"The length of Id cannot be {length}. It must be 24 or between 15 and 20.", paramName);
 
     public static Exception InvalidLength(int length)
         => new FormatException($"The length of Id cannot be {length}. It must be 24 or between 15 and 20.");

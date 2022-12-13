@@ -103,9 +103,10 @@ public readonly partial struct Id
         return base32;
     }
 
+    /// <exception cref="ArgumentException"/>
     public unsafe string ToBase32(ReadOnlySpan<char> abc)
     {
-        if (abc.Length < 32) throw Ex.InvalidLengthAbc(Idf.Base32, abc.Length);
+        if (abc.Length < 32) throw Ex.InvalidLengthAbc(Idf.Base32, abc.Length, nameof(abc));
 
         var base32 = new string((char)0, 20);
 
@@ -257,10 +258,11 @@ public readonly partial struct Id
         return true;
     }
 
+    /// <exception cref="ArgumentException"/>
     public unsafe bool TryToBase32(Span<char> chars, ReadOnlySpan<char> abc)
     {
         if (chars.Length < 20) return false;
-        if (abc.Length < 32) throw Ex.InvalidLengthAbc(Idf.Base32, abc.Length);
+        if (abc.Length < 32) throw Ex.InvalidLengthAbc(Idf.Base32, abc.Length, nameof(abc));
 
         fixed (char* dest = chars)
         fixed (char* map = abc)
@@ -402,10 +404,11 @@ public readonly partial struct Id
         return true;
     }
 
+    /// <exception cref="ArgumentException"/>
     public unsafe bool TryToBase32(Span<byte> bytes, ReadOnlySpan<byte> abc)
     {
         if (bytes.Length < 20) return false;
-        if (abc.Length < 32) throw Ex.InvalidLengthAbc(Idf.Base32, abc.Length);
+        if (abc.Length < 32) throw Ex.InvalidLengthAbc(Idf.Base32, abc.Length, nameof(abc));
 
         fixed (byte* dest = bytes)
         fixed (byte* map = abc)
@@ -857,18 +860,23 @@ public readonly partial struct Id
 
 #if NETSTANDARD2_0
 
+    /// <exception cref="ArgumentNullException"/>
+    /// <exception cref="ArgumentException"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public string ToBase32(String abc) => ToBase32(abc.AsSpan());
+    public string ToBase32(String abc) => ToBase32((abc ?? throw new ArgumentNullException(nameof(abc))).AsSpan());
+
+    /// <exception cref="ArgumentNullException"/>
+    /// <exception cref="ArgumentException"/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool TryToBase32(Span<char> chars, String abc) => TryToBase32(chars, (abc ?? throw new ArgumentNullException(nameof(abc))).AsSpan());
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryToBase32(Span<char> chars, String abc) => TryToBase32(chars, abc.AsSpan());
+    public bool TryParseBase32(String? str, out Id id) => TryParseBase32(str.AsSpan(), out id);
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool TryParseBase32(String str, out Id id) => TryParseBase32(str.AsSpan(), out id);
-
+    /// <exception cref="ArgumentNullException"/>
     /// <exception cref="FormatException"/>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public Id ParseBase32(String str) => ParseBase32(str.AsSpan());
+    public Id ParseBase32(String str) => ParseBase32((str ?? throw new ArgumentNullException(nameof(str))).AsSpan());
 
 #endif
 }

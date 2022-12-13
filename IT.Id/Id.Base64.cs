@@ -191,8 +191,10 @@ public readonly partial struct Id
         }
     }
 
-    private static unsafe bool TryParseBase64(ReadOnlySpan<Char> chars, out Id id)
+    public static unsafe bool TryParseBase64(ReadOnlySpan<Char> chars, out Id id)
     {
+        if (chars.Length != 16) goto fail;
+
         ReadOnlySpan<sbyte> mapSpan = Base64.DecodeMap;
         ref char src = ref MemoryMarshal.GetReference(chars);
         ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
@@ -271,8 +273,10 @@ public readonly partial struct Id
         return false;
     }
 
-    private static unsafe bool TryParseBase64(ReadOnlySpan<Byte> bytes, out Id id)
+    public static unsafe bool TryParseBase64(ReadOnlySpan<Byte> bytes, out Id id)
     {
+        if (bytes.Length != 16) goto fail;
+
         ReadOnlySpan<sbyte> mapSpan = Base64.DecodeMap;
         ref byte src = ref MemoryMarshal.GetReference(bytes);
         ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
@@ -351,8 +355,11 @@ public readonly partial struct Id
         return false;
     }
 
-    internal static unsafe Id ParseBase64(ReadOnlySpan<Char> chars)
+    /// <exception cref="FormatException"/>
+    public static unsafe Id ParseBase64(ReadOnlySpan<Char> chars)
     {
+        if (chars.Length != 16) throw Ex.InvalidLengthChars(Idf.Base64, chars.Length);
+
         ReadOnlySpan<sbyte> mapSpan = Base64.DecodeMap;
         ref char src = ref MemoryMarshal.GetReference(chars);
         ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
@@ -424,8 +431,11 @@ public readonly partial struct Id
         return id;
     }
 
-    private static unsafe Id ParseBase64(ReadOnlySpan<Byte> bytes)
+    /// <exception cref="FormatException"/>
+    public static unsafe Id ParseBase64(ReadOnlySpan<Byte> bytes)
     {
+        if (bytes.Length != 16) throw Ex.InvalidLengthBytes(Idf.Base64, bytes.Length);
+
         ReadOnlySpan<sbyte> mapSpan = Base64.DecodeMap;
         ref byte src = ref MemoryMarshal.GetReference(bytes);
         ref sbyte map = ref MemoryMarshal.GetReference(mapSpan);
@@ -500,7 +510,12 @@ public readonly partial struct Id
 #if NETSTANDARD2_0
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static Id ParseBase64(String str) => ParseBase64(str.AsSpan());
+    public bool TryParseBase64(String? str, out Id id) => TryParseBase64(str.AsSpan(), out id);
+
+    /// <exception cref="ArgumentNullException"/>
+    /// <exception cref="FormatException"/>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Id ParseBase64(String str) => ParseBase64((str ?? throw new ArgumentNullException(nameof(str))).AsSpan());
 
 #endif
 }
