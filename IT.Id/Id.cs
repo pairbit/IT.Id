@@ -902,8 +902,8 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
             null or "_" => ToBase64Url(),
             "h" => ToHex(),
             "H" => ToHexUpper(),
-            "v" => ToBase32(Base32.LowerAlphabet),
-            "V" => ToBase32(Base32.UpperAlphabet),
+            "v" => ToBase32(),
+            "V" => ToBase32Upper(),
             "i" => ToBase58(),
             "/" => ToBase64(),
             "//" => ToBase64Path2(),
@@ -917,8 +917,8 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     {
         Idf.Hex => ToHex(),
         Idf.HexUpper => ToHexUpper(),
-        Idf.Base32 => ToBase32(Base32.LowerAlphabet),
-        Idf.Base32Upper => ToBase32(Base32.UpperAlphabet),
+        Idf.Base32 => ToBase32(),
+        Idf.Base32Upper => ToBase32Upper(),
         Idf.Base58 => ToBase58(),
         Idf.Base64 => ToBase64(),
         Idf.Base64Url => ToBase64Url(),
@@ -948,24 +948,16 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Base32)
         {
-            if (bytes.Length < 20)
-            {
-                written = 0;
-                return OperationStatus.DestinationTooSmall;
-            }
-            ToBase32(bytes, Base32.LowerEncodeMap);
+            if (!TryToBase32(bytes)) goto fail;
+
             written = 20;
             return OperationStatus.Done;
         }
 
         if (format == Idf.Base32Upper)
         {
-            if (bytes.Length < 20)
-            {
-                written = 0;
-                return OperationStatus.DestinationTooSmall;
-            }
-            ToBase32(bytes, Base32.UpperEncodeMap);
+            if (!TryToBase32Upper(bytes)) goto fail;
+
             written = 20;
             return OperationStatus.Done;
         }
@@ -1061,24 +1053,16 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         if (format == Idf.Base32)
         {
-            if (chars.Length < 20)
-            {
-                written = 0;
-                return OperationStatus.DestinationTooSmall;
-            }
-            ToBase32(chars, Base32.LowerAlphabet);
+            if (!TryToBase32(chars)) goto fail;
+
             written = 20;
             return OperationStatus.Done;
         }
 
         if (format == Idf.Base32Upper)
         {
-            if (chars.Length < 20)
-            {
-                written = 0;
-                return OperationStatus.DestinationTooSmall;
-            }
-            ToBase32(chars, Base32.UpperAlphabet);
+            if (!TryToBase32Upper(chars)) goto fail;
+
             written = 20;
             return OperationStatus.Done;
         }
@@ -1238,25 +1222,17 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
             if (f == Base32.FormatLower)
             {
-                if (chars.Length < 20)
-                {
-                    written = 0;
-                    return false;
-                }
+                if (!TryToBase32(chars)) goto fail;
+
                 written = 20;
-                ToBase32(chars, Base32.LowerAlphabet);
                 return true;
             }
 
             if (f == Base32.FormatUpper)
             {
-                if (chars.Length < 20)
-                {
-                    written = 0;
-                    return false;
-                }
+                if (!TryToBase32Upper(chars)) goto fail;
+
                 written = 20;
-                ToBase32(chars, Base32.UpperAlphabet);
                 return true;
             }
 

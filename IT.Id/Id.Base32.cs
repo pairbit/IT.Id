@@ -7,8 +7,106 @@ namespace IT;
 
 public readonly partial struct Id
 {
-    private unsafe String ToBase32(String abc)
+    public unsafe string ToBase32()
     {
+        var base32 = new string((char)0, 20);
+
+        fixed (char* dest = base32)
+        fixed (char* map = Base32.LowerAlphabet)
+        {
+            ulong value = _timestamp0;
+            value = (value << 8) | _timestamp1;
+            value = (value << 8) | _timestamp2;
+            value = (value << 8) | _timestamp3;
+            value = (value << 8) | _machine0;
+
+            dest[0] = map[value >> 35];
+            dest[1] = map[(value >> 30) & 0x1F];
+            dest[2] = map[(value >> 25) & 0x1F];
+            dest[3] = map[(value >> 20) & 0x1F];
+            dest[4] = map[(value >> 15) & 0x1F];
+            dest[5] = map[(value >> 10) & 0x1F];
+            dest[6] = map[(value >> 5) & 0x1F];
+            dest[7] = map[value & 0x1F];
+
+            value = _machine1;
+            value = (value << 8) | _machine2;
+            value = (value << 8) | _pid0;
+            value = (value << 8) | _pid1;
+            value = (value << 8) | _increment0;
+
+            dest[8] = map[value >> 35];
+            dest[9] = map[(value >> 30) & 0x1F];
+            dest[10] = map[(value >> 25) & 0x1F];
+            dest[11] = map[(value >> 20) & 0x1F];
+            dest[12] = map[(value >> 15) & 0x1F];
+            dest[13] = map[(value >> 10) & 0x1F];
+            dest[14] = map[(value >> 5) & 0x1F];
+            dest[15] = map[value & 0x1F];
+
+            value = (((ulong)_increment1 << 8) | _increment2) << 4;
+
+            dest[16] = map[value >> 15];
+            dest[17] = map[(value >> 10) & 0x1F];
+            dest[18] = map[(value >> 5) & 0x1F];
+            dest[19] = map[value & 0x1F];
+        }
+
+        return base32;
+    }
+
+    public unsafe string ToBase32Upper()
+    {
+        var base32 = new string((char)0, 20);
+
+        fixed (char* dest = base32)
+        fixed (char* map = Base32.UpperAlphabet)
+        {
+            ulong value = _timestamp0;
+            value = (value << 8) | _timestamp1;
+            value = (value << 8) | _timestamp2;
+            value = (value << 8) | _timestamp3;
+            value = (value << 8) | _machine0;
+
+            dest[0] = map[value >> 35];
+            dest[1] = map[(value >> 30) & 0x1F];
+            dest[2] = map[(value >> 25) & 0x1F];
+            dest[3] = map[(value >> 20) & 0x1F];
+            dest[4] = map[(value >> 15) & 0x1F];
+            dest[5] = map[(value >> 10) & 0x1F];
+            dest[6] = map[(value >> 5) & 0x1F];
+            dest[7] = map[value & 0x1F];
+
+            value = _machine1;
+            value = (value << 8) | _machine2;
+            value = (value << 8) | _pid0;
+            value = (value << 8) | _pid1;
+            value = (value << 8) | _increment0;
+
+            dest[8] = map[value >> 35];
+            dest[9] = map[(value >> 30) & 0x1F];
+            dest[10] = map[(value >> 25) & 0x1F];
+            dest[11] = map[(value >> 20) & 0x1F];
+            dest[12] = map[(value >> 15) & 0x1F];
+            dest[13] = map[(value >> 10) & 0x1F];
+            dest[14] = map[(value >> 5) & 0x1F];
+            dest[15] = map[value & 0x1F];
+
+            value = (((ulong)_increment1 << 8) | _increment2) << 4;
+
+            dest[16] = map[value >> 15];
+            dest[17] = map[(value >> 10) & 0x1F];
+            dest[18] = map[(value >> 5) & 0x1F];
+            dest[19] = map[value & 0x1F];
+        }
+
+        return base32;
+    }
+
+    public unsafe string ToBase32(ReadOnlySpan<char> abc)
+    {
+        if (abc.Length < 32) throw Ex.InvalidLengthAbc(Idf.Base32, abc.Length);
+
         var base32 = new string((char)0, 20);
 
         //fixed (byte* t0 = &_timestamp0)
@@ -63,8 +161,107 @@ public readonly partial struct Id
         return base32;
     }
 
-    private unsafe void ToBase32(Span<Char> chars, String abc)
+    public unsafe bool TryToBase32(Span<char> chars)
     {
+        if (chars.Length < 20) return false;
+
+        fixed (char* dest = chars)
+        fixed (char* map = Base32.LowerAlphabet)
+        {
+            ulong value = _timestamp0;
+            value = (value << 8) | _timestamp1;
+            value = (value << 8) | _timestamp2;
+            value = (value << 8) | _timestamp3;
+            value = (value << 8) | _machine0;
+
+            dest[0] = map[value >> 35];
+            dest[1] = map[(value >> 30) & 0x1F];
+            dest[2] = map[(value >> 25) & 0x1F];
+            dest[3] = map[(value >> 20) & 0x1F];
+            dest[4] = map[(value >> 15) & 0x1F];
+            dest[5] = map[(value >> 10) & 0x1F];
+            dest[6] = map[(value >> 5) & 0x1F];
+            dest[7] = map[value & 0x1F];
+
+            value = _machine1;
+            value = (value << 8) | _machine2;
+            value = (value << 8) | _pid0;
+            value = (value << 8) | _pid1;
+            value = (value << 8) | _increment0;
+
+            dest[8] = map[value >> 35];
+            dest[9] = map[(value >> 30) & 0x1F];
+            dest[10] = map[(value >> 25) & 0x1F];
+            dest[11] = map[(value >> 20) & 0x1F];
+            dest[12] = map[(value >> 15) & 0x1F];
+            dest[13] = map[(value >> 10) & 0x1F];
+            dest[14] = map[(value >> 5) & 0x1F];
+            dest[15] = map[value & 0x1F];
+
+            value = (((ulong)_increment1 << 8) | _increment2) << 4;
+
+            dest[16] = map[value >> 15];
+            dest[17] = map[(value >> 10) & 0x1F];
+            dest[18] = map[(value >> 5) & 0x1F];
+            dest[19] = map[value & 0x1F];
+        }
+
+        return true;
+    }
+
+    public unsafe bool TryToBase32Upper(Span<char> chars)
+    {
+        if (chars.Length < 20) return false;
+
+        fixed (char* dest = chars)
+        fixed (char* map = Base32.UpperAlphabet)
+        {
+            ulong value = _timestamp0;
+            value = (value << 8) | _timestamp1;
+            value = (value << 8) | _timestamp2;
+            value = (value << 8) | _timestamp3;
+            value = (value << 8) | _machine0;
+
+            dest[0] = map[value >> 35];
+            dest[1] = map[(value >> 30) & 0x1F];
+            dest[2] = map[(value >> 25) & 0x1F];
+            dest[3] = map[(value >> 20) & 0x1F];
+            dest[4] = map[(value >> 15) & 0x1F];
+            dest[5] = map[(value >> 10) & 0x1F];
+            dest[6] = map[(value >> 5) & 0x1F];
+            dest[7] = map[value & 0x1F];
+
+            value = _machine1;
+            value = (value << 8) | _machine2;
+            value = (value << 8) | _pid0;
+            value = (value << 8) | _pid1;
+            value = (value << 8) | _increment0;
+
+            dest[8] = map[value >> 35];
+            dest[9] = map[(value >> 30) & 0x1F];
+            dest[10] = map[(value >> 25) & 0x1F];
+            dest[11] = map[(value >> 20) & 0x1F];
+            dest[12] = map[(value >> 15) & 0x1F];
+            dest[13] = map[(value >> 10) & 0x1F];
+            dest[14] = map[(value >> 5) & 0x1F];
+            dest[15] = map[value & 0x1F];
+
+            value = (((ulong)_increment1 << 8) | _increment2) << 4;
+
+            dest[16] = map[value >> 15];
+            dest[17] = map[(value >> 10) & 0x1F];
+            dest[18] = map[(value >> 5) & 0x1F];
+            dest[19] = map[value & 0x1F];
+        }
+
+        return true;
+    }
+
+    public unsafe bool TryToBase32(Span<char> chars, ReadOnlySpan<char> abc)
+    {
+        if (chars.Length < 20) return false;
+        if (abc.Length < 32) throw Ex.InvalidLengthAbc(Idf.Base32, abc.Length);
+
         fixed (char* dest = chars)
         fixed (char* map = abc)
         {
@@ -105,10 +302,111 @@ public readonly partial struct Id
             dest[18] = map[(value >> 5) & 0x1F];
             dest[19] = map[value & 0x1F];
         }
+
+        return true;
     }
 
-    private unsafe void ToBase32(Span<Byte> bytes, byte[] abc)
+    public unsafe bool TryToBase32(Span<byte> bytes)
     {
+        if (bytes.Length < 20) return false;
+
+        fixed (byte* dest = bytes)
+        fixed (byte* map = Base32.LowerEncodeMap)
+        {
+            ulong value = _timestamp0;
+            value = (value << 8) | _timestamp1;
+            value = (value << 8) | _timestamp2;
+            value = (value << 8) | _timestamp3;
+            value = (value << 8) | _machine0;
+
+            dest[0] = map[value >> 35];
+            dest[1] = map[(value >> 30) & 0x1F];
+            dest[2] = map[(value >> 25) & 0x1F];
+            dest[3] = map[(value >> 20) & 0x1F];
+            dest[4] = map[(value >> 15) & 0x1F];
+            dest[5] = map[(value >> 10) & 0x1F];
+            dest[6] = map[(value >> 5) & 0x1F];
+            dest[7] = map[value & 0x1F];
+
+            value = _machine1;
+            value = (value << 8) | _machine2;
+            value = (value << 8) | _pid0;
+            value = (value << 8) | _pid1;
+            value = (value << 8) | _increment0;
+
+            dest[8] = map[value >> 35];
+            dest[9] = map[(value >> 30) & 0x1F];
+            dest[10] = map[(value >> 25) & 0x1F];
+            dest[11] = map[(value >> 20) & 0x1F];
+            dest[12] = map[(value >> 15) & 0x1F];
+            dest[13] = map[(value >> 10) & 0x1F];
+            dest[14] = map[(value >> 5) & 0x1F];
+            dest[15] = map[value & 0x1F];
+
+            value = (((ulong)_increment1 << 8) | _increment2) << 4;
+
+            dest[16] = map[value >> 15];
+            dest[17] = map[(value >> 10) & 0x1F];
+            dest[18] = map[(value >> 5) & 0x1F];
+            dest[19] = map[value & 0x1F];
+        }
+
+        return true;
+    }
+
+    public unsafe bool TryToBase32Upper(Span<byte> bytes)
+    {
+        if (bytes.Length < 20) return false;
+
+        fixed (byte* dest = bytes)
+        fixed (byte* map = Base32.UpperEncodeMap)
+        {
+            ulong value = _timestamp0;
+            value = (value << 8) | _timestamp1;
+            value = (value << 8) | _timestamp2;
+            value = (value << 8) | _timestamp3;
+            value = (value << 8) | _machine0;
+
+            dest[0] = map[value >> 35];
+            dest[1] = map[(value >> 30) & 0x1F];
+            dest[2] = map[(value >> 25) & 0x1F];
+            dest[3] = map[(value >> 20) & 0x1F];
+            dest[4] = map[(value >> 15) & 0x1F];
+            dest[5] = map[(value >> 10) & 0x1F];
+            dest[6] = map[(value >> 5) & 0x1F];
+            dest[7] = map[value & 0x1F];
+
+            value = _machine1;
+            value = (value << 8) | _machine2;
+            value = (value << 8) | _pid0;
+            value = (value << 8) | _pid1;
+            value = (value << 8) | _increment0;
+
+            dest[8] = map[value >> 35];
+            dest[9] = map[(value >> 30) & 0x1F];
+            dest[10] = map[(value >> 25) & 0x1F];
+            dest[11] = map[(value >> 20) & 0x1F];
+            dest[12] = map[(value >> 15) & 0x1F];
+            dest[13] = map[(value >> 10) & 0x1F];
+            dest[14] = map[(value >> 5) & 0x1F];
+            dest[15] = map[value & 0x1F];
+
+            value = (((ulong)_increment1 << 8) | _increment2) << 4;
+
+            dest[16] = map[value >> 15];
+            dest[17] = map[(value >> 10) & 0x1F];
+            dest[18] = map[(value >> 5) & 0x1F];
+            dest[19] = map[value & 0x1F];
+        }
+
+        return true;
+    }
+
+    public unsafe bool TryToBase32(Span<byte> bytes, ReadOnlySpan<byte> abc)
+    {
+        if (bytes.Length < 20) return false;
+        if (abc.Length < 32) throw Ex.InvalidLengthAbc(Idf.Base32, abc.Length);
+
         fixed (byte* dest = bytes)
         fixed (byte* map = abc)
         {
@@ -149,9 +447,11 @@ public readonly partial struct Id
             dest[18] = map[(value >> 5) & 0x1F];
             dest[19] = map[value & 0x1F];
         }
+
+        return true;
     }
 
-    private static bool TryParseBase32(ReadOnlySpan<Char> chars, out Id id)
+    private static bool TryParseBase32(ReadOnlySpan<char> chars, out Id id)
     {
         ReadOnlySpan<byte> map = Base32.DecodeMap;
 
@@ -293,7 +593,7 @@ public readonly partial struct Id
         return false;
     }
 
-    private static bool TryParseBase32(ReadOnlySpan<Byte> bytes, out Id id)
+    private static bool TryParseBase32(ReadOnlySpan<byte> bytes, out Id id)
     {
         ReadOnlySpan<byte> map = Base32.DecodeMap;
 
@@ -395,7 +695,7 @@ public readonly partial struct Id
         return false;
     }
 
-    private static Id ParseBase32(ReadOnlySpan<Char> chars)
+    private static Id ParseBase32(ReadOnlySpan<char> chars)
     {
         ReadOnlySpan<byte> mapSpan = Base32.DecodeMap;
         ref byte map = ref MemoryMarshal.GetReference(mapSpan);
@@ -436,7 +736,7 @@ public readonly partial struct Id
         return new Id(timestamp, b, c);
     }
 
-    private static Id ParseBase32(ReadOnlySpan<Byte> bytes)
+    private static Id ParseBase32(ReadOnlySpan<byte> bytes)
     {
         ReadOnlySpan<byte> map = Base32.DecodeMap;
 
@@ -544,4 +844,14 @@ public readonly partial struct Id
 
         return value;
     }
+
+#if NETSTANDARD2_0
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public string ToBase32(String abc) => ToBase32(abc.AsSpan());
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public bool TryToBase32(Span<char> chars, String abc) => TryToBase32(chars, abc.AsSpan());
+
+#endif
 }

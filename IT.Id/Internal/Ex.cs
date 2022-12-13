@@ -5,6 +5,9 @@ namespace IT.Internal;
 
 internal static class Ex
 {
+    public static Exception InvalidLengthAbc(Idf format, int length)
+        => new FormatException($"The length of Id cannot be {length}. It must be 24 or between 15 and 20.");
+
     public static Exception InvalidLength(int length)
         => new FormatException($"The length of Id cannot be {length}. It must be 24 or between 15 and 20.");
 
