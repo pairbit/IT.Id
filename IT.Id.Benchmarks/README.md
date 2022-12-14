@@ -20,7 +20,7 @@
 ![image](https://user-images.githubusercontent.com/1288091/206907165-f97a03cc-5598-4efb-b140-eb45d9acd077.png)
 
 ### String
-![image](https://user-images.githubusercontent.com/1288091/206904263-3679510d-3cab-4db4-82e1-42373b664198.png)
+![image](https://user-images.githubusercontent.com/1288091/207674772-352c7f21-7f42-4504-b064-75c168f3cd26.png)
 
 ### Chars
 ![image](https://user-images.githubusercontent.com/1288091/206904273-6adfcef0-a711-4c67-a430-2c110252b10c.png)
