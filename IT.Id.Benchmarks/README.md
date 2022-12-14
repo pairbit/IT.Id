@@ -48,7 +48,7 @@
 ![image](https://user-images.githubusercontent.com/1288091/206908305-d65bbc5c-8fd6-4923-93ea-7752988dd758.png)
 
 ### String
-![image](https://user-images.githubusercontent.com/1288091/206904453-40ff4877-52f6-4adb-985b-adb8deeb01c3.png)
+![image](https://user-images.githubusercontent.com/1288091/207687677-3971c06e-c7ad-413e-9601-b49db948b002.png)
 
 ### Chars
 ![image](https://user-images.githubusercontent.com/1288091/206904544-607049d5-514d-47b1-9feb-4c304a18e3f8.png)
