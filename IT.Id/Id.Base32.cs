@@ -719,9 +719,15 @@ public readonly partial struct Id
         v = (v << 5) | Map32(ref map, chars[6]);
         v = (v << 5) | Map32(ref map, chars[7]);
 
-        var timestamp = (byte)(v >> 32) << 24 | (byte)(v >> 24) << 16 | (byte)(v >> 16) << 8 | (byte)(v >> 8);
+        Id id = default;
 
-        var b = (int)(byte)v;
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+
+        Unsafe.WriteUnaligned(ref b, (byte)(v >> 32));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 1), (byte)(v >> 24));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 2), (byte)(v >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 3), (byte)(v >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), (byte)v);
 
         v = (v << 5) | Map32(ref map, chars[8]);
         v = (v << 5) | Map32(ref map, chars[9]);
@@ -732,18 +738,21 @@ public readonly partial struct Id
         v = (v << 5) | Map32(ref map, chars[14]);
         v = (v << 5) | Map32(ref map, chars[15]);
 
-        b = b << 24 | (byte)(v >> 32) << 16 | (byte)(v >> 24) << 8 | (byte)(v >> 16);
-
-        var c = (byte)(v >> 8) << 24 | (byte)v << 16;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 5), (byte)(v >> 32));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 6), (byte)(v >> 24));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 7), (byte)(v >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), (byte)(v >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 9), (byte)v);
 
         v = Map32(ref map, chars[16]);
         v = (v << 5) | Map32(ref map, chars[17]);
         v = (v << 5) | Map32(ref map, chars[18]);
         v = (v << 5) | Map32(ref map, chars[19]);
 
-        c |= (byte)(v >> 12) << 8 | (byte)(v >> 4);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 10), (byte)(v >> 12));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 11), (byte)(v >> 4));
 
-        return new Id(timestamp, b, c);
+        return id;
     }
 
     /// <exception cref="FormatException"/>

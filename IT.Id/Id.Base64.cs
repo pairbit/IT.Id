@@ -454,7 +454,7 @@ public readonly partial struct Id
     }
 
     /// <exception cref="FormatException"/>
-    public static unsafe Id ParseBase64(ReadOnlySpan<char> chars)
+    public static Id ParseBase64(ReadOnlySpan<char> chars)
     {
         if (chars.Length != 16) throw Ex.InvalidLengthChars(Idf.Base64, chars.Length);
 
@@ -473,13 +473,13 @@ public readonly partial struct Id
 
         if (val < 0) throw Ex.InvalidChar(Idf.Base64, i0, i1, i2, i3);
 
-        var id = new Id();
+        Id id = default;
 
-        var b = (byte*)&id;
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
 
-        Unsafe.WriteUnaligned(b, (byte)(val >> 16));
-        Unsafe.WriteUnaligned(b + 1, (byte)(val >> 8));
-        Unsafe.WriteUnaligned(b + 2, (byte)val);
+        Unsafe.WriteUnaligned(ref b, (byte)(val >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 1), (byte)(val >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 2), (byte)val);
 
         i0 = Unsafe.Add(ref src, 4);
         i1 = Unsafe.Add(ref src, 5);
@@ -492,9 +492,9 @@ public readonly partial struct Id
 
         if (val < 0) throw Ex.InvalidChar(Idf.Base64, i0, i1, i2, i3);
 
-        Unsafe.WriteUnaligned(b + 3, (byte)(val >> 16));
-        Unsafe.WriteUnaligned(b + 4, (byte)(val >> 8));
-        Unsafe.WriteUnaligned(b + 5, (byte)val);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 3), (byte)(val >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), (byte)(val >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 5), (byte)val);
 
         i0 = Unsafe.Add(ref src, 8);
         i1 = Unsafe.Add(ref src, 9);
@@ -507,9 +507,9 @@ public readonly partial struct Id
 
         if (val < 0) throw Ex.InvalidChar(Idf.Base64, i0, i1, i2, i3);
 
-        Unsafe.WriteUnaligned(b + 6, (byte)(val >> 16));
-        Unsafe.WriteUnaligned(b + 7, (byte)(val >> 8));
-        Unsafe.WriteUnaligned(b + 8, (byte)val);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 6), (byte)(val >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 7), (byte)(val >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), (byte)val);
 
         i0 = Unsafe.Add(ref src, 12);
         i1 = Unsafe.Add(ref src, 13);
@@ -522,9 +522,9 @@ public readonly partial struct Id
 
         if (val < 0) throw Ex.InvalidChar(Idf.Base64, i0, i1, i2, i3);
 
-        Unsafe.WriteUnaligned(b + 9, (byte)(val >> 16));
-        Unsafe.WriteUnaligned(b + 10, (byte)(val >> 8));
-        Unsafe.WriteUnaligned(b + 11, (byte)val);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 9), (byte)(val >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 10), (byte)(val >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 11), (byte)val);
 
         return id;
     }

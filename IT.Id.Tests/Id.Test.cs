@@ -20,7 +20,10 @@ public class IdTest
 
         Assert.Multiple(() =>
         {
-            //Assert.That(Id.ParseBase64(id.ToString().AsSpan()), Is.EqualTo(Id.ParseBase64_2(id.ToString().AsSpan())));
+            var base85 = id.ToBase85().AsSpan();
+
+            Assert.That(Id.ParseBase85(base85), Is.EqualTo(Id.ParseBase85_1(base85)));
+            Assert.That(Id.ParseBase85(base85), Is.EqualTo(Id.ParseBase85_2(base85)));
 
             Assert.That(Id.Parse(id.ToString()), Is.EqualTo(id));
 

@@ -20,29 +20,33 @@ public class IdBenchmark
     private readonly static Guid _guid2 = new(_guid.ToByteArray());
     private readonly static byte[] _guidArray = _guid.ToByteArray();
 
-    [Benchmark]
-    public int Id_Timestamp() => _id.Timestamp;
+    #region Experimental
 
-    [Benchmark]
-    public int Id_Timestamp2() => _id.Timestamp2;
+    //[Benchmark]
+    //public int Id_Timestamp() => _id.Timestamp;
 
-    [Benchmark]
-    public int Id_Machine() => _id.Machine;
+    //[Benchmark]
+    //public int Id_Timestamp2() => _id.Timestamp2;
 
-    [Benchmark]
-    public int Id_Machine2() => _id.Machine2;
+    //[Benchmark]
+    //public int Id_Machine() => _id.Machine;
 
-    [Benchmark]
-    public int Id_Pid() => _id.Pid;
+    //[Benchmark]
+    //public int Id_Machine2() => _id.Machine2;
 
-    [Benchmark]
-    public int Id_Pid2() => _id.Pid2;
+    //[Benchmark]
+    //public int Id_Pid() => _id.Pid;
 
-    [Benchmark]
-    public int Id_Increment() => _id.Increment;
+    //[Benchmark]
+    //public int Id_Pid2() => _id.Pid2;
 
-    [Benchmark]
-    public int Id_Increment2() => _id.Increment2;
+    //[Benchmark]
+    //public int Id_Increment() => _id.Increment;
+
+    //[Benchmark]
+    //public int Id_Increment2() => _id.Increment2;
+
+    #endregion Experimental
 
     #region Hashing
 

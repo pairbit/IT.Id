@@ -1,6 +1,8 @@
 ﻿using IT.Internal;
 using System;
+using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace IT;
 
@@ -330,6 +332,96 @@ public readonly partial struct Id
     }
 
     /// <exception cref="FormatException"/>
+    internal static Id ParseBase85_1(ReadOnlySpan<char> chars)
+    {
+        if (chars.Length != 15) throw Ex.InvalidLengthChars(Idf.Base85, chars.Length);
+
+        ref byte map = ref Base85.DecodeMap[0];
+
+        Id id = default;
+
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+
+        var val = Map85(ref map, chars[0]) * U85P4 +
+                  Map85(ref map, chars[1]) * U85P3 +
+                  Map85(ref map, chars[2]) * U85P2 +
+                  Map85(ref map, chars[3]) * U85P1 +
+                  Map85(ref map, chars[4]);
+
+        ref var v = ref Unsafe.As<uint, byte>(ref val);
+
+        Unsafe.WriteUnaligned(ref b, Unsafe.Add(ref v, 3));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 1), Unsafe.Add(ref v, 2));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 2), Unsafe.Add(ref v, 1));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 3), v);
+
+        val = Map85(ref map, chars[5]) * U85P4 +
+              Map85(ref map, chars[6]) * U85P3 +
+              Map85(ref map, chars[7]) * U85P2 +
+              Map85(ref map, chars[8]) * U85P1 +
+              Map85(ref map, chars[9]);
+
+        v = ref Unsafe.As<uint, byte>(ref val);
+
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), Unsafe.Add(ref v, 3));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 5), Unsafe.Add(ref v, 2));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 6), Unsafe.Add(ref v, 1));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 7), v);
+
+        val = Map85(ref map, chars[10]) * U85P4 +
+              Map85(ref map, chars[11]) * U85P3 +
+              Map85(ref map, chars[12]) * U85P2 +
+              Map85(ref map, chars[13]) * U85P1 +
+              Map85(ref map, chars[14]);
+
+        v = ref Unsafe.As<uint, byte>(ref val);
+
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), Unsafe.Add(ref v, 3));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 9), Unsafe.Add(ref v, 2));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 10), Unsafe.Add(ref v, 1));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 11), v);
+
+        return id;
+    }
+
+    internal static Id ParseBase85_2(ReadOnlySpan<char> chars)
+    {
+        if (chars.Length != 15) throw Ex.InvalidLengthChars(Idf.Base85, chars.Length);
+
+        ref byte map = ref Base85.DecodeMap[0];
+
+        Id id = default;
+
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+
+        var val = Map85(ref map, chars[0]) * U85P4 +
+                  Map85(ref map, chars[1]) * U85P3 +
+                  Map85(ref map, chars[2]) * U85P2 +
+                  Map85(ref map, chars[3]) * U85P1 +
+                  Map85(ref map, chars[4]);
+
+        Unsafe.WriteUnaligned(ref b, BinaryPrimitives.ReverseEndianness(val));
+
+        val = Map85(ref map, chars[5]) * U85P4 +
+              Map85(ref map, chars[6]) * U85P3 +
+              Map85(ref map, chars[7]) * U85P2 +
+              Map85(ref map, chars[8]) * U85P1 +
+              Map85(ref map, chars[9]);
+
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), BinaryPrimitives.ReverseEndianness(val));
+
+        val = Map85(ref map, chars[10]) * U85P4 +
+              Map85(ref map, chars[11]) * U85P3 +
+              Map85(ref map, chars[12]) * U85P2 +
+              Map85(ref map, chars[13]) * U85P1 +
+              Map85(ref map, chars[14]);
+
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness(val));
+
+        return id;
+    }
+
+    /// <exception cref="FormatException"/>
     public static unsafe Id ParseBase85(ReadOnlySpan<byte> bytes)
     {
         if (bytes.Length != 15) throw Ex.InvalidLengthBytes(Idf.Base85, bytes.Length);
@@ -417,6 +509,18 @@ public readonly partial struct Id
         if (c < Base85.Min || c > Base85.Max) throw Ex.InvalidChar(Idf.Base85, c);
 
         var value = *(map + (byte)c);
+
+        if (value == 0xFF) throw Ex.InvalidChar(Idf.Base85, c);
+
+        return value;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static byte Map85(ref byte map, char c)
+    {
+        if (c < Base85.Min || c > Base85.Max) throw Ex.InvalidChar(Idf.Base85, c);
+
+        var value = Unsafe.Add(ref map, (byte)c);
 
         if (value == 0xFF) throw Ex.InvalidChar(Idf.Base85, c);
 

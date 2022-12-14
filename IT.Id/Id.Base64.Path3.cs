@@ -343,7 +343,13 @@ public readonly partial struct Id
 
         if (val < 0) throw Ex.InvalidChar(Idf.Base64Path3, i0, i1, i2, i3);
 
-        var timestamp = (byte)(val >> 16) << 24 | (byte)(val >> 8) << 16 | (byte)val << 8;
+        Id id = default;
+
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+
+        Unsafe.WriteUnaligned(ref b, (byte)(val >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 1), (byte)(val >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 2), (byte)val);
 
         i0 = Unsafe.Add(ref src, 14);
         i1 = Unsafe.Add(ref src, 13);
@@ -356,9 +362,9 @@ public readonly partial struct Id
 
         if (val < 0) throw Ex.InvalidChar(Idf.Base64Path3, i0, i1, i2, i3);
 
-        timestamp |= (byte)(val >> 16);
-
-        var b = (byte)(val >> 8) << 24 | (byte)val << 16;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 3), (byte)(val >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), (byte)(val >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 5), (byte)val);
 
         i0 = Unsafe.Add(ref src, 10);
         i1 = Unsafe.Add(ref src, 9);
@@ -371,9 +377,9 @@ public readonly partial struct Id
 
         if (val < 0) throw Ex.InvalidChar(Idf.Base64Path3, i0, i1, i2, i3);
 
-        b |= (byte)(val >> 16) << 8 | (byte)(val >> 8);
-
-        var c = (byte)val << 24;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 6), (byte)(val >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 7), (byte)(val >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), (byte)val);
 
         i0 = Unsafe.Add(ref src, 6);
         i1 = Unsafe.Add(ref src, 4);
@@ -386,7 +392,11 @@ public readonly partial struct Id
 
         if (val < 0) throw Ex.InvalidChar(Idf.Base64Path3, i0, i1, i2, i3);
 
-        return new Id(timestamp, b, c | val);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 9), (byte)(val >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 10), (byte)(val >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 11), (byte)val);
+
+        return id;
     }
 
     /// <exception cref="FormatException"/>

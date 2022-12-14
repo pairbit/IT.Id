@@ -401,7 +401,11 @@ public readonly partial struct Id
         var bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
 
-        var timestamp = (byte)((bHi << 4) | bLo) << 24;
+        Id id = default;
+
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+
+        Unsafe.WriteUnaligned(ref b, (byte)((bHi << 4) | bLo));
 
         cHi = chars[2];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
@@ -413,7 +417,7 @@ public readonly partial struct Id
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
 
-        timestamp |= (byte)((bHi << 4) | bLo) << 16;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 1), (byte)((bHi << 4) | bLo));
 
         cHi = chars[4];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
@@ -425,7 +429,7 @@ public readonly partial struct Id
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
 
-        timestamp |= (byte)((bHi << 4) | bLo) << 8;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 2), (byte)((bHi << 4) | bLo));
 
         cHi = chars[6];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
@@ -437,7 +441,7 @@ public readonly partial struct Id
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
 
-        timestamp |= (byte)((bHi << 4) | bLo);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 3), (byte)((bHi << 4) | bLo));
 
         cHi = chars[8];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
@@ -449,7 +453,7 @@ public readonly partial struct Id
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
 
-        var b = (byte)((bHi << 4) | bLo) << 24;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), (byte)((bHi << 4) | bLo));
 
         cHi = chars[10];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
@@ -461,7 +465,7 @@ public readonly partial struct Id
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
 
-        b |= (byte)((bHi << 4) | bLo) << 16;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 5), (byte)((bHi << 4) | bLo));
 
         cHi = chars[12];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
@@ -473,7 +477,7 @@ public readonly partial struct Id
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
 
-        b |= (byte)((bHi << 4) | bLo) << 8;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 6), (byte)((bHi << 4) | bLo));
 
         cHi = chars[14];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
@@ -485,7 +489,7 @@ public readonly partial struct Id
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
 
-        b |= (byte)((bHi << 4) | bLo);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 7), (byte)((bHi << 4) | bLo));
 
         cHi = chars[16];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
@@ -497,7 +501,7 @@ public readonly partial struct Id
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
 
-        var c = (byte)((bHi << 4) | bLo) << 24;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), (byte)((bHi << 4) | bLo));
 
         cHi = chars[18];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
@@ -509,7 +513,7 @@ public readonly partial struct Id
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
 
-        c |= (byte)((bHi << 4) | bLo) << 16;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 9), (byte)((bHi << 4) | bLo));
 
         cHi = chars[20];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
@@ -521,7 +525,7 @@ public readonly partial struct Id
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
 
-        c |= (byte)((bHi << 4) | bLo) << 8;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 10), (byte)((bHi << 4) | bLo));
 
         cHi = chars[22];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
@@ -533,9 +537,9 @@ public readonly partial struct Id
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
 
-        c |= (byte)((bHi << 4) | bLo);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 11), (byte)((bHi << 4) | bLo));
 
-        return new Id(timestamp, b, c);
+        return id;
     }
 
     /// <exception cref="FormatException"/>
