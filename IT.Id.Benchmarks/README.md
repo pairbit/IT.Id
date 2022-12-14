@@ -34,7 +34,7 @@
 ![image](https://user-images.githubusercontent.com/1288091/206907727-934e3132-0308-4b01-8ef2-ae61b375e37e.png)
 
 ### String
-![image](https://user-images.githubusercontent.com/1288091/206904310-d3580385-5130-4d04-ae00-cc406c73b3e9.png)
+![image](https://user-images.githubusercontent.com/1288091/207682119-cc0e223f-4240-45b9-aba4-42a7e055bb79.png)
 
 ### Chars
 ![image](https://user-images.githubusercontent.com/1288091/206904335-1de71cdf-10f8-4acf-a733-3a8170fa12c5.png)
