@@ -6,7 +6,7 @@
 ![image](https://user-images.githubusercontent.com/1288091/206905870-25ca5e24-0a8c-4b97-9095-bfdceb508641.png)
 
 ### String
-![image](https://user-images.githubusercontent.com/1288091/206904189-1211b34d-4afb-4d50-a24a-e526b8421a62.png)
+![image](https://user-images.githubusercontent.com/1288091/207669428-4342e73f-3039-4f1a-ac6f-da330f763eae.png)
 
 ### Chars
 ![image](https://user-images.githubusercontent.com/1288091/206904193-a43bc0c2-5f07-42a6-b8f1-cfe032e004e9.png)
