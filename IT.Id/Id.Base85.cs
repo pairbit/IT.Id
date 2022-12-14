@@ -301,38 +301,7 @@ public readonly partial struct Id
     }
 
     /// <exception cref="FormatException"/>
-    public static unsafe Id ParseBase85(ReadOnlySpan<char> chars)
-    {
-        if (chars.Length != 15) throw Ex.InvalidLengthChars(Idf.Base85, chars.Length);
-
-        fixed (char* src = chars)
-        fixed (byte* map = Base85.DecodeMap)
-        {
-            var timestamp = Map85(map, *src) * U85P4 +
-                            Map85(map, *(src + 1)) * U85P3 +
-                            Map85(map, *(src + 2)) * U85P2 +
-                            Map85(map, *(src + 3)) * U85P1 +
-                            Map85(map, *(src + 4));
-
-            var b = Map85(map, *(src + 5)) * U85P4 +
-                    Map85(map, *(src + 6)) * U85P3 +
-                    Map85(map, *(src + 7)) * U85P2 +
-                    Map85(map, *(src + 8)) * U85P1 +
-                    Map85(map, *(src + 9));
-
-
-            var c = Map85(map, *(src + 10)) * U85P4 +
-                    Map85(map, *(src + 11)) * U85P3 +
-                    Map85(map, *(src + 12)) * U85P2 +
-                    Map85(map, *(src + 13)) * U85P1 +
-                    Map85(map, *(src + 14));
-
-            return new Id((int)timestamp, (int)b, (int)c);
-        }
-    }
-
-    /// <exception cref="FormatException"/>
-    internal static Id ParseBase85_1(ReadOnlySpan<char> chars)
+    public static Id ParseBase85(ReadOnlySpan<char> chars)
     {
         if (chars.Length != 15) throw Ex.InvalidLengthChars(Idf.Base85, chars.Length);
 
@@ -342,81 +311,26 @@ public readonly partial struct Id
 
         ref var b = ref Unsafe.As<Id, byte>(ref id);
 
-        var val = Map85(ref map, chars[0]) * U85P4 +
-                  Map85(ref map, chars[1]) * U85P3 +
-                  Map85(ref map, chars[2]) * U85P2 +
-                  Map85(ref map, chars[3]) * U85P1 +
-                  Map85(ref map, chars[4]);
+        Unsafe.WriteUnaligned(ref b, BinaryPrimitives.ReverseEndianness(
+              Map85(ref map, chars[0]) * U85P4 +
+              Map85(ref map, chars[1]) * U85P3 +
+              Map85(ref map, chars[2]) * U85P2 +
+              Map85(ref map, chars[3]) * U85P1 +
+              Map85(ref map, chars[4])));
 
-        ref var v = ref Unsafe.As<uint, byte>(ref val);
-
-        Unsafe.WriteUnaligned(ref b, Unsafe.Add(ref v, 3));
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 1), Unsafe.Add(ref v, 2));
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 2), Unsafe.Add(ref v, 1));
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 3), v);
-
-        val = Map85(ref map, chars[5]) * U85P4 +
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), BinaryPrimitives.ReverseEndianness(
+              Map85(ref map, chars[5]) * U85P4 +
               Map85(ref map, chars[6]) * U85P3 +
               Map85(ref map, chars[7]) * U85P2 +
               Map85(ref map, chars[8]) * U85P1 +
-              Map85(ref map, chars[9]);
+              Map85(ref map, chars[9])));
 
-        v = ref Unsafe.As<uint, byte>(ref val);
-
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), Unsafe.Add(ref v, 3));
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 5), Unsafe.Add(ref v, 2));
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 6), Unsafe.Add(ref v, 1));
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 7), v);
-
-        val = Map85(ref map, chars[10]) * U85P4 +
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness(
+              Map85(ref map, chars[10]) * U85P4 +
               Map85(ref map, chars[11]) * U85P3 +
               Map85(ref map, chars[12]) * U85P2 +
               Map85(ref map, chars[13]) * U85P1 +
-              Map85(ref map, chars[14]);
-
-        v = ref Unsafe.As<uint, byte>(ref val);
-
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), Unsafe.Add(ref v, 3));
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 9), Unsafe.Add(ref v, 2));
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 10), Unsafe.Add(ref v, 1));
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 11), v);
-
-        return id;
-    }
-
-    internal static Id ParseBase85_2(ReadOnlySpan<char> chars)
-    {
-        if (chars.Length != 15) throw Ex.InvalidLengthChars(Idf.Base85, chars.Length);
-
-        ref byte map = ref Base85.DecodeMap[0];
-
-        Id id = default;
-
-        ref var b = ref Unsafe.As<Id, byte>(ref id);
-
-        var val = Map85(ref map, chars[0]) * U85P4 +
-                  Map85(ref map, chars[1]) * U85P3 +
-                  Map85(ref map, chars[2]) * U85P2 +
-                  Map85(ref map, chars[3]) * U85P1 +
-                  Map85(ref map, chars[4]);
-
-        Unsafe.WriteUnaligned(ref b, BinaryPrimitives.ReverseEndianness(val));
-
-        val = Map85(ref map, chars[5]) * U85P4 +
-              Map85(ref map, chars[6]) * U85P3 +
-              Map85(ref map, chars[7]) * U85P2 +
-              Map85(ref map, chars[8]) * U85P1 +
-              Map85(ref map, chars[9]);
-
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), BinaryPrimitives.ReverseEndianness(val));
-
-        val = Map85(ref map, chars[10]) * U85P4 +
-              Map85(ref map, chars[11]) * U85P3 +
-              Map85(ref map, chars[12]) * U85P2 +
-              Map85(ref map, chars[13]) * U85P1 +
-              Map85(ref map, chars[14]);
-
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness(val));
+              Map85(ref map, chars[14])));
 
         return id;
     }

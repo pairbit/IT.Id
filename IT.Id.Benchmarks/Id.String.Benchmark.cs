@@ -44,73 +44,73 @@ public class IdStringBenchmark
 
     #region ToString
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToString_HexLower() => _id.ToString(Idf.Hex);
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToHexLower() => _id.ToHex();
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToString_HexUpper() => _id.ToString(Idf.HexUpper);
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToHexUpper() => _id.ToHexUpper();
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToString_Base32Lower() => _id.ToString(Idf.Base32);
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToBase32Lower() => _id.ToBase32();
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToString_Base32Upper() => _id.ToString(Idf.Base32Upper);
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToBase32Upper() => _id.ToBase32Upper();
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToString_Base58() => _id.ToString(Idf.Base58);
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToBase58() => _id.ToBase58();
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToString() => _id.ToString();
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToString_Base64Url() => _id.ToString(Idf.Base64Url);
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToBase64Url() => _id.ToBase64Url();
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToString_Base64() => _id.ToString(Idf.Base64);
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToBase64() => _id.ToBase64();
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToString_Base85() => _id.ToString(Idf.Base85);
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToBase85() => _id.ToBase85();
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToString_Base64Path2() => _id.ToString(Idf.Base64Path2);
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToBase64Path2() => _id.ToBase64Path2();
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToString_Base64Path3() => _id.ToString(Idf.Base64Path3);
 
-    //[Benchmark]
+    [Benchmark]
     public String Id_ToBase64Path3() => _id.ToBase64Path3();
 
-    //[Benchmark]
+    [Benchmark]
     public String Ulid_ToString() => _ulid.ToString();
 
-    //[Benchmark]
+    [Benchmark]
     public String Guid_ToString() => _guid.ToString();
 
     #endregion ToString
@@ -168,12 +168,6 @@ public class IdStringBenchmark
 
     [Benchmark]
     public Id Id_ParseBase85() => Id.ParseBase85(_idBase85.AsSpan());
-
-    [Benchmark]
-    public Id Id_ParseBase85_1() => Id.ParseBase85_1(_idBase85.AsSpan());
-
-    [Benchmark]
-    public Id Id_ParseBase85_2() => Id.ParseBase85_2(_idBase85.AsSpan());
 
     [Benchmark]
     public Ulid Ulid_Parse() => Ulid.Parse(_ulidString);
