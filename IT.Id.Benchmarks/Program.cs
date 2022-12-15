@@ -87,55 +87,55 @@ if (!bs.Id_Parse_ByLen_Base85().Equals(bs._id)) throw new InvalidOperationExcept
 
 var bc = new IdTryFormatCharsBenchmark();
 
-if (!bc.Id_TryParseChars_Hex().Equals(bc._id)) throw new InvalidOperationException();
-if (!bc.Id_TryParseChars_Base32().Equals(bc._id)) throw new InvalidOperationException();
-if (!bc.Id_TryParseChars_Base58().Equals(bc._id)) throw new InvalidOperationException();
-if (!bc.Id_TryParseChars_Base64().Equals(bc._id)) throw new InvalidOperationException();
-if (!bc.Id_TryParseChars_Base64Path2().Equals(bc._id)) throw new InvalidOperationException();
-if (!bc.Id_TryParseChars_Base64Path3().Equals(bc._id)) throw new InvalidOperationException();
-if (!bc.Id_TryParseChars_Base85().Equals(bc._id)) throw new InvalidOperationException();
+if (!bc.Id_TryParse_Hex().Equals(bc._id)) throw new InvalidOperationException();
+if (!bc.Id_TryParse_Base32().Equals(bc._id)) throw new InvalidOperationException();
+if (!bc.Id_TryParse_Base58().Equals(bc._id)) throw new InvalidOperationException();
+if (!bc.Id_TryParse_Base64().Equals(bc._id)) throw new InvalidOperationException();
+if (!bc.Id_TryParse_Base64Path2().Equals(bc._id)) throw new InvalidOperationException();
+if (!bc.Id_TryParse_Base64Path3().Equals(bc._id)) throw new InvalidOperationException();
+if (!bc.Id_TryParse_Base85().Equals(bc._id)) throw new InvalidOperationException();
 
-if (!bc.Id_TryParseChars_ByLen_Hex().Equals(bc._id)) throw new InvalidOperationException();
-if (!bc.Id_TryParseChars_ByLen_Base32().Equals(bc._id)) throw new InvalidOperationException();
-if (!bc.Id_TryParseChars_ByLen_Base58().Equals(bc._id)) throw new InvalidOperationException();
-if (!bc.Id_TryParseChars_ByLen_Base64().Equals(bc._id)) throw new InvalidOperationException();
-if (!bc.Id_TryParseChars_ByLen_Base64Path2().Equals(bc._id)) throw new InvalidOperationException();
-if (!bc.Id_TryParseChars_ByLen_Base64Path3().Equals(bc._id)) throw new InvalidOperationException();
-if (!bc.Id_TryParseChars_ByLen_Base85().Equals(bc._id)) throw new InvalidOperationException();
+if (!bc.Id_TryParse_ByLen_Hex().Equals(bc._id)) throw new InvalidOperationException();
+if (!bc.Id_TryParse_ByLen_Base32().Equals(bc._id)) throw new InvalidOperationException();
+if (!bc.Id_TryParse_ByLen_Base58().Equals(bc._id)) throw new InvalidOperationException();
+if (!bc.Id_TryParse_ByLen_Base64().Equals(bc._id)) throw new InvalidOperationException();
+if (!bc.Id_TryParse_ByLen_Base64Path2().Equals(bc._id)) throw new InvalidOperationException();
+if (!bc.Id_TryParse_ByLen_Base64Path3().Equals(bc._id)) throw new InvalidOperationException();
+if (!bc.Id_TryParse_ByLen_Base85().Equals(bc._id)) throw new InvalidOperationException();
 
 var bb = new IdTryFormatBytesBenchmark();
 
-if (!bb.Id_TryParseBytes_Hex().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_TryParseBytes_Base32().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_TryParseBytes_Base58().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_TryParseBytes_Base64().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_TryParseBytes_Base64Path2().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_TryParseBytes_Base64Path3().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_TryParseBytes_Base85().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_TryParse_Hex().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_TryParse_Base32().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_TryParse_Base58().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_TryParse_Base64().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_TryParse_Base64Path2().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_TryParse_Base64Path3().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_TryParse_Base85().Equals(bb._id)) throw new InvalidOperationException();
 
-if (!bb.Id_TryParseBytes_ByLen_Hex().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_TryParseBytes_ByLen_Base32().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_TryParseBytes_ByLen_Base58().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_TryParseBytes_ByLen_Base64().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_TryParseBytes_ByLen_Base64Path2().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_TryParseBytes_ByLen_Base64Path3().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_TryParseBytes_ByLen_Base85().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_TryParse_ByLen_Hex().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_TryParse_ByLen_Base32().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_TryParse_ByLen_Base58().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_TryParse_ByLen_Base64().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_TryParse_ByLen_Base64Path2().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_TryParse_ByLen_Base64Path3().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_TryParse_ByLen_Base85().Equals(bb._id)) throw new InvalidOperationException();
 
-if (!bb.Id_ParseBytes_Hex().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_ParseBytes_Base32().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_ParseBytes_Base58().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_ParseBytes_Base64().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_ParseBytes_Base64Path2().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_ParseBytes_Base64Path3().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_ParseBytes_Base85().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_Parse_Hex().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_Parse_Base32().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_Parse_Base58().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_Parse_Base64().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_Parse_Base64Path2().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_Parse_Base64Path3().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_Parse_Base85().Equals(bb._id)) throw new InvalidOperationException();
 
-if (!bb.Id_ParseBytes_ByLen_Hex().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_ParseBytes_ByLen_Base32().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_ParseBytes_ByLen_Base58().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_ParseBytes_ByLen_Base64().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_ParseBytes_ByLen_Base64Path2().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_ParseBytes_ByLen_Base64Path3().Equals(bb._id)) throw new InvalidOperationException();
-if (!bb.Id_ParseBytes_ByLen_Base85().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_Parse_ByLen_Hex().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_Parse_ByLen_Base32().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_Parse_ByLen_Base58().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_Parse_ByLen_Base64().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_Parse_ByLen_Base64Path2().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_Parse_ByLen_Base64Path3().Equals(bb._id)) throw new InvalidOperationException();
+if (!bb.Id_Parse_ByLen_Base85().Equals(bb._id)) throw new InvalidOperationException();
 
 Console.WriteLine("Ok");
 
@@ -206,9 +206,9 @@ Console.WriteLine("Ok");
 
 //BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdBenchmark));
 
-//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryFormatBytesBenchmark));
+BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryFormatBytesBenchmark));
 
-//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryFormatCharsBenchmark));
+BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryFormatCharsBenchmark));
 
 BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdStringBenchmark));
 

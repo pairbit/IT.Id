@@ -29,27 +29,27 @@ public class IdTryFormatCharsBenchmark
     {
         //_id = Id.Parse("Y14-iRgzgKZclXbw");
         _id = Id.NewObjectId();
-        _idHexLower = Id_TryFormatChars_HexLower();
-        _idBase32 = Id_TryFormatChars_Base32Lower();
-        _idBase58 = Id_TryFormatChars_Base58();
-        _idBase64 = Id_TryFormatChars_Base64();
-        _idBase85 = Id_TryFormatChars_Base85();
-        _idBase64Path2 = Id_TryFormatChars_Base64Path2();
-        _idBase64Path3 = Id_TryFormatChars_Base64Path3();
+        _idHexLower = Id_TryFormat_HexLower();
+        _idBase32 = Id_TryFormat_Base32Lower();
+        _idBase58 = Id_TryFormat_Base58();
+        _idBase64 = Id_TryFormat_Base64();
+        _idBase85 = Id_TryFormat_Base85();
+        _idBase64Path2 = Id_TryFormat_Base64Path2();
+        _idBase64Path3 = Id_TryFormat_Base64Path3();
 
         _ulid = Ulid.NewUlid();
-        _ulidChars = Ulid_TryFormatChars();
+        _ulidChars = Ulid_TryFormat();
 
 #if NETCOREAPP3_1_OR_GREATER
         _guid = Guid.NewGuid();
-        _guidChars = Guid_TryFormatChars();
+        _guidChars = Guid_TryFormat();
 #endif
     }
 
-    #region TryFormatChars
+    #region TryFormat
 
     [Benchmark]
-    public char[] Id_TryFormatChars_HexLower()
+    public char[] Id_TryFormat_HexLower()
     {
         var chars = new char[24];
         _id.TryFormat(chars, out _, Idf.Hex);
@@ -57,7 +57,15 @@ public class IdTryFormatCharsBenchmark
     }
 
     [Benchmark]
-    public char[] Id_TryFormatChars_HexUpper()
+    public char[] Id_TryToHexLower()
+    {
+        var chars = new char[24];
+        _id.TryToHex(chars);
+        return chars;
+    }
+
+    [Benchmark]
+    public char[] Id_TryFormat_HexUpper()
     {
         var chars = new char[24];
         _id.TryFormat(chars, out _, Idf.HexUpper);
@@ -65,7 +73,15 @@ public class IdTryFormatCharsBenchmark
     }
 
     [Benchmark]
-    public char[] Id_TryFormatChars_Base32Lower()
+    public char[] Id_TryToHexUpper()
+    {
+        var chars = new char[24];
+        _id.TryToHexUpper(chars);
+        return chars;
+    }
+
+    [Benchmark]
+    public char[] Id_TryFormat_Base32Lower()
     {
         var chars = new char[20];
         _id.TryFormat(chars, out _, Idf.Base32);
@@ -73,7 +89,15 @@ public class IdTryFormatCharsBenchmark
     }
 
     [Benchmark]
-    public char[] Id_TryFormatChars_Base32Upper()
+    public char[] Id_TryToBase32Lower()
+    {
+        var chars = new char[20];
+        _id.TryToBase32(chars);
+        return chars;
+    }
+
+    [Benchmark]
+    public char[] Id_TryFormat_Base32Upper()
     {
         var chars = new char[20];
         _id.TryFormat(chars, out _, Idf.Base32Upper);
@@ -81,7 +105,15 @@ public class IdTryFormatCharsBenchmark
     }
 
     [Benchmark]
-    public char[] Id_TryFormatChars_Base58()
+    public char[] Id_TryToBase32Upper()
+    {
+        var chars = new char[20];
+        _id.TryToBase32Upper(chars);
+        return chars;
+    }
+
+    [Benchmark]
+    public char[] Id_TryFormat_Base58()
     {
         var chars = new char[17];
         _id.TryFormat(chars, out _, Idf.Base58);
@@ -89,7 +121,15 @@ public class IdTryFormatCharsBenchmark
     }
 
     [Benchmark]
-    public char[] Id_TryFormatChars_Base64()
+    public char[] Id_TryToBase58()
+    {
+        var chars = new char[17];
+        _id.TryToBase58(chars);
+        return chars;
+    }
+
+    [Benchmark]
+    public char[] Id_TryFormat_Base64()
     {
         var chars = new char[16];
         _id.TryFormat(chars, out _, Idf.Base64Url);
@@ -97,7 +137,15 @@ public class IdTryFormatCharsBenchmark
     }
 
     [Benchmark]
-    public char[] Id_TryFormatChars_Base64Path2()
+    public char[] Id_TryToBase64()
+    {
+        var chars = new char[16];
+        _id.TryToBase64Url(chars);
+        return chars;
+    }
+
+    [Benchmark]
+    public char[] Id_TryFormat_Base64Path2()
     {
         var chars = new char[18];
         _id.TryFormat(chars, out _, Idf.Base64Path2);
@@ -105,7 +153,15 @@ public class IdTryFormatCharsBenchmark
     }
 
     [Benchmark]
-    public char[] Id_TryFormatChars_Base64Path3()
+    public char[] Id_TryToBase64Path2()
+    {
+        var chars = new char[18];
+        _id.TryToBase64Path2(chars);
+        return chars;
+    }
+
+    [Benchmark]
+    public char[] Id_TryFormat_Base64Path3()
     {
         var chars = new char[19];
         _id.TryFormat(chars, out _, Idf.Base64Path3);
@@ -113,7 +169,15 @@ public class IdTryFormatCharsBenchmark
     }
 
     [Benchmark]
-    public char[] Id_TryFormatChars_Base85()
+    public char[] Id_TryToBase64Path3()
+    {
+        var chars = new char[19];
+        _id.TryToBase64Path3(chars);
+        return chars;
+    }
+
+    [Benchmark]
+    public char[] Id_TryFormat_Base85()
     {
         var chars = new char[15];
         _id.TryFormat(chars, out _, Idf.Base85);
@@ -121,7 +185,15 @@ public class IdTryFormatCharsBenchmark
     }
 
     [Benchmark]
-    public char[] Ulid_TryFormatChars()
+    public char[] Id_TryToBase85()
+    {
+        var chars = new char[15];
+        _id.TryToBase85(chars);
+        return chars;
+    }
+
+    [Benchmark]
+    public char[] Ulid_TryFormat()
     {
         var chars = new char[26];
         _ulid.TryWriteStringify(chars);
@@ -131,7 +203,7 @@ public class IdTryFormatCharsBenchmark
 #if NETCOREAPP3_1_OR_GREATER
 
     [Benchmark]
-    public char[] Guid_TryFormatChars()
+    public char[] Guid_TryFormat()
     {
         var chars = new char[36];
         _guid.TryFormat(chars, out _);
@@ -140,64 +212,85 @@ public class IdTryFormatCharsBenchmark
 
 #endif
 
-    #endregion TryFormatChars
+    #endregion TryFormat
 
-    #region TryParseChars
-
-    [Benchmark]
-    public Id Id_TryParseChars_Hex() => Id.TryParse(_idHexLower, Idf.Hex, out var id) ? id : throw new FormatException();
+    #region TryParse
 
     [Benchmark]
-    public Id Id_TryParseChars_Base32() => Id.TryParse(_idBase32, Idf.Base32, out var id) ? id : throw new FormatException();
+    public Id Id_TryParse_Hex() => Id.TryParse(_idHexLower, Idf.Hex, out var id) ? id : throw new FormatException();
 
     [Benchmark]
-    public Id Id_TryParseChars_Base58() => Id.TryParse(_idBase58, Idf.Base58, out var id) ? id : throw new FormatException();
+    public Id Id_TryParseHex() => Id.TryParseHex(_idHexLower, out var id) ? id : throw new FormatException();
 
     [Benchmark]
-    public Id Id_TryParseChars_Base64() => Id.TryParse(_idBase64, Idf.Base64, out var id) ? id : throw new FormatException();
+    public Id Id_TryParse_Base32() => Id.TryParse(_idBase32, Idf.Base32, out var id) ? id : throw new FormatException();
 
     [Benchmark]
-    public Id Id_TryParseChars_Base64Path2() => Id.TryParse(_idBase64Path2, Idf.Base64Path2, out var id) ? id : throw new FormatException();
+    public Id Id_TryParseBase32() => Id.TryParseBase32(_idBase32, out var id) ? id : throw new FormatException();
 
     [Benchmark]
-    public Id Id_TryParseChars_Base64Path3() => Id.TryParse(_idBase64Path3, Idf.Base64Path3, out var id) ? id : throw new FormatException();
+    public Id Id_TryParse_Base58() => Id.TryParse(_idBase58, Idf.Base58, out var id) ? id : throw new FormatException();
 
     [Benchmark]
-    public Id Id_TryParseChars_Base85() => Id.TryParse(_idBase85, Idf.Base85, out var id) ? id : throw new FormatException();
+    public Id Id_TryParseBase58() => Id.TryParseBase58(_idBase58, out var id) ? id : throw new FormatException();
 
     [Benchmark]
-    public Ulid Ulid_TryParseChars() => Ulid.TryParse(_ulidChars, out var ulid) ? ulid : throw new FormatException();
+    public Id Id_TryParse_Base64() => Id.TryParse(_idBase64, Idf.Base64, out var id) ? id : throw new FormatException();
+
+    [Benchmark]
+    public Id Id_TryParseBase64() => Id.TryParseBase64(_idBase64, out var id) ? id : throw new FormatException();
+
+    [Benchmark]
+    public Id Id_TryParse_Base64Path2() => Id.TryParse(_idBase64Path2, Idf.Base64Path2, out var id) ? id : throw new FormatException();
+
+    [Benchmark]
+    public Id Id_TryParseBase64Path2() => Id.TryParseBase64Path2(_idBase64Path2, out var id) ? id : throw new FormatException();
+
+    [Benchmark]
+    public Id Id_TryParse_Base64Path3() => Id.TryParse(_idBase64Path3, Idf.Base64Path3, out var id) ? id : throw new FormatException();
+
+    [Benchmark]
+    public Id Id_TryParseBase64Path3() => Id.TryParseBase64Path3(_idBase64Path3, out var id) ? id : throw new FormatException();
+
+    [Benchmark]
+    public Id Id_TryParse_Base85() => Id.TryParse(_idBase85, Idf.Base85, out var id) ? id : throw new FormatException();
+
+    [Benchmark]
+    public Id Id_TryParseBase85() => Id.TryParseBase85(_idBase85, out var id) ? id : throw new FormatException();
+
+    [Benchmark]
+    public Ulid Ulid_TryParse() => Ulid.TryParse(_ulidChars, out var ulid) ? ulid : throw new FormatException();
 
 #if NETCOREAPP3_1_OR_GREATER
 
     [Benchmark]
-    public Guid Guid_TryParseChars() => Guid.TryParse(_guidChars, out var guid) ? guid : throw new FormatException();
+    public Guid Guid_TryParse() => Guid.TryParse(_guidChars, out var guid) ? guid : throw new FormatException();
 #endif
 
-    #endregion TryParseChars
+    #endregion TryParse
 
-    #region TryParseChars By Length
-
-    [Benchmark]
-    public Id Id_TryParseChars_ByLen_Hex() => Id.TryParse(_idHexLower, out var id) ? id : throw new FormatException();
+    #region TryParse By Length
 
     [Benchmark]
-    public Id Id_TryParseChars_ByLen_Base32() => Id.TryParse(_idBase32, out var id) ? id : throw new FormatException();
+    public Id Id_TryParse_ByLen_Hex() => Id.TryParse(_idHexLower, out var id) ? id : throw new FormatException();
 
     [Benchmark]
-    public Id Id_TryParseChars_ByLen_Base58() => Id.TryParse(_idBase58, out var id) ? id : throw new FormatException();
+    public Id Id_TryParse_ByLen_Base32() => Id.TryParse(_idBase32, out var id) ? id : throw new FormatException();
 
     [Benchmark]
-    public Id Id_TryParseChars_ByLen_Base64() => Id.TryParse(_idBase64, out var id) ? id : throw new FormatException();
+    public Id Id_TryParse_ByLen_Base58() => Id.TryParse(_idBase58, out var id) ? id : throw new FormatException();
 
     [Benchmark]
-    public Id Id_TryParseChars_ByLen_Base64Path2() => Id.TryParse(_idBase64Path2, out var id) ? id : throw new FormatException();
+    public Id Id_TryParse_ByLen_Base64() => Id.TryParse(_idBase64, out var id) ? id : throw new FormatException();
 
     [Benchmark]
-    public Id Id_TryParseChars_ByLen_Base64Path3() => Id.TryParse(_idBase64Path3, out var id) ? id : throw new FormatException();
+    public Id Id_TryParse_ByLen_Base64Path2() => Id.TryParse(_idBase64Path2, out var id) ? id : throw new FormatException();
 
     [Benchmark]
-    public Id Id_TryParseChars_ByLen_Base85() => Id.TryParse(_idBase85, out var id) ? id : throw new FormatException();
+    public Id Id_TryParse_ByLen_Base64Path3() => Id.TryParse(_idBase64Path3, out var id) ? id : throw new FormatException();
 
-    #endregion TryParseChars By Length
+    [Benchmark]
+    public Id Id_TryParse_ByLen_Base85() => Id.TryParse(_idBase85, out var id) ? id : throw new FormatException();
+
+    #endregion TryParse By Length
 }
