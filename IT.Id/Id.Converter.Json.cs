@@ -1,11 +1,10 @@
-﻿using System;
+﻿using IT;
+using System;
 using System.Buffers;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
-namespace IT.Json.Converters;
+namespace System.Text.Json.Serialization.Converters;
 
-public class JsonIdConverter : JsonConverter<Id>
+public class IdConverter : JsonConverter<Id>
 {
     private Idf _format = Idf.Base64Url;
 
@@ -21,9 +20,9 @@ public class JsonIdConverter : JsonConverter<Id>
 
             var llen = seq.Length;
 
-            if (llen < 15 || (llen != 24 && llen > 20)) throw new JsonException($"The id cannot be {llen} bytes long. The id must be 24 bytes long or between 15 and 20");
+            if (llen < 15 || llen != 24 && llen > 20) throw new JsonException($"The id cannot be {llen} bytes long. The id must be 24 bytes long or between 15 and 20");
 
-            Span<byte> buffer = stackalloc byte[(Int32)llen];
+            Span<byte> buffer = stackalloc byte[(int)llen];
 
             seq.CopyTo(buffer);
 
@@ -43,7 +42,7 @@ public class JsonIdConverter : JsonConverter<Id>
         writer.WriteStringValue(bytes);
     }
 
-    private static Id Parse(ReadOnlySpan<Byte> bytes)
+    private static Id Parse(ReadOnlySpan<byte> bytes)
     {
         try
         {

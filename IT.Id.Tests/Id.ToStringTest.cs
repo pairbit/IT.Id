@@ -1,5 +1,5 @@
-using IT.Json.Converters;
 using System.Buffers;
+using System.ComponentModel;
 using System.Text;
 using System.Text.Json;
 
@@ -11,6 +11,21 @@ public class IdToStringTest
     public void Setup()
     {
 
+    }
+
+    [Test]
+    public void TypeConverter()
+    {
+        var typeConverter = TypeDescriptor.GetConverter(typeof(Id));
+
+        var idBase64Url = "YqhPZ0Ax541HT-I_";
+
+        var id = Id.ParseBase64(idBase64Url);
+
+        Assert.That(typeConverter.CanConvertTo(typeof(string)), Is.True);
+
+        Assert.That(typeConverter.ConvertToInvariantString(id), Is.EqualTo(idBase64Url));
+        Assert.That(typeConverter.ConvertToString(id), Is.EqualTo(idBase64Url));
     }
 
     [Test]
@@ -29,7 +44,7 @@ public class IdToStringTest
         //Assert.That(id.ToString(Idf.HexUpper), Is.EqualTo("62A84F674031E78D474FE23F"));
 
         var serializerOptions = new JsonSerializerOptions();
-        serializerOptions.Converters.Add(new JsonIdConverter { Format = Idf.Hex });
+        serializerOptions.Converters.Add(new System.Text.Json.Serialization.Converters.IdConverter { Format = Idf.Hex });
         serializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
 
         JsonSerializer.Serialize(id, serializerOptions);
@@ -249,7 +264,7 @@ public class IdToStringTest
 
         //Json
         var serializerOptions = new JsonSerializerOptions();
-        serializerOptions.Converters.Add(new JsonIdConverter { Format = format });
+        serializerOptions.Converters.Add(new System.Text.Json.Serialization.Converters.IdConverter { Format = format });
         serializerOptions.Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
 
         var idJson = JsonSerializer.Serialize(id, serializerOptions);

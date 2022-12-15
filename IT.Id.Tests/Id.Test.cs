@@ -1,3 +1,6 @@
+using System.ComponentModel;
+using System.Drawing;
+
 namespace IT.Tests;
 
 public class IdTest

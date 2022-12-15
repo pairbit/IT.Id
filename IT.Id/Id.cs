@@ -1,5 +1,4 @@
-﻿using IT.Internal;
-using System;
+﻿using System;
 using System.Buffers.Binary;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,10 +10,10 @@ using System.Threading;
 
 namespace IT;
 
-[Serializable]
 [StructLayout(LayoutKind.Explicit, Size = 12)]
 [DebuggerDisplay("{ToString(),nq}")]
-[System.Text.Json.Serialization.JsonConverter(typeof(Json.Converters.JsonIdConverter))]
+[System.ComponentModel.TypeConverter(typeof(System.ComponentModel.IdConverter))]
+[System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Converters.IdConverter))]
 public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 #if NET7_0_OR_GREATER
 , System.Numerics.IMinMaxValue<Id>, ISpanParsable<Id>

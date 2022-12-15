@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.ComponentModel;
+using System.Text;
 
 namespace IT.Tests;
 
@@ -7,6 +8,35 @@ public class IdParseTest
     [SetUp]
     public void Setup()
     {
+    }
+
+    [Test]
+    public void TypeConverter()
+    {
+        var typeConverter = TypeDescriptor.GetConverter(typeof(Id));
+
+        Assert.That(typeConverter.CanConvertFrom(typeof(string)), Is.True);
+
+        var id = Id.ParseHex("62a84f674031e78d474fe23f");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(typeConverter.ConvertFromInvariantString("62a84f674031e78d474fe23f"), Is.EqualTo(id));
+            Assert.That(typeConverter.ConvertFromInvariantString("62A84F674031E78D474FE23F"), Is.EqualTo(id));
+
+            Assert.That(typeConverter.ConvertFromInvariantString("cam4yst067krthtfw8zg"), Is.EqualTo(id));
+            Assert.That(typeConverter.ConvertFromInvariantString("CAM4YST067KRTHTFW8ZG"), Is.EqualTo(id));
+
+            Assert.That(typeConverter.ConvertFromInvariantString("2ryw1nk6d1eiGQSL6"), Is.EqualTo(id));
+
+            Assert.That(typeConverter.ConvertFromInvariantString("YqhPZ0Ax541HT+I/"), Is.EqualTo(id));
+            Assert.That(typeConverter.ConvertFromInvariantString("YqhPZ0Ax541HT-I_"), Is.EqualTo(id));
+
+            Assert.That(typeConverter.ConvertFromInvariantString("_/I/-TH145xA0ZPhqY"), Is.EqualTo(id));
+            Assert.That(typeConverter.ConvertFromInvariantString("_/I/-/TH145xA0ZPhqY"), Is.EqualTo(id));
+
+            Assert.That(typeConverter.ConvertFromInvariantString("vYi7nkR.CYm]ebe"), Is.EqualTo(id));
+        });
     }
 
     [Test]
@@ -155,8 +185,8 @@ public class IdParseTest
 
         //Upper == Lower
 
-        Valid("CDZ6ZZEC14FS687T52V0", Idf.Base32, base32);
         Valid("cdz6zzec14fs687t52v0", Idf.Base32, base32);
+        Valid("CDZ6ZZEC14FS687T52V0", Idf.Base32, base32);
 
         //'o','O' -> 0
         //'i','I','l','L' -> 1
