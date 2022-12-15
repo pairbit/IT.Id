@@ -160,149 +160,114 @@ public readonly partial struct Id
 
         var cHi = chars[0];
         if (cHi < Hex.Min || cHi > Hex.Max) goto fail;
-
         var cLo = chars[1];
         if (cLo < Hex.Min || cLo > Hex.Max) goto fail;
-
         var bHi = map[cHi];
         var bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) goto fail;
-
-        var timestamp = (byte)((bHi << 4) | bLo) << 24;
+        id = default;
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+        Unsafe.WriteUnaligned(ref b, (byte)((bHi << 4) | bLo));
 
         cHi = chars[2];
         if (cHi < Hex.Min || cHi > Hex.Max) goto fail;
-
         cLo = chars[3];
         if (cLo < Hex.Min || cLo > Hex.Max) goto fail;
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) goto fail;
-
-        timestamp |= (byte)((bHi << 4) | bLo) << 16;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 1), (byte)((bHi << 4) | bLo));
 
         cHi = chars[4];
         if (cHi < Hex.Min || cHi > Hex.Max) goto fail;
-
         cLo = chars[5];
         if (cLo < Hex.Min || cLo > Hex.Max) goto fail;
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) goto fail;
-
-        timestamp |= (byte)((bHi << 4) | bLo) << 8;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 2), (byte)((bHi << 4) | bLo));
 
         cHi = chars[6];
         if (cHi < Hex.Min || cHi > Hex.Max) goto fail;
-
         cLo = chars[7];
         if (cLo < Hex.Min || cLo > Hex.Max) goto fail;
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) goto fail;
-
-        timestamp |= (byte)((bHi << 4) | bLo);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 3), (byte)((bHi << 4) | bLo));
 
         cHi = chars[8];
         if (cHi < Hex.Min || cHi > Hex.Max) goto fail;
-
         cLo = chars[9];
         if (cLo < Hex.Min || cLo > Hex.Max) goto fail;
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) goto fail;
-
-        var b = (byte)((bHi << 4) | bLo) << 24;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), (byte)((bHi << 4) | bLo));
 
         cHi = chars[10];
         if (cHi < Hex.Min || cHi > Hex.Max) goto fail;
-
         cLo = chars[11];
         if (cLo < Hex.Min || cLo > Hex.Max) goto fail;
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) goto fail;
-
-        b |= (byte)((bHi << 4) | bLo) << 16;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 5), (byte)((bHi << 4) | bLo));
 
         cHi = chars[12];
         if (cHi < Hex.Min || cHi > Hex.Max) goto fail;
-
         cLo = chars[13];
         if (cLo < Hex.Min || cLo > Hex.Max) goto fail;
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) goto fail;
-
-        b |= (byte)((bHi << 4) | bLo) << 8;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 6), (byte)((bHi << 4) | bLo));
 
         cHi = chars[14];
         if (cHi < Hex.Min || cHi > Hex.Max) goto fail;
-
         cLo = chars[15];
         if (cLo < Hex.Min || cLo > Hex.Max) goto fail;
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) goto fail;
-
-        b |= (byte)((bHi << 4) | bLo);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 7), (byte)((bHi << 4) | bLo));
 
         cHi = chars[16];
         if (cHi < Hex.Min || cHi > Hex.Max) goto fail;
-
         cLo = chars[17];
         if (cLo < Hex.Min || cLo > Hex.Max) goto fail;
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) goto fail;
-
-        var c = (byte)((bHi << 4) | bLo) << 24;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), (byte)((bHi << 4) | bLo));
 
         cHi = chars[18];
         if (cHi < Hex.Min || cHi > Hex.Max) goto fail;
-
         cLo = chars[19];
         if (cLo < Hex.Min || cLo > Hex.Max) goto fail;
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) goto fail;
-
-        c |= (byte)((bHi << 4) | bLo) << 16;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 9), (byte)((bHi << 4) | bLo));
 
         cHi = chars[20];
         if (cHi < Hex.Min || cHi > Hex.Max) goto fail;
-
         cLo = chars[21];
         if (cLo < Hex.Min || cLo > Hex.Max) goto fail;
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) goto fail;
-
-        c |= (byte)((bHi << 4) | bLo) << 8;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 10), (byte)((bHi << 4) | bLo));
 
         cHi = chars[22];
         if (cHi < Hex.Min || cHi > Hex.Max) goto fail;
-
         cLo = chars[23];
         if (cLo < Hex.Min || cLo > Hex.Max) goto fail;
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) goto fail;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 11), (byte)((bHi << 4) | bLo));
 
-        c |= (byte)((bHi << 4) | bLo);
-
-        id = new Id(timestamp, b, c);
         return true;
 
     fail:
@@ -319,64 +284,65 @@ public readonly partial struct Id
         var h = map[bytes[0]];
         var l = map[bytes[1]];
         if ((h | l) == 0xFF) goto fail;
-        var timestamp = (byte)((h << 4) | l) << 24;
+        id = default;
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+        Unsafe.WriteUnaligned(ref b, (byte)((h << 4) | l));
 
         h = map[bytes[2]];
         l = map[bytes[3]];
         if ((h | l) == 0xFF) goto fail;
-        timestamp |= (byte)((h << 4) | l) << 16;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 1), (byte)((h << 4) | l));
 
         h = map[bytes[4]];
         l = map[bytes[5]];
         if ((h | l) == 0xFF) goto fail;
-        timestamp |= (byte)((h << 4) | l) << 8;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 2), (byte)((h << 4) | l));
 
         h = map[bytes[6]];
         l = map[bytes[7]];
         if ((h | l) == 0xFF) goto fail;
-        timestamp |= (byte)((h << 4) | l);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 3), (byte)((h << 4) | l));
 
         h = map[bytes[8]];
         l = map[bytes[9]];
         if ((h | l) == 0xFF) goto fail;
-        var b = (byte)((h << 4) | l) << 24;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), (byte)((h << 4) | l));
 
         h = map[bytes[10]];
         l = map[bytes[11]];
         if ((h | l) == 0xFF) goto fail;
-        b |= (byte)((h << 4) | l) << 16;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 5), (byte)((h << 4) | l));
 
         h = map[bytes[12]];
         l = map[bytes[13]];
         if ((h | l) == 0xFF) goto fail;
-        b |= (byte)((h << 4) | l) << 8;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 6), (byte)((h << 4) | l));
 
         h = map[bytes[14]];
         l = map[bytes[15]];
         if ((h | l) == 0xFF) goto fail;
-        b |= (byte)((h << 4) | l);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 7), (byte)((h << 4) | l));
 
         h = map[bytes[16]];
         l = map[bytes[17]];
         if ((h | l) == 0xFF) goto fail;
-        var c = (byte)((h << 4) | l) << 24;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), (byte)((h << 4) | l));
 
         h = map[bytes[18]];
         l = map[bytes[19]];
         if ((h | l) == 0xFF) goto fail;
-        c |= (byte)((h << 4) | l) << 16;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 9), (byte)((h << 4) | l));
 
         h = map[bytes[20]];
         l = map[bytes[21]];
         if ((h | l) == 0xFF) goto fail;
-        c |= (byte)((h << 4) | l) << 8;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 10), (byte)((h << 4) | l));
 
         h = map[bytes[22]];
         l = map[bytes[23]];
         if ((h | l) == 0xFF) goto fail;
-        c |= (byte)((h << 4) | l);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 11), (byte)((h << 4) | l));
 
-        id = new Id(timestamp, b, c);
         return true;
 
     fail:
@@ -393,150 +359,112 @@ public readonly partial struct Id
 
         var cHi = chars[0];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
-
         var cLo = chars[1];
         if (cLo < Hex.Min || cLo > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cLo);
-
         var bHi = map[cHi];
         var bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
-
         Id id = default;
-
         ref var b = ref Unsafe.As<Id, byte>(ref id);
-
         Unsafe.WriteUnaligned(ref b, (byte)((bHi << 4) | bLo));
 
         cHi = chars[2];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
-
         cLo = chars[3];
         if (cLo < Hex.Min || cLo > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cLo);
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
-
         Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 1), (byte)((bHi << 4) | bLo));
 
         cHi = chars[4];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
-
         cLo = chars[5];
         if (cLo < Hex.Min || cLo > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cLo);
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
-
         Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 2), (byte)((bHi << 4) | bLo));
 
         cHi = chars[6];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
-
         cLo = chars[7];
         if (cLo < Hex.Min || cLo > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cLo);
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
-
         Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 3), (byte)((bHi << 4) | bLo));
 
         cHi = chars[8];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
-
         cLo = chars[9];
         if (cLo < Hex.Min || cLo > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cLo);
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
-
         Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), (byte)((bHi << 4) | bLo));
 
         cHi = chars[10];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
-
         cLo = chars[11];
         if (cLo < Hex.Min || cLo > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cLo);
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
-
         Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 5), (byte)((bHi << 4) | bLo));
 
         cHi = chars[12];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
-
         cLo = chars[13];
         if (cLo < Hex.Min || cLo > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cLo);
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
-
         Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 6), (byte)((bHi << 4) | bLo));
 
         cHi = chars[14];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
-
         cLo = chars[15];
         if (cLo < Hex.Min || cLo > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cLo);
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
-
         Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 7), (byte)((bHi << 4) | bLo));
 
         cHi = chars[16];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
-
         cLo = chars[17];
         if (cLo < Hex.Min || cLo > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cLo);
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
-
         Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), (byte)((bHi << 4) | bLo));
 
         cHi = chars[18];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
-
         cLo = chars[19];
         if (cLo < Hex.Min || cLo > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cLo);
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
-
         Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 9), (byte)((bHi << 4) | bLo));
 
         cHi = chars[20];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
-
         cLo = chars[21];
         if (cLo < Hex.Min || cLo > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cLo);
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
-
         Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 10), (byte)((bHi << 4) | bLo));
 
         cHi = chars[22];
         if (cHi < Hex.Min || cHi > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cHi);
-
         cLo = chars[23];
         if (cLo < Hex.Min || cLo > Hex.Max) throw Ex.InvalidChar(Idf.Hex, cLo);
-
         bHi = map[cHi];
         bLo = map[cLo];
         if ((bLo | bHi) == 0xFF) throw Ex.InvalidChar(Idf.Hex, cHi, cLo);
-
         Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 11), (byte)((bHi << 4) | bLo));
 
         return id;
@@ -552,64 +480,66 @@ public readonly partial struct Id
         var h = map[bytes[0]];
         var l = map[bytes[1]];
         if ((h | l) == 0xFF) throw Ex.InvalidByte(Idf.Hex, bytes[0], bytes[1]);
-        var timestamp = (byte)((h << 4) | l) << 24;
+        Id id = default;
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+        Unsafe.WriteUnaligned(ref b, (byte)((h << 4) | l));
 
         h = map[bytes[2]];
         l = map[bytes[3]];
         if ((h | l) == 0xFF) throw Ex.InvalidByte(Idf.Hex, bytes[2], bytes[3]);
-        timestamp |= (byte)((h << 4) | l) << 16;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 1), (byte)((h << 4) | l));
 
         h = map[bytes[4]];
         l = map[bytes[5]];
         if ((h | l) == 0xFF) throw Ex.InvalidByte(Idf.Hex, bytes[4], bytes[5]);
-        timestamp |= (byte)((h << 4) | l) << 8;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 2), (byte)((h << 4) | l));
 
         h = map[bytes[6]];
         l = map[bytes[7]];
         if ((h | l) == 0xFF) throw Ex.InvalidByte(Idf.Hex, bytes[6], bytes[7]);
-        timestamp |= (byte)((h << 4) | l);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 3), (byte)((h << 4) | l));
 
         h = map[bytes[8]];
         l = map[bytes[9]];
         if ((h | l) == 0xFF) throw Ex.InvalidByte(Idf.Hex, bytes[8], bytes[9]);
-        var b = (byte)((h << 4) | l) << 24;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), (byte)((h << 4) | l));
 
         h = map[bytes[10]];
         l = map[bytes[11]];
         if ((h | l) == 0xFF) throw Ex.InvalidByte(Idf.Hex, bytes[10], bytes[11]);
-        b |= (byte)((h << 4) | l) << 16;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 5), (byte)((h << 4) | l));
 
         h = map[bytes[12]];
         l = map[bytes[13]];
         if ((h | l) == 0xFF) throw Ex.InvalidByte(Idf.Hex, bytes[12], bytes[13]);
-        b |= (byte)((h << 4) | l) << 8;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 6), (byte)((h << 4) | l));
 
         h = map[bytes[14]];
         l = map[bytes[15]];
         if ((h | l) == 0xFF) throw Ex.InvalidByte(Idf.Hex, bytes[14], bytes[15]);
-        b |= (byte)((h << 4) | l);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 7), (byte)((h << 4) | l));
 
         h = map[bytes[16]];
         l = map[bytes[17]];
         if ((h | l) == 0xFF) throw Ex.InvalidByte(Idf.Hex, bytes[16], bytes[17]);
-        var c = (byte)((h << 4) | l) << 24;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), (byte)((h << 4) | l));
 
         h = map[bytes[18]];
         l = map[bytes[19]];
         if ((h | l) == 0xFF) throw Ex.InvalidByte(Idf.Hex, bytes[18], bytes[19]);
-        c |= (byte)((h << 4) | l) << 16;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 9), (byte)((h << 4) | l));
 
         h = map[bytes[20]];
         l = map[bytes[21]];
         if ((h | l) == 0xFF) throw Ex.InvalidByte(Idf.Hex, bytes[20], bytes[21]);
-        c |= (byte)((h << 4) | l) << 8;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 10), (byte)((h << 4) | l));
 
         h = map[bytes[22]];
         l = map[bytes[23]];
         if ((h | l) == 0xFF) throw Ex.InvalidByte(Idf.Hex, bytes[22], bytes[23]);
-        c |= (byte)((h << 4) | l);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 11), (byte)((h << 4) | l));
 
-        return new Id(timestamp, b, c);
+        return id;
     }
 
 #if NETSTANDARD2_0

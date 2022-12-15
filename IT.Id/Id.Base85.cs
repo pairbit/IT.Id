@@ -131,93 +131,102 @@ public readonly partial struct Id
         if (ch < Base85.Min || ch > Base85.Max) goto fail;
         var by = map[ch];
         if (by == 0xFF) goto fail;
-        var timestamp = by * U85P4;
+        var v = by * U85P4;
 
         ch = chars[1];
         if (ch < Base85.Min || ch > Base85.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        timestamp += by * U85P3;
+        v += by * U85P3;
 
         ch = chars[2];
         if (ch < Base85.Min || ch > Base85.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        timestamp += by * U85P2;
+        v += by * U85P2;
 
         ch = chars[3];
         if (ch < Base85.Min || ch > Base85.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        timestamp += by * U85P1;
+        v += by * U85P1;
 
         ch = chars[4];
         if (ch < Base85.Min || ch > Base85.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        timestamp += by;
+        v += by;
+
+        id = default;
+
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+
+        Unsafe.WriteUnaligned(ref b, BinaryPrimitives.ReverseEndianness(v));
 
         ch = chars[5];
         if (ch < Base85.Min || ch > Base85.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        var b = by * U85P4;
+        v = by * U85P4;
 
         ch = chars[6];
         if (ch < Base85.Min || ch > Base85.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        b += by * U85P3;
+        v += by * U85P3;
 
         ch = chars[7];
         if (ch < Base85.Min || ch > Base85.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        b += by * U85P2;
+        v += by * U85P2;
 
         ch = chars[8];
         if (ch < Base85.Min || ch > Base85.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        b += by * U85P1;
+        v += by * U85P1;
 
         ch = chars[9];
         if (ch < Base85.Min || ch > Base85.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        b += by;
+        v += by;
+
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), BinaryPrimitives.ReverseEndianness(v));
 
         ch = chars[10];
         if (ch < Base85.Min || ch > Base85.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        var c = by * U85P4;
+        v = by * U85P4;
 
         ch = chars[11];
         if (ch < Base85.Min || ch > Base85.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        c += by * U85P3;
+        v += by * U85P3;
 
         ch = chars[12];
         if (ch < Base85.Min || ch > Base85.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        c += by * U85P2;
+        v += by * U85P2;
 
         ch = chars[13];
         if (ch < Base85.Min || ch > Base85.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        c += by * U85P1;
+        v += by * U85P1;
 
         ch = chars[14];
         if (ch < Base85.Min || ch > Base85.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        c += by;
+        v += by;
 
-        id = new Id((int)timestamp, (int)b, (int)c);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness(v));
+
         return true;
 
     fail:
@@ -233,65 +242,74 @@ public readonly partial struct Id
 
         var by = map[bytes[0]];
         if (by == 0xFF) goto fail;
-        var timestamp = by * U85P4;
+        var v = by * U85P4;
 
         by = map[bytes[1]];
         if (by == 0xFF) goto fail;
-        timestamp += by * U85P3;
+        v += by * U85P3;
 
         by = map[bytes[2]];
         if (by == 0xFF) goto fail;
-        timestamp += by * U85P2;
+        v += by * U85P2;
 
         by = map[bytes[3]];
         if (by == 0xFF) goto fail;
-        timestamp += by * U85P1;
+        v += by * U85P1;
 
         by = map[bytes[4]];
         if (by == 0xFF) goto fail;
-        timestamp += by;
+        v += by;
+
+        id = default;
+
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+
+        Unsafe.WriteUnaligned(ref b, BinaryPrimitives.ReverseEndianness(v));
 
         by = map[bytes[5]];
         if (by == 0xFF) goto fail;
-        var b = by * U85P4;
+        v = by * U85P4;
 
         by = map[bytes[6]];
         if (by == 0xFF) goto fail;
-        b += by * U85P3;
+        v += by * U85P3;
 
         by = map[bytes[7]];
         if (by == 0xFF) goto fail;
-        b += by * U85P2;
+        v += by * U85P2;
 
         by = map[bytes[8]];
         if (by == 0xFF) goto fail;
-        b += by * U85P1;
+        v += by * U85P1;
 
         by = map[bytes[9]];
         if (by == 0xFF) goto fail;
-        b += by;
+        v += by;
+
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), BinaryPrimitives.ReverseEndianness(v));
 
         by = map[bytes[10]];
         if (by == 0xFF) goto fail;
-        var c = by * U85P4;
+        v = by * U85P4;
 
         by = map[bytes[11]];
         if (by == 0xFF) goto fail;
-        c += by * U85P3;
+        v += by * U85P3;
 
         by = map[bytes[12]];
         if (by == 0xFF) goto fail;
-        c += by * U85P2;
+        v += by * U85P2;
 
         by = map[bytes[13]];
         if (by == 0xFF) goto fail;
-        c += by * U85P1;
+        v += by * U85P1;
 
         by = map[bytes[14]];
         if (by == 0xFF) goto fail;
-        c += by;
+        v += by;
 
-        id = new Id((int)timestamp, (int)b, (int)c);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness(v));
+
         return true;
 
     fail:
@@ -343,65 +361,75 @@ public readonly partial struct Id
 
         var by = map[bytes[0]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base85, bytes[0]);
-        var timestamp = by * U85P4;
+        var v = by * U85P4;
 
         by = map[bytes[1]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base85, bytes[1]);
-        timestamp += by * U85P3;
+        v += by * U85P3;
 
         by = map[bytes[2]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base85, bytes[2]);
-        timestamp += by * U85P2;
+        v += by * U85P2;
 
         by = map[bytes[3]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base85, bytes[3]);
-        timestamp += by * U85P1;
+        v += by * U85P1;
 
         by = map[bytes[4]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base85, bytes[4]);
-        timestamp += by;
+        v += by;
+
+        Id id = default;
+
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+
+        Unsafe.WriteUnaligned(ref b, BinaryPrimitives.ReverseEndianness(v));
 
         by = map[bytes[5]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base85, bytes[5]);
-        var b = by * U85P4;
+        v = by * U85P4;
 
         by = map[bytes[6]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base85, bytes[6]);
-        b += by * U85P3;
+        v += by * U85P3;
 
         by = map[bytes[7]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base85, bytes[7]);
-        b += by * U85P2;
+        v += by * U85P2;
 
         by = map[bytes[8]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base85, bytes[8]);
-        b += by * U85P1;
+        v += by * U85P1;
 
         by = map[bytes[9]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base85, bytes[9]);
-        b += by;
+        v += by;
+
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), BinaryPrimitives.ReverseEndianness(v));
 
         by = map[bytes[10]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base85, bytes[10]);
-        var c = by * U85P4;
+        v = by * U85P4;
 
         by = map[bytes[11]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base85, bytes[11]);
-        c += by * U85P3;
+        v += by * U85P3;
 
         by = map[bytes[12]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base85, bytes[12]);
-        c += by * U85P2;
+        v += by * U85P2;
 
         by = map[bytes[13]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base85, bytes[13]);
-        c += by * U85P1;
+        v += by * U85P1;
 
         by = map[bytes[14]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base85, bytes[14]);
-        c += by;
+        v += by;
 
-        return new Id((int)timestamp, (int)b, (int)c);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness(v));
+
+        return id;
     }
 
 #if NETSTANDARD2_0
@@ -415,18 +443,6 @@ public readonly partial struct Id
     public static Id ParseBase85(String str) => ParseBase85((str ?? throw new ArgumentNullException(nameof(str))).AsSpan());
 
 #endif
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static unsafe byte Map85(byte* map, char c)
-    {
-        if (c < Base85.Min || c > Base85.Max) throw Ex.InvalidChar(Idf.Base85, c);
-
-        var value = *(map + (byte)c);
-
-        if (value == 0xFF) throw Ex.InvalidChar(Idf.Base85, c);
-
-        return value;
-    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static byte Map85(ref byte map, char c)

@@ -6,6 +6,7 @@ namespace IT;
 
 public readonly partial struct Id
 {
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public unsafe string ToBase58()
     {
         var base58 = new string('\0', 17);
@@ -18,6 +19,7 @@ public readonly partial struct Id
         return base58;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public unsafe bool TryToBase58(Span<char> chars)
     {
         if (chars.Length < 17) return false;
@@ -884,11 +886,23 @@ public readonly partial struct Id
             b0 = (byte)((carry >> 8) + (58 * b0));
         }
 
-        var timestamp = (b0 << 24) | (b1 << 16) | (b2 << 8) | b3;
-        var b = (b4 << 24) | (b5 << 16) | (b6 << 8) | b7;
-        var c = (b8 << 24) | (b9 << 16) | (b10 << 8) | b11;
+        id = default;
 
-        id = new Id(timestamp, b, c);
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+
+        Unsafe.WriteUnaligned(ref b, b0);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 1), b1);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 2), b2);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 3), b3);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), b4);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 5), b5);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 6), b6);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 7), b7);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), b8);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 9), b9);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 10), b10);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 11), b11);
+
         return true;
     }
 
@@ -963,11 +977,23 @@ public readonly partial struct Id
             b0 = (byte)((carry >> 8) + (58 * b0));
         }
 
-        var timestamp = (b0 << 24) | (b1 << 16) | (b2 << 8) | b3;
-        var b = (b4 << 24) | (b5 << 16) | (b6 << 8) | b7;
-        var c = (b8 << 24) | (b9 << 16) | (b10 << 8) | b11;
+        id = default;
 
-        id = new Id(timestamp, b, c);
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+
+        Unsafe.WriteUnaligned(ref b, b0);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 1), b1);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 2), b2);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 3), b3);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), b4);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 5), b5);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 6), b6);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 7), b7);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), b8);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 9), b9);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 10), b10);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 11), b11);
+
         return true;
     }
 
@@ -1123,11 +1149,24 @@ public readonly partial struct Id
             b0 = (byte)((carry >> 8) + (58 * b0));
         }
 
-        var timestamp = (b0 << 24) | (b1 << 16) | (b2 << 8) | b3;
-        var b = (b4 << 24) | (b5 << 16) | (b6 << 8) | b7;
-        var c = (b8 << 24) | (b9 << 16) | (b10 << 8) | b11;
+        Id id = default;
 
-        return new Id(timestamp, b, c);
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+
+        Unsafe.WriteUnaligned(ref b, b0);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 1), b1);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 2), b2);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 3), b3);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), b4);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 5), b5);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 6), b6);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 7), b7);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), b8);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 9), b9);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 10), b10);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 11), b11);
+
+        return id;
     }
 
 #if NETSTANDARD2_0

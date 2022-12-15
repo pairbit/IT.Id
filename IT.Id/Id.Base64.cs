@@ -289,7 +289,7 @@ public readonly partial struct Id
         return true;
     }
 
-    public static unsafe bool TryParseBase64(ReadOnlySpan<char> chars, out Id id)
+    public static bool TryParseBase64(ReadOnlySpan<char> chars, out Id id)
     {
         if (chars.Length != 16) goto fail;
 
@@ -308,61 +308,58 @@ public readonly partial struct Id
 
         if (val < 0) goto fail;
 
-        id = new Id();
+        id = default;
 
-        fixed (void* p = &id)
-        {
-            var b = (byte*)p;
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
 
-            Unsafe.WriteUnaligned(b, (byte)(val >> 16));
-            Unsafe.WriteUnaligned(b + 1, (byte)(val >> 8));
-            Unsafe.WriteUnaligned(b + 2, (byte)val);
+        Unsafe.WriteUnaligned(ref b, (byte)(val >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 1), (byte)(val >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 2), (byte)val);
 
-            i0 = Unsafe.Add(ref src, 4);
-            i1 = Unsafe.Add(ref src, 5);
-            i2 = Unsafe.Add(ref src, 6);
-            i3 = Unsafe.Add(ref src, 7);
+        i0 = Unsafe.Add(ref src, 4);
+        i1 = Unsafe.Add(ref src, 5);
+        i2 = Unsafe.Add(ref src, 6);
+        i3 = Unsafe.Add(ref src, 7);
 
-            if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) goto fail;
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) goto fail;
 
-            val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+        val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
 
-            if (val < 0) goto fail;
+        if (val < 0) goto fail;
 
-            Unsafe.WriteUnaligned(b + 3, (byte)(val >> 16));
-            Unsafe.WriteUnaligned(b + 4, (byte)(val >> 8));
-            Unsafe.WriteUnaligned(b + 5, (byte)val);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 3), (byte)(val >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), (byte)(val >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 5), (byte)val);
 
-            i0 = Unsafe.Add(ref src, 8);
-            i1 = Unsafe.Add(ref src, 9);
-            i2 = Unsafe.Add(ref src, 10);
-            i3 = Unsafe.Add(ref src, 11);
+        i0 = Unsafe.Add(ref src, 8);
+        i1 = Unsafe.Add(ref src, 9);
+        i2 = Unsafe.Add(ref src, 10);
+        i3 = Unsafe.Add(ref src, 11);
 
-            if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) goto fail;
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) goto fail;
 
-            val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+        val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
 
-            if (val < 0) goto fail;
+        if (val < 0) goto fail;
 
-            Unsafe.WriteUnaligned(b + 6, (byte)(val >> 16));
-            Unsafe.WriteUnaligned(b + 7, (byte)(val >> 8));
-            Unsafe.WriteUnaligned(b + 8, (byte)val);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 6), (byte)(val >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 7), (byte)(val >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), (byte)val);
 
-            i0 = Unsafe.Add(ref src, 12);
-            i1 = Unsafe.Add(ref src, 13);
-            i2 = Unsafe.Add(ref src, 14);
-            i3 = Unsafe.Add(ref src, 15);
+        i0 = Unsafe.Add(ref src, 12);
+        i1 = Unsafe.Add(ref src, 13);
+        i2 = Unsafe.Add(ref src, 14);
+        i3 = Unsafe.Add(ref src, 15);
 
-            if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) goto fail;
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) goto fail;
 
-            val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+        val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
 
-            if (val < 0) goto fail;
+        if (val < 0) goto fail;
 
-            Unsafe.WriteUnaligned(b + 9, (byte)(val >> 16));
-            Unsafe.WriteUnaligned(b + 10, (byte)(val >> 8));
-            Unsafe.WriteUnaligned(b + 11, (byte)val);
-        }
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 9), (byte)(val >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 10), (byte)(val >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 11), (byte)val);
 
         return true;
 
@@ -371,7 +368,7 @@ public readonly partial struct Id
         return false;
     }
 
-    public static unsafe bool TryParseBase64(ReadOnlySpan<byte> bytes, out Id id)
+    public static bool TryParseBase64(ReadOnlySpan<byte> bytes, out Id id)
     {
         if (bytes.Length != 16) goto fail;
 
@@ -390,61 +387,58 @@ public readonly partial struct Id
 
         if (val < 0) goto fail;
 
-        id = new Id();
+        id = default;
 
-        fixed (void* p = &id)
-        {
-            var b = (byte*)p;
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
 
-            Unsafe.WriteUnaligned(b, (byte)(val >> 16));
-            Unsafe.WriteUnaligned(b + 1, (byte)(val >> 8));
-            Unsafe.WriteUnaligned(b + 2, (byte)val);
+        Unsafe.WriteUnaligned(ref b, (byte)(val >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 1), (byte)(val >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 2), (byte)val);
 
-            i0 = Unsafe.Add(ref src, 4);
-            i1 = Unsafe.Add(ref src, 5);
-            i2 = Unsafe.Add(ref src, 6);
-            i3 = Unsafe.Add(ref src, 7);
+        i0 = Unsafe.Add(ref src, 4);
+        i1 = Unsafe.Add(ref src, 5);
+        i2 = Unsafe.Add(ref src, 6);
+        i3 = Unsafe.Add(ref src, 7);
 
-            if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) goto fail;
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) goto fail;
 
-            val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+        val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
 
-            if (val < 0) goto fail;
+        if (val < 0) goto fail;
 
-            Unsafe.WriteUnaligned(b + 3, (byte)(val >> 16));
-            Unsafe.WriteUnaligned(b + 4, (byte)(val >> 8));
-            Unsafe.WriteUnaligned(b + 5, (byte)val);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 3), (byte)(val >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), (byte)(val >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 5), (byte)val);
 
-            i0 = Unsafe.Add(ref src, 8);
-            i1 = Unsafe.Add(ref src, 9);
-            i2 = Unsafe.Add(ref src, 10);
-            i3 = Unsafe.Add(ref src, 11);
+        i0 = Unsafe.Add(ref src, 8);
+        i1 = Unsafe.Add(ref src, 9);
+        i2 = Unsafe.Add(ref src, 10);
+        i3 = Unsafe.Add(ref src, 11);
 
-            if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) goto fail;
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) goto fail;
 
-            val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+        val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
 
-            if (val < 0) goto fail;
+        if (val < 0) goto fail;
 
-            Unsafe.WriteUnaligned(b + 6, (byte)(val >> 16));
-            Unsafe.WriteUnaligned(b + 7, (byte)(val >> 8));
-            Unsafe.WriteUnaligned(b + 8, (byte)val);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 6), (byte)(val >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 7), (byte)(val >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), (byte)val);
 
-            i0 = Unsafe.Add(ref src, 12);
-            i1 = Unsafe.Add(ref src, 13);
-            i2 = Unsafe.Add(ref src, 14);
-            i3 = Unsafe.Add(ref src, 15);
+        i0 = Unsafe.Add(ref src, 12);
+        i1 = Unsafe.Add(ref src, 13);
+        i2 = Unsafe.Add(ref src, 14);
+        i3 = Unsafe.Add(ref src, 15);
 
-            if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) goto fail;
+        if (((i0 | i1 | i2 | i3) & 0xffffff00) != 0) goto fail;
 
-            val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
+        val = (Unsafe.Add(ref map, i0) << 18) | (Unsafe.Add(ref map, i1) << 12) | Unsafe.Add(ref map, i2) << 6 | (int)Unsafe.Add(ref map, i3);
 
-            if (val < 0) goto fail;
+        if (val < 0) goto fail;
 
-            Unsafe.WriteUnaligned(b + 9, (byte)(val >> 16));
-            Unsafe.WriteUnaligned(b + 10, (byte)(val >> 8));
-            Unsafe.WriteUnaligned(b + 11, (byte)val);
-        }
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 9), (byte)(val >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 10), (byte)(val >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 11), (byte)val);
 
         return true;
 
@@ -530,7 +524,7 @@ public readonly partial struct Id
     }
 
     /// <exception cref="FormatException"/>
-    public static unsafe Id ParseBase64(ReadOnlySpan<byte> bytes)
+    public static Id ParseBase64(ReadOnlySpan<byte> bytes)
     {
         if (bytes.Length != 16) throw Ex.InvalidLengthBytes(Idf.Base64, bytes.Length);
 
@@ -549,13 +543,13 @@ public readonly partial struct Id
 
         if (val < 0) throw Ex.InvalidByte(Idf.Base64, i0, i1, i2, i3);
 
-        var id = new Id();
+        Id id = default;
 
-        var b = (byte*)&id;
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
 
-        Unsafe.WriteUnaligned(b, (byte)(val >> 16));
-        Unsafe.WriteUnaligned(b + 1, (byte)(val >> 8));
-        Unsafe.WriteUnaligned(b + 2, (byte)val);
+        Unsafe.WriteUnaligned(ref b, (byte)(val >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 1), (byte)(val >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 2), (byte)val);
 
         i0 = Unsafe.Add(ref src, 4);
         i1 = Unsafe.Add(ref src, 5);
@@ -568,9 +562,9 @@ public readonly partial struct Id
 
         if (val < 0) throw Ex.InvalidByte(Idf.Base64, i0, i1, i2, i3);
 
-        Unsafe.WriteUnaligned(b + 3, (byte)(val >> 16));
-        Unsafe.WriteUnaligned(b + 4, (byte)(val >> 8));
-        Unsafe.WriteUnaligned(b + 5, (byte)val);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 3), (byte)(val >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), (byte)(val >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 5), (byte)val);
 
         i0 = Unsafe.Add(ref src, 8);
         i1 = Unsafe.Add(ref src, 9);
@@ -583,9 +577,9 @@ public readonly partial struct Id
 
         if (val < 0) throw Ex.InvalidByte(Idf.Base64, i0, i1, i2, i3);
 
-        Unsafe.WriteUnaligned(b + 6, (byte)(val >> 16));
-        Unsafe.WriteUnaligned(b + 7, (byte)(val >> 8));
-        Unsafe.WriteUnaligned(b + 8, (byte)val);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 6), (byte)(val >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 7), (byte)(val >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), (byte)val);
 
         i0 = Unsafe.Add(ref src, 12);
         i1 = Unsafe.Add(ref src, 13);
@@ -598,9 +592,9 @@ public readonly partial struct Id
 
         if (val < 0) throw Ex.InvalidByte(Idf.Base64, i0, i1, i2, i3);
 
-        Unsafe.WriteUnaligned(b + 9, (byte)(val >> 16));
-        Unsafe.WriteUnaligned(b + 10, (byte)(val >> 8));
-        Unsafe.WriteUnaligned(b + 11, (byte)val);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 9), (byte)(val >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 10), (byte)(val >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 11), (byte)val);
 
         return id;
     }

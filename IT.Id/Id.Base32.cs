@@ -464,133 +464,141 @@ public readonly partial struct Id
         if (ch < Base32.Min || ch > Base32.Max) goto fail;
         var by = map[ch];
         if (by == 0xFF) goto fail;
-        ulong val = by;
+        ulong v = by;
 
         ch = chars[1];
         if (ch < Base32.Min || ch > Base32.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         ch = chars[2];
         if (ch < Base32.Min || ch > Base32.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         ch = chars[3];
         if (ch < Base32.Min || ch > Base32.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         ch = chars[4];
         if (ch < Base32.Min || ch > Base32.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         ch = chars[5];
         if (ch < Base32.Min || ch > Base32.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         ch = chars[6];
         if (ch < Base32.Min || ch > Base32.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         ch = chars[7];
         if (ch < Base32.Min || ch > Base32.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
-        var timestamp = (byte)(val >> 32) << 24 | (byte)(val >> 24) << 16 | (byte)(val >> 16) << 8 | (byte)(val >> 8);
+        id = default;
 
-        var b = (int)(byte)val;
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+
+        Unsafe.WriteUnaligned(ref b, (byte)(v >> 32));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 1), (byte)(v >> 24));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 2), (byte)(v >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 3), (byte)(v >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), (byte)v);
 
         ch = chars[8];
         if (ch < Base32.Min || ch > Base32.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         ch = chars[9];
         if (ch < Base32.Min || ch > Base32.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         ch = chars[10];
         if (ch < Base32.Min || ch > Base32.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         ch = chars[11];
         if (ch < Base32.Min || ch > Base32.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         ch = chars[12];
         if (ch < Base32.Min || ch > Base32.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         ch = chars[13];
         if (ch < Base32.Min || ch > Base32.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         ch = chars[14];
         if (ch < Base32.Min || ch > Base32.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         ch = chars[15];
         if (ch < Base32.Min || ch > Base32.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
-        b = b << 24 | (byte)(val >> 32) << 16 | (byte)(val >> 24) << 8 | (byte)(val >> 16);
-
-        var c = (byte)(val >> 8) << 24 | (byte)val << 16;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 5), (byte)(v >> 32));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 6), (byte)(v >> 24));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 7), (byte)(v >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), (byte)(v >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 9), (byte)v);
 
         ch = chars[16];
         if (ch < Base32.Min || ch > Base32.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         ch = chars[17];
         if (ch < Base32.Min || ch > Base32.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         ch = chars[18];
         if (ch < Base32.Min || ch > Base32.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         ch = chars[19];
         if (ch < Base32.Min || ch > Base32.Max) goto fail;
         by = map[ch];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
-        c |= (byte)(val >> 12) << 8 | (byte)(val >> 4);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 10), (byte)(v >> 12));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 11), (byte)(v >> 4));
 
-        id = new Id(timestamp, b, c);
         return true;
 
     fail:
@@ -606,95 +614,103 @@ public readonly partial struct Id
 
         var by = map[bytes[0]];
         if (by == 0xFF) goto fail;
-        ulong val = by;
+        ulong v = by;
 
         by = map[bytes[1]];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[2]];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[3]];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[4]];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[5]];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[6]];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[7]];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
-        var timestamp = (byte)(val >> 32) << 24 | (byte)(val >> 24) << 16 | (byte)(val >> 16) << 8 | (byte)(val >> 8);
+        id = default;
 
-        var b = (int)(byte)val;
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+
+        Unsafe.WriteUnaligned(ref b, (byte)(v >> 32));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 1), (byte)(v >> 24));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 2), (byte)(v >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 3), (byte)(v >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), (byte)v);
 
         by = map[bytes[8]];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[9]];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[10]];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[11]];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[12]];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[13]];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[14]];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[15]];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
-        b = b << 24 | (byte)(val >> 32) << 16 | (byte)(val >> 24) << 8 | (byte)(val >> 16);
-
-        var c = (byte)(val >> 8) << 24 | (byte)val << 16;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 5), (byte)(v >> 32));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 6), (byte)(v >> 24));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 7), (byte)(v >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), (byte)(v >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 9), (byte)v);
 
         by = map[bytes[16]];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[17]];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[18]];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[19]];
         if (by == 0xFF) goto fail;
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
-        c |= (byte)(val >> 12) << 8 | (byte)(val >> 4);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 10), (byte)(v >> 12));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 11), (byte)(v >> 4));
 
-        id = new Id(timestamp, b, c);
         return true;
 
     fail:
@@ -764,95 +780,104 @@ public readonly partial struct Id
 
         var by = map[bytes[0]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base32, bytes[0]);
-        ulong val = by;
+        ulong v = by;
 
         by = map[bytes[1]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base32, bytes[1]);
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[2]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base32, bytes[2]);
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[3]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base32, bytes[3]);
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[4]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base32, bytes[4]);
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[5]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base32, bytes[5]);
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[6]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base32, bytes[6]);
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[7]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base32, bytes[7]);
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
-        var timestamp = (byte)(val >> 32) << 24 | (byte)(val >> 24) << 16 | (byte)(val >> 16) << 8 | (byte)(val >> 8);
+        Id id = default;
 
-        var b = (int)(byte)val;
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+
+        Unsafe.WriteUnaligned(ref b, (byte)(v >> 32));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 1), (byte)(v >> 24));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 2), (byte)(v >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 3), (byte)(v >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), (byte)v);
 
         by = map[bytes[8]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base32, bytes[8]);
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[9]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base32, bytes[9]);
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[10]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base32, bytes[10]);
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[11]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base32, bytes[11]);
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[12]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base32, bytes[12]);
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[13]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base32, bytes[13]);
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[14]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base32, bytes[14]);
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[15]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base32, bytes[15]);
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
-        b = b << 24 | (byte)(val >> 32) << 16 | (byte)(val >> 24) << 8 | (byte)(val >> 16);
-
-        var c = (byte)(val >> 8) << 24 | (byte)val << 16;
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 5), (byte)(v >> 32));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 6), (byte)(v >> 24));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 7), (byte)(v >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), (byte)(v >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 9), (byte)v);
 
         by = map[bytes[16]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base32, bytes[16]);
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[17]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base32, bytes[17]);
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[18]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base32, bytes[18]);
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
         by = map[bytes[19]];
         if (by == 0xFF) throw Ex.InvalidByte(Idf.Base32, bytes[19]);
-        val = (val << 5) | by;
+        v = (v << 5) | by;
 
-        c |= (byte)(val >> 12) << 8 | (byte)(val >> 4);
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 10), (byte)(v >> 12));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 11), (byte)(v >> 4));
 
-        return new Id(timestamp, b, c);
+        return id;
     }
 
 #if NETSTANDARD2_0
@@ -882,7 +907,7 @@ public readonly partial struct Id
     {
         if (c < Base32.Min || c > Base32.Max) throw Ex.InvalidChar(Idf.Base32, c);
 
-        var value = Unsafe.Add(ref map, c);
+        var value = Unsafe.Add(ref map, (byte)c);
 
         if (value == 0xFF) throw Ex.InvalidChar(Idf.Base32, c);
 
