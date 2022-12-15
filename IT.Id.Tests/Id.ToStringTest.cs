@@ -220,47 +220,27 @@ public class IdToStringTest
         //TryFormat Chars
 
         Span<char> chars2 = stackalloc char[length];
-        var status = id.TryFormat(chars2, out written, format);
+        Assert.That(id.TryFormat(chars2, out written, format), Is.True);
         Assert.That(chars2.ToString(), Is.EqualTo(s));
-        Assert.Multiple(() =>
-        {
-            Assert.That(status, Is.EqualTo(OperationStatus.Done));
-            Assert.That(written, Is.EqualTo(length));
-        });
+        Assert.That(written, Is.EqualTo(length));
 
         //TryFormat Bytes
 
         var b = Encoding.UTF8.GetBytes(s);
 
         Span<byte> bytes = stackalloc byte[length];
-        status = id.TryFormat(bytes, out written, format);
+        Assert.That(id.TryFormat(bytes, out written, format), Is.True);
         Assert.That(bytes.SequenceEqual(b), Is.True);
-        Assert.Multiple(() =>
-        {
-            Assert.That(status, Is.EqualTo(OperationStatus.Done));
-            Assert.That(written, Is.EqualTo(length));
-        });
+        Assert.That(written, Is.EqualTo(length));
 
-        //DestinationTooSmall -> true
+        Assert.That(id.TryFormat(stackalloc char[length - 1], out written, formatString.AsSpan()), Is.False);
+        Assert.That(written, Is.EqualTo(0));
 
-        isDone = id.TryFormat(stackalloc char[length - 1], out written, formatString.AsSpan());
-        Assert.Multiple(() =>
-        {
-            Assert.That(isDone, Is.EqualTo(false));
-            Assert.That(written, Is.EqualTo(0));
-        });
-        status = id.TryFormat(stackalloc char[length - 1], out written, format);
-        Assert.Multiple(() =>
-        {
-            Assert.That(status, Is.EqualTo(OperationStatus.DestinationTooSmall));
-            Assert.That(written, Is.EqualTo(0));
-        });
-        status = id.TryFormat(stackalloc byte[length - 1], out written, format);
-        Assert.Multiple(() =>
-        {
-            Assert.That(status, Is.EqualTo(OperationStatus.DestinationTooSmall));
-            Assert.That(written, Is.EqualTo(0));
-        });
+        Assert.That(id.TryFormat(stackalloc char[length - 1], out written, format), Is.False);
+        Assert.That(written, Is.EqualTo(0));
+
+        Assert.That(id.TryFormat(stackalloc byte[length - 1], out written, format), Is.False);
+        Assert.That(written, Is.EqualTo(0));
 
         //Json
         var serializerOptions = new JsonSerializerOptions();

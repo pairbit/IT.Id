@@ -1,6 +1,5 @@
 ﻿using IT.Internal;
 using System;
-using System.Buffers;
 
 namespace IT;
 
@@ -10,7 +9,7 @@ public readonly partial struct Id : IFormattable
 #endif
 {
     /// <exception cref="FormatException"/>
-    public static Int32 GetLength(Idf format) => format switch
+    public static int GetLength(Idf format) => format switch
     {
         Idf.Base85 => 15,
         Idf.Base64 or Idf.Base64Url => 16,
@@ -35,7 +34,7 @@ public readonly partial struct Id : IFormattable
     /// Base85 -> "|" <br/>
     /// </summary>
     /// <exception cref="FormatException"/>
-    public static String GetFormat(Idf format) => format switch
+    public static string GetFormat(Idf format) => format switch
     {
         Idf.Base85 => "|",
         Idf.Base64 => "/",
@@ -51,7 +50,7 @@ public readonly partial struct Id : IFormattable
     };
 
     /// <exception cref="FormatException"/>
-    public static Idf GetFormat(Int32 length) => length switch
+    public static Idf GetFormat(int length) => length switch
     {
         15 => Idf.Base85,
         16 => Idf.Base64,
@@ -63,7 +62,7 @@ public readonly partial struct Id : IFormattable
         _ => throw Ex.InvalidLength(length)
     };
 
-    public static Boolean TryGetFormat(Int32 length, out Idf format)
+    public static bool TryGetFormat(int length, out Idf format)
     {
         if (length == 15)
         {
@@ -124,11 +123,11 @@ public readonly partial struct Id : IFormattable
     /// "|" -> Base85 (v{IV^PiNKcFO_~|) <br/>
     /// </param>
     /// <exception cref="FormatException"/>
-    public String ToString(
+    public string ToString(
 #if NET7_0_OR_GREATER
         //[StringSyntax(StringSyntaxAttribute.GuidFormat)] 
 #endif
-        String? format,
+        string? format,
         IFormatProvider? provider = null) => format switch
         {
             null or "_" => ToBase64Url(),
@@ -145,7 +144,7 @@ public readonly partial struct Id : IFormattable
         };
 
     /// <exception cref="FormatException"/>
-    public String ToString(Idf format) => format switch
+    public string ToString(Idf format) => format switch
     {
         Idf.Hex => ToHex(),
         Idf.HexUpper => ToHexUpper(),
@@ -160,14 +159,14 @@ public readonly partial struct Id : IFormattable
         _ => throw Ex.InvalidFormat(format),
     };
 
-    public OperationStatus TryFormat(Span<Byte> bytes, out Int32 written, Idf format)
+    public bool TryFormat(Span<Byte> bytes, out Int32 written, Idf format)
     {
         if (format == Idf.Hex)
         {
             if (!TryToHex(bytes)) goto fail;
 
             written = 24;
-            return OperationStatus.Done;
+            return true;
         }
 
         if (format == Idf.HexUpper)
@@ -175,7 +174,7 @@ public readonly partial struct Id : IFormattable
             if (!TryToHexUpper(bytes)) goto fail;
 
             written = 24;
-            return OperationStatus.Done;
+            return true;
         }
 
         if (format == Idf.Base32)
@@ -183,7 +182,7 @@ public readonly partial struct Id : IFormattable
             if (!TryToBase32(bytes)) goto fail;
 
             written = 20;
-            return OperationStatus.Done;
+            return true;
         }
 
         if (format == Idf.Base32Upper)
@@ -191,7 +190,7 @@ public readonly partial struct Id : IFormattable
             if (!TryToBase32Upper(bytes)) goto fail;
 
             written = 20;
-            return OperationStatus.Done;
+            return true;
         }
 
         if (format == Idf.Base58)
@@ -199,7 +198,7 @@ public readonly partial struct Id : IFormattable
             if (!TryToBase58(bytes)) goto fail;
 
             written = 17;
-            return OperationStatus.Done;
+            return true;
         }
 
         if (format == Idf.Base64)
@@ -207,7 +206,7 @@ public readonly partial struct Id : IFormattable
             if (!TryToBase64(bytes)) goto fail;
 
             written = 16;
-            return OperationStatus.Done;
+            return true;
         }
 
         if (format == Idf.Base64Url)
@@ -215,7 +214,7 @@ public readonly partial struct Id : IFormattable
             if (!TryToBase64Url(bytes)) goto fail;
 
             written = 16;
-            return OperationStatus.Done;
+            return true;
         }
 
         if (format == Idf.Base85)
@@ -223,7 +222,7 @@ public readonly partial struct Id : IFormattable
             if (!TryToBase85(bytes)) goto fail;
 
             written = 15;
-            return OperationStatus.Done;
+            return true;
         }
 
         if (format == Idf.Base64Path2)
@@ -231,7 +230,7 @@ public readonly partial struct Id : IFormattable
             if (!TryToBase64Path2(bytes)) goto fail;
 
             written = 18;
-            return OperationStatus.Done;
+            return true;
         }
 
         if (format == Idf.Base64Path3)
@@ -239,24 +238,24 @@ public readonly partial struct Id : IFormattable
             if (!TryToBase64Path3(bytes)) goto fail;
 
             written = 19;
-            return OperationStatus.Done;
+            return true;
         }
 
         throw Ex.InvalidFormat(format.ToString());
 
     fail:
         written = 0;
-        return OperationStatus.DestinationTooSmall;
+        return false;
     }
 
-    public OperationStatus TryFormat(Span<Char> chars, out Int32 written, Idf format)
+    public bool TryFormat(Span<Char> chars, out Int32 written, Idf format)
     {
         if (format == Idf.Hex)
         {
             if (!TryToHex(chars)) goto fail;
 
             written = 24;
-            return OperationStatus.Done;
+            return true;
         }
 
         if (format == Idf.HexUpper)
@@ -264,7 +263,7 @@ public readonly partial struct Id : IFormattable
             if (!TryToHexUpper(chars)) goto fail;
 
             written = 24;
-            return OperationStatus.Done;
+            return true;
         }
 
         if (format == Idf.Base32)
@@ -272,7 +271,7 @@ public readonly partial struct Id : IFormattable
             if (!TryToBase32(chars)) goto fail;
 
             written = 20;
-            return OperationStatus.Done;
+            return true;
         }
 
         if (format == Idf.Base32Upper)
@@ -280,7 +279,7 @@ public readonly partial struct Id : IFormattable
             if (!TryToBase32Upper(chars)) goto fail;
 
             written = 20;
-            return OperationStatus.Done;
+            return true;
         }
 
         if (format == Idf.Base58)
@@ -288,7 +287,7 @@ public readonly partial struct Id : IFormattable
             if (!TryToBase58(chars)) goto fail;
 
             written = 17;
-            return OperationStatus.Done;
+            return true;
         }
 
         if (format == Idf.Base64)
@@ -296,7 +295,7 @@ public readonly partial struct Id : IFormattable
             if (!TryToBase64(chars)) goto fail;
 
             written = 16;
-            return OperationStatus.Done;
+            return true;
         }
 
         if (format == Idf.Base64Url)
@@ -304,7 +303,7 @@ public readonly partial struct Id : IFormattable
             if (!TryToBase64Url(chars)) goto fail;
 
             written = 16;
-            return OperationStatus.Done;
+            return true;
         }
 
         if (format == Idf.Base85)
@@ -312,7 +311,7 @@ public readonly partial struct Id : IFormattable
             if (!TryToBase85(chars)) goto fail;
 
             written = 15;
-            return OperationStatus.Done;
+            return true;
         }
 
         if (format == Idf.Base64Path2)
@@ -320,7 +319,7 @@ public readonly partial struct Id : IFormattable
             if (!TryToBase64Path2(chars)) goto fail;
 
             written = 18;
-            return OperationStatus.Done;
+            return true;
         }
 
         if (format == Idf.Base64Path3)
@@ -328,14 +327,14 @@ public readonly partial struct Id : IFormattable
             if (!TryToBase64Path3(chars)) goto fail;
 
             written = 19;
-            return OperationStatus.Done;
+            return true;
         }
 
         throw Ex.InvalidFormat(format.ToString());
 
     fail:
         written = 0;
-        return OperationStatus.DestinationTooSmall;
+        return false;
     }
 
     /// <param name="format">
@@ -351,7 +350,7 @@ public readonly partial struct Id : IFormattable
     /// "|" -> Base85 (v{IV^PiNKcFO_~|) <br/>
     /// </param>
     /// <exception cref="FormatException"/>
-    public Boolean TryFormat(Span<Char> chars, out Int32 written,
+    public bool TryFormat(Span<Char> chars, out Int32 written,
 #if NET7_0_OR_GREATER
         //[StringSyntax("/")] 
 #endif
