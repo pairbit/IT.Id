@@ -189,7 +189,7 @@ public class IdToStringTest
             Assert.That(s, Is.EqualTo(str));
         }
 
-        var formatString = Id.GetFormatString(format);
+        var formatString = Id.GetFormat(format);
 
         //TryFormat Chars
 
