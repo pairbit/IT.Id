@@ -13,30 +13,42 @@ public class IdParseTest
     [Test]
     public void TypeConverter()
     {
-        var typeConverter = TypeDescriptor.GetConverter(typeof(Id));
+        var converter = TypeDescriptor.GetConverter(typeof(Id));
 
-        Assert.That(typeConverter.CanConvertFrom(typeof(string)), Is.True);
+        Assert.That(converter.CanConvertFrom(typeof(string)), Is.True);
+        Assert.That(converter.CanConvertFrom(typeof(char[])), Is.True);
+        Assert.That(converter.CanConvertFrom(typeof(Memory<char>)), Is.True);
+        Assert.That(converter.CanConvertFrom(typeof(ReadOnlyMemory<char>)), Is.True);
+        Assert.That(converter.CanConvertFrom(typeof(byte[])), Is.True);
+        Assert.That(converter.CanConvertFrom(typeof(Memory<byte>)), Is.True);
+        Assert.That(converter.CanConvertFrom(typeof(ReadOnlyMemory<byte>)), Is.True);
 
-        var id = Id.ParseHex("62a84f674031e78d474fe23f");
+        var id = Id.New();
 
-        Assert.Multiple(() =>
+        var bytes = id.ToByteArray();
+
+        Assert.That(converter.ConvertFrom(bytes), Is.EqualTo(id));
+        Assert.That(converter.ConvertFrom(new Memory<byte>(bytes)), Is.EqualTo(id));
+        Assert.That(converter.ConvertFrom(new ReadOnlyMemory<byte>(bytes)), Is.EqualTo(id));
+
+        foreach (Idf format in Enum.GetValues(typeof(Idf)))
         {
-            Assert.That(typeConverter.ConvertFromInvariantString("62a84f674031e78d474fe23f"), Is.EqualTo(id));
-            Assert.That(typeConverter.ConvertFromInvariantString("62A84F674031E78D474FE23F"), Is.EqualTo(id));
+            var str = id.ToString(format);
 
-            Assert.That(typeConverter.ConvertFromInvariantString("cam4yst067krthtfw8zg"), Is.EqualTo(id));
-            Assert.That(typeConverter.ConvertFromInvariantString("CAM4YST067KRTHTFW8ZG"), Is.EqualTo(id));
+            Assert.That(converter.ConvertFromInvariantString(str), Is.EqualTo(id));
 
-            Assert.That(typeConverter.ConvertFromInvariantString("2ryw1nk6d1eiGQSL6"), Is.EqualTo(id));
+            var chars = str.ToCharArray();
 
-            Assert.That(typeConverter.ConvertFromInvariantString("YqhPZ0Ax541HT+I/"), Is.EqualTo(id));
-            Assert.That(typeConverter.ConvertFromInvariantString("YqhPZ0Ax541HT-I_"), Is.EqualTo(id));
+            Assert.That(converter.ConvertFrom(chars), Is.EqualTo(id));
+            Assert.That(converter.ConvertFrom(new Memory<char>(chars)), Is.EqualTo(id));
+            Assert.That(converter.ConvertFrom(new ReadOnlyMemory<char>(chars)), Is.EqualTo(id));
 
-            Assert.That(typeConverter.ConvertFromInvariantString("_/I/-TH145xA0ZPhqY"), Is.EqualTo(id));
-            Assert.That(typeConverter.ConvertFromInvariantString("_/I/-/TH145xA0ZPhqY"), Is.EqualTo(id));
+            bytes = chars.Select(x => (byte)x).ToArray();
 
-            Assert.That(typeConverter.ConvertFromInvariantString("vYi7nkR.CYm]ebe"), Is.EqualTo(id));
-        });
+            Assert.That(converter.ConvertFrom(bytes), Is.EqualTo(id));
+            Assert.That(converter.ConvertFrom(new Memory<byte>(bytes)), Is.EqualTo(id));
+            Assert.That(converter.ConvertFrom(new ReadOnlyMemory<byte>(bytes)), Is.EqualTo(id));
+        }
     }
 
     [Test]
