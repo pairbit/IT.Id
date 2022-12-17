@@ -38,23 +38,23 @@ public class IdBenchmark
     [Benchmark]
     public int Id_Timestamp3() => _id.Timestamp3;
 
-    //[Benchmark]
-    //public int Id_Machine() => _id.Machine;
+    [Benchmark]
+    public int Id_Machine() => _id.Machine;
 
-    //[Benchmark]
-    //public int Id_Machine2() => _id.Machine2;
+    [Benchmark]
+    public int Id_Machine2() => _id.Machine2;
 
-    //[Benchmark]
-    //public int Id_Pid() => _id.Pid;
+    [Benchmark]
+    public int Id_Pid() => _id.Pid;
 
-    //[Benchmark]
-    //public int Id_Pid2() => _id.Pid2;
+    [Benchmark]
+    public int Id_Pid2() => _id.Pid2;
 
-    //[Benchmark]
-    //public int Id_Increment() => _id.Increment;
+    [Benchmark]
+    public int Id_Increment() => _id.Increment;
 
-    //[Benchmark]
-    //public int Id_Increment2() => _id.Increment2;
+    [Benchmark]
+    public int Id_Increment2() => _id.Increment2;
 
     #endregion Experimental
 
