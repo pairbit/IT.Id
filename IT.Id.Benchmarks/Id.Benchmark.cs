@@ -25,7 +25,7 @@ public class IdBenchmark
     //private readonly static ObjectId _objectId2 = new(_objectId.ToByteArray());
     //private readonly static byte[] _objectIdArray = _objectId.ToByteArray();
 
-    internal static Int32 _inc;
+    //internal static Int32 _inc;
 
     #region Experimental
 

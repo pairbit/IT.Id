@@ -20,6 +20,8 @@ public class IdTest
 
         var id = Id.New();
 
+        Assert.That(id.GetHashCode(), Is.EqualTo(id.GetHashCode2()));
+
         Assert.That(id.Timestamp, Is.EqualTo(id.Timestamp2));
         Assert.That(id.Timestamp, Is.EqualTo(id.Timestamp3));
         Assert.That(id.Machine, Is.EqualTo(id.Machine2));

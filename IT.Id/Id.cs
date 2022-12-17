@@ -458,13 +458,10 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
     public override Boolean Equals(Object? obj) => obj is Id id && Equals(id);
 
-    public override unsafe Int32 GetHashCode()
+    public override Int32 GetHashCode()
     {
-        fixed (byte* p = &_timestamp0)
-        {
-            ref int r = ref Unsafe.As<byte, int>(ref *p);
-            return r ^ Unsafe.Add(ref r, 1) ^ Unsafe.Add(ref r, 2);
-        }
+        ref int r = ref Unsafe.As<byte, int>(ref Unsafe.AsRef(in _timestamp0));
+        return r ^ Unsafe.Add(ref r, 1) ^ Unsafe.Add(ref r, 2);
     }
 
     internal unsafe Int32 GetHashCode2()
