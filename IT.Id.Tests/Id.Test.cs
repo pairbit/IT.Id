@@ -20,6 +20,11 @@ public class IdTest
 
         var id = Id.New();
 
+        Assert.That(id.Timestamp, Is.EqualTo(id.Timestamp2));
+        Assert.That(id.Machine, Is.EqualTo(id.Machine2));
+        Assert.That(id.Pid, Is.EqualTo(id.Pid2));
+        Assert.That(id.Increment, Is.EqualTo(id.Increment2));
+
         var id2 = Id.New_Old();
 
         var end = Id._staticIncrement;

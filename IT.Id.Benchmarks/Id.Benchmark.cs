@@ -29,11 +29,14 @@ public class IdBenchmark
 
     #region Experimental
 
-    //[Benchmark]
-    //public int Id_Timestamp() => _id.Timestamp;
+    [Benchmark]
+    public int Id_Timestamp() => _id.Timestamp;
 
-    //[Benchmark]
-    //public int Id_Timestamp2() => _id.Timestamp2;
+    [Benchmark]
+    public int Id_Timestamp2() => _id.Timestamp2;
+
+    [Benchmark]
+    public int Id_Timestamp3() => _id.Timestamp3;
 
     //[Benchmark]
     //public int Id_Machine() => _id.Machine;
@@ -70,25 +73,25 @@ public class IdBenchmark
     #region New
 
     //[Benchmark]
-    public long Ticks_Increment() => DateTime.UtcNow.Ticks + Interlocked.Increment(ref _inc);
-
-    [Benchmark]
-    public Id Id_New() => Id.New();
+    //public long Ticks_Increment() => DateTime.UtcNow.Ticks + Interlocked.Increment(ref _inc);
 
     //[Benchmark]
-    public Id Id_NewOld() => Id.New_Old();
-
-    [Benchmark]
-    public Id Id_NewObjectId() => Id.NewObjectId();
+    //public Id Id_New() => Id.New();
 
     //[Benchmark]
-    public Id Id_NewObjectIdOld() => Id.NewObjectIdOld();
+    //public Id Id_NewOld() => Id.New_Old();
 
     //[Benchmark]
-    public Ulid Ulid_NewUlid() => Ulid.NewUlid();
+    //public Id Id_NewObjectId() => Id.NewObjectId();
 
     //[Benchmark]
-    public Guid Guid_NewGuid() => Guid.NewGuid();
+    //public Id Id_NewObjectIdOld() => Id.NewObjectIdOld();
+
+    //[Benchmark]
+    //public Ulid Ulid_NewUlid() => Ulid.NewUlid();
+
+    //[Benchmark]
+    //public Guid Guid_NewGuid() => Guid.NewGuid();
 
     //[Benchmark]
     //public ObjectId ObjectId_GenerateNewId() => ObjectId.GenerateNewId();
