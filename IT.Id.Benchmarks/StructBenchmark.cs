@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-namespace IT.IdBenchmarks;
+namespace IT.Benchmarks;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
 public record Id40(Id Id, UInt32 value1, Byte value2);

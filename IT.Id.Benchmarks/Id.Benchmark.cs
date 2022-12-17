@@ -1,7 +1,7 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Order;
 
-namespace IT.IdBenchmarks;
+namespace IT.Benchmarks;
 
 [MemoryDiagnoser]
 [MinColumn, MaxColumn]
