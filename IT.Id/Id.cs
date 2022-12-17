@@ -26,9 +26,12 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
     private static readonly Int64 _unixEpochTicks = _unixEpoch.Ticks;
 
     private static readonly Int16 _pid = GetPid();
+    private static readonly Int32 _pid24 = GetPid() << 24;
     private static readonly Int32 _machinePid = (GetMachineXXHash() << 8) | ((_pid >> 8) & 0xff);
+    private static readonly Int32 _machinePidReverse = BinaryPrimitives.ReverseEndianness((GetMachineXXHash() << 8) | ((_pid >> 8) & 0xff));
     private static readonly Int64 _random = CalculateRandomValue();
-    private static Int32 _staticIncrement = new Random().Next();
+    private static readonly Int32 _random8Reverse = BinaryPrimitives.ReverseEndianness((int)(_random >> 8));
+    internal static Int32 _staticIncrement = new Random().Next();
     private static IDictionary<Int32, String>? _machines;
 
     /// <summary>
@@ -222,7 +225,45 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
     #region New
 
+    //https://github.com/dotnet/runtime/blob/e66a6a319cc372f30c3dad9f491ac636c0ce03e4/src/libraries/Common/src/Interop/Unix/System.Native/Interop.GetSystemTimeAsTicks.cs#L12
+
+    //[DllImport("libSystem.Native", EntryPoint = "SystemNative_GetSystemTimeAsTicks")]
+    //internal static extern long GetSystemTimeAsTicks();
+
+    //[LibraryImport("libSystem.Native", EntryPoint = "SystemNative_GetSystemTimeAsTicks")]
+    //internal static partial long GetSystemTimeAsTicks();
+
     public static Id New()
+    {
+        Id id = default;
+
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+
+        Unsafe.WriteUnaligned(ref b, BinaryPrimitives.ReverseEndianness((int)(uint)(long)Math.Floor((double)(DateTime.UtcNow.Ticks - _unixEpochTicks) / TimeSpan.TicksPerSecond)));
+
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), _machinePidReverse);
+
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness(_pid24 | (Interlocked.Increment(ref _staticIncrement) & 0x00ffffff)));
+
+        return id;
+    }
+
+    internal static Id New2()
+    {
+        Id id = default;
+
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+
+        Unsafe.WriteUnaligned(ref b, BinaryPrimitives.ReverseEndianness((int)(uint)(long)Math.Floor((double)(DateTime.UtcNow.Ticks - _unixEpochTicks) / TimeSpan.TicksPerSecond)));
+
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), _machinePidReverse);
+
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness((_pid << 24) | (Interlocked.Increment(ref _staticIncrement) & 0x00ffffff)));
+
+        return id;
+    }
+
+    internal static Id New_Old()
     {
         // only use low order 3 bytes
         int increment = Interlocked.Increment(ref _staticIncrement) & 0x00ffffff;
@@ -252,6 +293,38 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
     /// https://www.mongodb.com/docs/manual/reference/method/ObjectId/
     /// </summary>
     public static Id NewObjectId()
+    {
+        Id id = default;
+
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+
+        Unsafe.WriteUnaligned(ref b, BinaryPrimitives.ReverseEndianness((int)(uint)(long)Math.Floor((double)(DateTime.UtcNow.Ticks - _unixEpochTicks) / TimeSpan.TicksPerSecond)));
+
+        var random = _random;
+
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), BinaryPrimitives.ReverseEndianness((int)(random >> 8)));
+
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness((int)(random << 24) | (Interlocked.Increment(ref _staticIncrement) & 0x00ffffff)));
+
+        return id;
+    }
+
+    internal static Id NewObjectId2()
+    {
+        Id id = default;
+
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+
+        Unsafe.WriteUnaligned(ref b, BinaryPrimitives.ReverseEndianness((int)(uint)(long)Math.Floor((double)(DateTime.UtcNow.Ticks - _unixEpochTicks) / TimeSpan.TicksPerSecond)));
+
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), _random8Reverse);
+
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness((int)(_random << 24) | (Interlocked.Increment(ref _staticIncrement) & 0x00ffffff)));
+
+        return id;
+    }
+
+    internal static Id NewObjectIdOld()
     {
         // only use low order 3 bytes
         int increment = Interlocked.Increment(ref _staticIncrement) & 0x00ffffff;

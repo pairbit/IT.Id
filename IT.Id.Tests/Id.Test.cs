@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Drawing;
+using System.Security.Cryptography;
 
 namespace IT.Tests;
 
@@ -8,6 +9,77 @@ public class IdTest
     [SetUp]
     public void Setup()
     {
+    }
+
+    [Test]
+    public void New()
+    {
+        var start = Id._staticIncrement;
+
+        //var ta = Id.GetSystemTimeAsTicks();
+
+        var id = Id.New();
+
+        var id2 = Id.New2();
+
+        var end = Id._staticIncrement;
+
+        var count = end - start;
+
+        Assert.That(count, Is.EqualTo(2));
+
+        Assert.That(id, Is.Not.EqualTo(id2));
+
+        Assert.That(id.Timestamp, Is.EqualTo(id2.Timestamp));
+
+        Assert.That(id.Machine, Is.EqualTo(id2.Machine));
+
+        Assert.That(id.Pid, Is.EqualTo(id2.Pid));
+
+        Assert.That(id.Increment, Is.Not.EqualTo(id2.Increment));
+
+        Assert.That(id.Increment, Is.EqualTo(id2.Increment - 1));
+    }
+
+    //[Test]
+    public void New_Collision()
+    {
+        var start = Id._staticIncrement;
+
+        var ids = new Id[256 * 256 * 256];
+
+        for (int i = 0; i < ids.Length; i++)
+        {
+            ids[i] = Id.New2();
+        }
+
+        var end = Id._staticIncrement;
+
+        var count = end - start;
+
+        Assert.That(count, Is.EqualTo(ids.Length));
+
+        var hash = new HashSet<Id>(ids);
+
+        Assert.That(count, Is.EqualTo(hash.Count));
+
+        var id = ids[0];
+
+        Assert.That(hash.Add(id), Is.False);
+        Assert.That(count, Is.EqualTo(hash.Count));
+
+        var timestamp = id.Timestamp;
+
+        for (int i = 0; i < ids.Length; i++)
+        {
+            if (ids[i].Timestamp != timestamp)
+            {
+                Console.WriteLine($"[{i:N0}] {ids[i]} ({ids[i].Created.ToLocalTime()}) != {id} ({id.Created.ToLocalTime()})");
+                return;
+            }
+        }
+
+        Console.WriteLine("Ok");
     }
 
     [Test]

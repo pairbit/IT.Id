@@ -31,7 +31,9 @@ public class IdParseTest
         Assert.That(converter.ConvertFrom(new Memory<byte>(bytes)), Is.EqualTo(id));
         Assert.That(converter.ConvertFrom(new ReadOnlyMemory<byte>(bytes)), Is.EqualTo(id));
 
-        foreach (Idf format in Enum.GetValues(typeof(Idf)))
+        var formats = new Idf[] { Idf.Hex, Idf.HexUpper, Idf.Base32, Idf.Base32Upper, Idf.Base58, Idf.Base64, Idf.Base64Url, Idf.Base64Path2, Idf.Base64Path3, Idf.Base85 };
+
+        foreach (var format in formats)
         {
             var str = id.ToString(format);
 

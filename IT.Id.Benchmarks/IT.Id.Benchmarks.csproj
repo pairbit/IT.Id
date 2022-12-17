@@ -19,6 +19,7 @@
 
   <ItemGroup Condition="$(TargetFramework) != 'net462'">
     <PackageReference Include="SimpleBase" Version="4.0.0" />
+	<PackageReference Include="MongoDB.Bson" Version="2.18.0" />
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework) == 'net462' or $(TargetFramework) == 'netcoreapp3.1'">

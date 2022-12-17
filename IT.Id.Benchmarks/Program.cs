@@ -209,33 +209,33 @@ for (int i = 0; i < 12; i++)
 
 Console.WriteLine("Ok");
 
-//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdBenchmark));
+BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdBenchmark));
 
-//To Base Chars
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdToBase));
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryToBaseChars));
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdParseBaseChars));
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryParseBaseChars));
+////To Base Chars
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdToBase));
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryToBaseChars));
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdParseBaseChars));
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryParseBaseChars));
 
-//To Base Bytes
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryToBaseBytes));
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdParseBaseBytes));
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryParseBaseBytes));
+////To Base Bytes
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryToBaseBytes));
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdParseBaseBytes));
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryParseBaseBytes));
 
-//To Base Chars (Wraps)
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdToString));
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryFormatChars));
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdParseChars));
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdParseByLenChars));
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryParseChars));
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryParseByLenChars));
+////To Base Chars (Wraps)
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdToString));
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryFormatChars));
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdParseChars));
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdParseByLenChars));
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryParseChars));
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryParseByLenChars));
 
-//To Base Bytes (Wraps)
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryFormatBytes));
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdParseBytes));
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdParseByLenBytes));
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryParseBytes));
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryParseByLenBytes));
+////To Base Bytes (Wraps)
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryFormatBytes));
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdParseBytes));
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdParseByLenBytes));
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryParseBytes));
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryParseByLenBytes));
 
 class MyClass
 {
