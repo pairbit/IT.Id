@@ -20,7 +20,7 @@ public class IdTest
 
         var id = Id.New();
 
-        var id2 = Id.New2();
+        var id2 = Id.New_Old();
 
         var end = Id._staticIncrement;
 
@@ -50,7 +50,7 @@ public class IdTest
 
         for (int i = 0; i < ids.Length; i++)
         {
-            ids[i] = Id.New2();
+            ids[i] = Id.New();
         }
 
         var end = Id._staticIncrement;

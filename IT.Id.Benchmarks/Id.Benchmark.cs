@@ -75,17 +75,11 @@ public class IdBenchmark
     [Benchmark]
     public Id Id_New() => Id.New();
 
-    [Benchmark]
-    public Id Id_New2() => Id.New2();
-
     //[Benchmark]
     public Id Id_NewOld() => Id.New_Old();
 
     [Benchmark]
     public Id Id_NewObjectId() => Id.NewObjectId();
-
-    [Benchmark]
-    public Id Id_NewObjectId2() => Id.NewObjectId2();
 
     //[Benchmark]
     public Id Id_NewObjectIdOld() => Id.NewObjectIdOld();

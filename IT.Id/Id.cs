@@ -30,6 +30,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
     private static readonly Int32 _machinePid = (GetMachineXXHash() << 8) | ((_pid >> 8) & 0xff);
     private static readonly Int32 _machinePidReverse = BinaryPrimitives.ReverseEndianness((GetMachineXXHash() << 8) | ((_pid >> 8) & 0xff));
     private static readonly Int64 _random = CalculateRandomValue();
+    private static readonly Int32 _random24 = (int)(_random << 24);
     private static readonly Int32 _random8Reverse = BinaryPrimitives.ReverseEndianness((int)(_random >> 8));
     internal static Int32 _staticIncrement = new Random().Next();
     private static IDictionary<Int32, String>? _machines;
@@ -248,21 +249,6 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         return id;
     }
 
-    internal static Id New2()
-    {
-        Id id = default;
-
-        ref var b = ref Unsafe.As<Id, byte>(ref id);
-
-        Unsafe.WriteUnaligned(ref b, BinaryPrimitives.ReverseEndianness((int)(uint)(long)Math.Floor((double)(DateTime.UtcNow.Ticks - _unixEpochTicks) / TimeSpan.TicksPerSecond)));
-
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), _machinePidReverse);
-
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness((_pid << 24) | (Interlocked.Increment(ref _staticIncrement) & 0x00ffffff)));
-
-        return id;
-    }
-
     internal static Id New_Old()
     {
         // only use low order 3 bytes
@@ -300,26 +286,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
         Unsafe.WriteUnaligned(ref b, BinaryPrimitives.ReverseEndianness((int)(uint)(long)Math.Floor((double)(DateTime.UtcNow.Ticks - _unixEpochTicks) / TimeSpan.TicksPerSecond)));
 
-        var random = _random;
-
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), BinaryPrimitives.ReverseEndianness((int)(random >> 8)));
-
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness((int)(random << 24) | (Interlocked.Increment(ref _staticIncrement) & 0x00ffffff)));
-
-        return id;
-    }
-
-    internal static Id NewObjectId2()
-    {
-        Id id = default;
-
-        ref var b = ref Unsafe.As<Id, byte>(ref id);
-
-        Unsafe.WriteUnaligned(ref b, BinaryPrimitives.ReverseEndianness((int)(uint)(long)Math.Floor((double)(DateTime.UtcNow.Ticks - _unixEpochTicks) / TimeSpan.TicksPerSecond)));
-
         Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), _random8Reverse);
 
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness((int)(_random << 24) | (Interlocked.Increment(ref _staticIncrement) & 0x00ffffff)));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness(_random24 | (Interlocked.Increment(ref _staticIncrement) & 0x00ffffff)));
 
         return id;
     }
