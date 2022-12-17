@@ -20,6 +20,9 @@ public readonly partial struct Id
         fixed (char* dest = base85)
         fixed (char* map = Base85.Alphabet)
         {
+            //ref var b = ref Unsafe.AsRef(in _timestamp0);
+
+            //uint value0 = BinaryPrimitives.ReverseEndianness(Unsafe.As<byte, uint>(ref b));
             //uint value0 = BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref *p));
             uint value0 = (uint)(_timestamp0 << 24 | _timestamp1 << 16 | _timestamp2 << 8 | _timestamp3);
 
@@ -29,6 +32,7 @@ public readonly partial struct Id
             dest[3] = map[Mod85(value0 / U85P1)];
             dest[4] = map[Mod85(value0)];
 
+            //var value1 = BinaryPrimitives.ReverseEndianness(Unsafe.As<byte, uint>(ref Unsafe.Add(ref b, 4)));
             //var value1 = BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref *(p + 4)));
             var value1 = (uint)(_machine0 << 24 | _machine1 << 16 | _machine2 << 8 | _pid0);
 
@@ -37,7 +41,8 @@ public readonly partial struct Id
             dest[7] = map[Mod85(value1 / U85P2)];
             dest[8] = map[Mod85(value1 / U85P1)];
             dest[9] = map[Mod85(value1)];
-
+            
+            //var value2 = BinaryPrimitives.ReverseEndianness(Unsafe.As<byte, uint>(ref Unsafe.Add(ref b, 8)));
             //var value2 = BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref *(p + 8)));
             var value2 = (uint)(_pid1 << 24 | _increment0 << 16 | _increment1 << 8 | _increment2);
 

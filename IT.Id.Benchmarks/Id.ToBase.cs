@@ -19,40 +19,40 @@ public class IdToBase
         _guid = Guid.NewGuid();
     }
 
-    [Benchmark]
+    //[Benchmark]
     public String Id_ToHexLower() => _id.ToHex();
 
-    [Benchmark]
+    //[Benchmark]
     public String Id_ToHexUpper() => _id.ToHexUpper();
 
-    [Benchmark]
+    //[Benchmark]
     public String Id_ToBase32Lower() => _id.ToBase32();
 
-    [Benchmark]
+    //[Benchmark]
     public String Id_ToBase32Upper() => _id.ToBase32Upper();
 
-    [Benchmark]
+    //[Benchmark]
     public String Id_ToBase58() => _id.ToBase58();
 
-    [Benchmark]
+    //[Benchmark]
     public String Id_ToBase64Url() => _id.ToBase64Url();
 
-    [Benchmark]
+    //[Benchmark]
     public String Id_ToBase64() => _id.ToBase64();
 
-    [Benchmark]
+    //[Benchmark]
     public String Id_ToBase64Path2() => _id.ToBase64Path2();
 
-    [Benchmark]
+    //[Benchmark]
     public String Id_ToBase64Path3() => _id.ToBase64Path3();
 
     [Benchmark]
     public String Id_ToBase85() => _id.ToBase85();
 
-    [Benchmark]
+    //[Benchmark]
     public String Ulid_ToBase32() => _ulid.ToString();
 
-    [Benchmark]
+    //[Benchmark]
     public String Guid_ToHex() => _guid.ToString();
 
 #if NETCOREAPP3_1_OR_GREATER

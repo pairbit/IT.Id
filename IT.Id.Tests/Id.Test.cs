@@ -128,7 +128,7 @@ public class IdTest
             {
                 Assert.That(Internal.XXH32.DigestOf(array), Is.EqualTo(id.XXH32()));
                 Assert.That(Internal.XXH64.DigestOf(array), Is.EqualTo(id.XXH64()));
-
+                //Assert.That(id.ToBase85(), Is.EqualTo(id.ToBase85_2()));
                 Assert.That(id.XXH64_2(), Is.EqualTo(id.XXH64()));
             });
         }
