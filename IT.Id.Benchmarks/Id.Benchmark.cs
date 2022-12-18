@@ -105,59 +105,59 @@ public class IdBenchmark
 
     #region GetHashCode
 
-    //    [Benchmark]
-    //    public int Id_GetHashCode() => _id.GetHashCode();
+    [Benchmark]
+    public int Id_GetHashCode() => _id.GetHashCode();
 
-    //    [Benchmark]
-    //    public int Id_GetHashCode2() => _id.GetHashCode2();
+    [Benchmark]
+    public int Id_GetHashCode2() => _id.GetHashCode2();
 
-    //    [Benchmark]
-    //    public int Ulid_GetHashCode() => _ulid.GetHashCode();
+    [Benchmark]
+    public int Ulid_GetHashCode() => _ulid.GetHashCode();
 
-    //    [Benchmark]
-    //    public int Guid_GetHashCode() => _guid.GetHashCode();
+    [Benchmark]
+    public int Guid_GetHashCode() => _guid.GetHashCode();
 
-    //#if NETCOREAPP3_0_OR_GREATER
+#if NETCOREAPP3_0_OR_GREATER
 
-    //    [Benchmark]
-    //    public int ObjectId_GetHashCode() => _objectId.GetHashCode();
+    [Benchmark]
+    public int ObjectId_GetHashCode() => _objectId.GetHashCode();
 
-    //#endif
+#endif
 
     #endregion GetHashCode
 
     #region Equals
 
-    [Benchmark]
-    public bool Id_Equals_op() => _id == _id2;
+    //    [Benchmark]
+    //    public bool Id_Equals_op() => _id == _id2;
 
-    [Benchmark]
-    public bool Id_Equals_opne() => _id != _id2;
+    //    [Benchmark]
+    //    public bool Id_Equals_opne() => _id != _id2;
 
-    [Benchmark]
-    public bool Id_Equals() => _id.Equals(_id2);
+    //    [Benchmark]
+    //    public bool Id_Equals() => _id.Equals(_id2);
 
-    [Benchmark]
-    public bool Id_Equals2() => _id.Equals2(_id2);
+    //    [Benchmark]
+    //    public bool Id_Equals2() => _id.Equals2(_id2);
 
-    [Benchmark]
-    public bool Id_Equals3() => _id.Equals3(_id2);
-    
-    [Benchmark]
-    public bool Id_Equals4() => _id.Equals4(_id2);
+    //    [Benchmark]
+    //    public bool Id_Equals3() => _id.Equals3(_id2);
 
-    //[Benchmark]
-    public bool Ulid_Equals() => _ulid.Equals(_ulid2);
+    //    [Benchmark]
+    //    public bool Id_Equals4() => _id.Equals4(_id2);
 
-    //[Benchmark]
-    public bool Guid_Equals() => _guid.Equals(_guid2);
+    //    //[Benchmark]
+    //    public bool Ulid_Equals() => _ulid.Equals(_ulid2);
 
-#if NETCOREAPP3_0_OR_GREATER
+    //    //[Benchmark]
+    //    public bool Guid_Equals() => _guid.Equals(_guid2);
 
-    //[Benchmark]
-    public bool ObjectId_Equals() => _objectId.Equals(_objectId2);
+    //#if NETCOREAPP3_0_OR_GREATER
 
-#endif
+    //    //[Benchmark]
+    //    public bool ObjectId_Equals() => _objectId.Equals(_objectId2);
+
+    //#endif
 
     #endregion Equals
 

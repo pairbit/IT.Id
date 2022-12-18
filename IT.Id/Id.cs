@@ -458,6 +458,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         }
     }
 
+    //faster in .net 6
     internal unsafe Boolean Equals3(Id id)
     {
         fixed (byte* l = &_timestamp0)
@@ -486,7 +487,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         return r ^ Unsafe.Add(ref r, 1) ^ Unsafe.Add(ref r, 2);
     }
 
-    internal unsafe Int32 GetHashCode2()
+    internal unsafe int GetHashCode2()
     {
         fixed (void* p = &_timestamp0)
         {
