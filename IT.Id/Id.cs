@@ -178,9 +178,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
     public static Boolean operator <=(Id left, Id right) => left.CompareTo(right) <= 0;
 
-    public static Boolean operator ==(Id left, Id right) => left.Equals(right);
+    public static Boolean operator ==(Id left, Id right) => EqualsCore(in left, in right);
 
-    public static Boolean operator !=(Id left, Id right) => !left.Equals(right);
+    public static Boolean operator !=(Id left, Id right) => !EqualsCore(in left, in right);
 
     public static Boolean operator >=(Id left, Id right) => left.CompareTo(right) >= 0;
 
@@ -418,7 +418,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         if (_machine0 != id._machine0) return _machine0 < id._machine0 ? -1 : 1;
         if (_machine1 != id._machine1) return _machine1 < id._machine1 ? -1 : 1;
         if (_machine2 != id._machine2) return _machine2 < id._machine2 ? -1 : 1;
-
+        
         if (_pid0 != id._pid0) return _pid0 < id._pid0 ? -1 : 1;
         if (_pid1 != id._pid1) return _pid1 < id._pid1 ? -1 : 1;
 
@@ -440,25 +440,47 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         //}
     }
 
-    public unsafe Boolean Equals(Id id)
+    public Boolean Equals(Id id)
     {
-        fixed (byte* a = &_timestamp0)
+        ref int l = ref Unsafe.As<byte, int>(ref Unsafe.AsRef(in _timestamp0));
+        ref int r = ref Unsafe.As<byte, int>(ref Unsafe.AsRef(in id._timestamp0));
+
+        return l == r && Unsafe.Add(ref l, 1) == Unsafe.Add(ref r, 1) && Unsafe.Add(ref l, 2) == Unsafe.Add(ref r, 2);
+    }
+
+    internal unsafe Boolean Equals2(Id id)
+    {
+        fixed (byte* l = &_timestamp0)
         {
-            byte* b = &id._timestamp0;
+            byte* r = &id._timestamp0;
 
-            if (*(ulong*)a != *(ulong*)b) return false;
-
-            if (*(uint*)(a + 8) != *(uint*)(b + 8)) return false;
-
-            return true;
+            return *(int*)l == *(int*)r && *(int*)(l + 4) == *(int*)(r + 4) && *(int*)(l + 8) == *(int*)(r + 8);
         }
+    }
+
+    internal unsafe Boolean Equals3(Id id)
+    {
+        fixed (byte* l = &_timestamp0)
+        {
+            byte* r = &id._timestamp0;
+            return *(long*)l == *(long*)r && *(int*)(l + 8) == *(int*)(r + 8);
+        }
+    }
+
+    internal Boolean Equals4(Id id)
+    {
+        ref byte bl = ref Unsafe.AsRef(in _timestamp0);
+        ref byte br = ref Unsafe.AsRef(in id._timestamp0);
+
+        return Unsafe.As<byte, long>(ref bl) == Unsafe.As<byte, long>(ref br) &&
+               Unsafe.As<byte, int>(ref Unsafe.Add(ref bl, 8)) == Unsafe.As<byte, int>(ref Unsafe.Add(ref br, 8));
     }
 
     public override String ToString() => ToBase64Url();
 
-    public override Boolean Equals(Object? obj) => obj is Id id && Equals(id);
+    public override bool Equals(object? obj) => obj is Id id && EqualsCore(in this, in id);
 
-    public override Int32 GetHashCode()
+    public override int GetHashCode()
     {
         ref int r = ref Unsafe.As<byte, int>(ref Unsafe.AsRef(in _timestamp0));
         return r ^ Unsafe.Add(ref r, 1) ^ Unsafe.Add(ref r, 2);
@@ -476,6 +498,14 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
     #endregion Public Methods
 
     #region Private Methods
+
+    private static unsafe bool EqualsCore(in Id left, in Id right)
+    {
+        ref int l = ref Unsafe.As<byte, int>(ref Unsafe.AsRef(in left._timestamp0));
+        ref int r = ref Unsafe.As<byte, int>(ref Unsafe.AsRef(in right._timestamp0));
+
+        return l == r && Unsafe.Add(ref l, 1) == Unsafe.Add(ref r, 1) && Unsafe.Add(ref l, 2) == Unsafe.Add(ref r, 2);
+    }
 
     private static long CalculateRandomValue()
     {

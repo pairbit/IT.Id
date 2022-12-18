@@ -12,6 +12,39 @@ public class IdTest
     }
 
     [Test]
+    public void EqualsTest()
+    {
+        var id = Id.New();
+
+        var bytes = id.ToByteArray();
+
+        var id2 = new Id(bytes);
+
+        Assert.That(id != id2, Is.False);
+        Assert.That(id == id2, Is.True);
+        Assert.That(id.Equals((object)id2), Is.True);
+        Assert.That(id.Equals(id2), Is.True);
+        Assert.That(id.Equals2(id2), Is.True);
+        Assert.That(id.Equals3(id2), Is.True);
+        Assert.That(id.Equals4(id2), Is.True);
+
+        for (int i = 0; i < bytes.Length; i++)
+        {
+            bytes = id.ToByteArray();
+            bytes[i]++;
+            id2 = new Id(bytes);
+
+            Assert.That(id != id2, Is.True);
+            Assert.That(id == id2, Is.False);
+            Assert.That(id.Equals((object)id2), Is.False);
+            Assert.That(id.Equals(id2), Is.False);
+            Assert.That(id.Equals2(id2), Is.False);
+            Assert.That(id.Equals3(id2), Is.False);
+            Assert.That(id.Equals4(id2), Is.False);
+        }
+    }
+
+    [Test]
     public void New()
     {
         var start = Id._staticIncrement;

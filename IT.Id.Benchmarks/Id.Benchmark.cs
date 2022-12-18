@@ -1,6 +1,8 @@
 ﻿using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Order;
-//using MongoDB.Bson;
+#if NETCOREAPP3_0_OR_GREATER
+using MongoDB.Bson;
+#endif
 
 namespace IT.Benchmarks;
 
@@ -21,40 +23,43 @@ public class IdBenchmark
     private readonly static Guid _guid2 = new(_guid.ToByteArray());
     private readonly static byte[] _guidArray = _guid.ToByteArray();
 
-    //private readonly static ObjectId _objectId = ObjectId.GenerateNewId();
-    //private readonly static ObjectId _objectId2 = new(_objectId.ToByteArray());
-    //private readonly static byte[] _objectIdArray = _objectId.ToByteArray();
+#if NETCOREAPP3_0_OR_GREATER
 
+    private readonly static ObjectId _objectId = ObjectId.GenerateNewId();
+    private readonly static ObjectId _objectId2 = new(_objectId.ToByteArray());
+    private readonly static byte[] _objectIdArray = _objectId.ToByteArray();
+
+#endif
     //internal static Int32 _inc;
 
     #region Experimental
 
-    [Benchmark]
-    public int Id_Timestamp() => _id.Timestamp;
+    //[Benchmark]
+    //public int Id_Timestamp() => _id.Timestamp;
 
-    [Benchmark]
-    public int Id_Timestamp2() => _id.Timestamp2;
+    //[Benchmark]
+    //public int Id_Timestamp2() => _id.Timestamp2;
 
-    [Benchmark]
-    public int Id_Timestamp3() => _id.Timestamp3;
+    //[Benchmark]
+    //public int Id_Timestamp3() => _id.Timestamp3;
 
-    [Benchmark]
-    public int Id_Machine() => _id.Machine;
+    //[Benchmark]
+    //public int Id_Machine() => _id.Machine;
 
-    [Benchmark]
-    public int Id_Machine2() => _id.Machine2;
+    //[Benchmark]
+    //public int Id_Machine2() => _id.Machine2;
 
-    [Benchmark]
-    public int Id_Pid() => _id.Pid;
+    //[Benchmark]
+    //public int Id_Pid() => _id.Pid;
 
-    [Benchmark]
-    public int Id_Pid2() => _id.Pid2;
+    //[Benchmark]
+    //public int Id_Pid2() => _id.Pid2;
 
-    [Benchmark]
-    public int Id_Increment() => _id.Increment;
+    //[Benchmark]
+    //public int Id_Increment() => _id.Increment;
 
-    [Benchmark]
-    public int Id_Increment2() => _id.Increment2;
+    //[Benchmark]
+    //public int Id_Increment2() => _id.Increment2;
 
     #endregion Experimental
 
@@ -100,36 +105,59 @@ public class IdBenchmark
 
     #region GetHashCode
 
-    //[Benchmark]
-    //public int Id_GetHashCode() => _id.GetHashCode();
+    //    [Benchmark]
+    //    public int Id_GetHashCode() => _id.GetHashCode();
 
-    //[Benchmark]
-    //public int Id_GetHashCode2() => _id.GetHashCode2();
+    //    [Benchmark]
+    //    public int Id_GetHashCode2() => _id.GetHashCode2();
 
-    //[Benchmark]
-    //public int Ulid_GetHashCode() => _ulid.GetHashCode();
+    //    [Benchmark]
+    //    public int Ulid_GetHashCode() => _ulid.GetHashCode();
 
-    //[Benchmark]
-    //public int Guid_GetHashCode() => _guid.GetHashCode();
+    //    [Benchmark]
+    //    public int Guid_GetHashCode() => _guid.GetHashCode();
 
-    //[Benchmark]
-    //public int ObjectId_GetHashCode() => _objectId.GetHashCode();
+    //#if NETCOREAPP3_0_OR_GREATER
+
+    //    [Benchmark]
+    //    public int ObjectId_GetHashCode() => _objectId.GetHashCode();
+
+    //#endif
 
     #endregion GetHashCode
 
     #region Equals
 
-    //[Benchmark]
-    //public bool Id_Equals() => _id.Equals(_id2);
+    [Benchmark]
+    public bool Id_Equals_op() => _id == _id2;
+
+    [Benchmark]
+    public bool Id_Equals_opne() => _id != _id2;
+
+    [Benchmark]
+    public bool Id_Equals() => _id.Equals(_id2);
+
+    [Benchmark]
+    public bool Id_Equals2() => _id.Equals2(_id2);
+
+    [Benchmark]
+    public bool Id_Equals3() => _id.Equals3(_id2);
+    
+    [Benchmark]
+    public bool Id_Equals4() => _id.Equals4(_id2);
 
     //[Benchmark]
-    //public bool Ulid_Equals() => _ulid.Equals(_ulid2);
+    public bool Ulid_Equals() => _ulid.Equals(_ulid2);
 
     //[Benchmark]
-    //public bool Guid_Equals() => _guid.Equals(_guid2);
+    public bool Guid_Equals() => _guid.Equals(_guid2);
+
+#if NETCOREAPP3_0_OR_GREATER
 
     //[Benchmark]
-    //public bool ObjectId_Equals() => _objectId.Equals(_objectId2);
+    public bool ObjectId_Equals() => _objectId.Equals(_objectId2);
+
+#endif
 
     #endregion Equals
 

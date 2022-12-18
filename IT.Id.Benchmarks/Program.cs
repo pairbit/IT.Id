@@ -209,10 +209,10 @@ for (int i = 0; i < 12; i++)
 
 Console.WriteLine("Ok");
 
-//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdBenchmark));
+BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdBenchmark));
 
 //To Base Chars
-BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdToBase));
+//BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdToBase));
 //BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryToBaseChars));
 //BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdParseBaseChars));
 //BenchmarkDotNet.Running.BenchmarkRunner.Run(typeof(IdTryParseBaseChars));
