@@ -490,7 +490,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
     #region Private Methods
 
-    private static unsafe bool EqualsCore(in Id left, in Id right)
+    private static bool EqualsCore(in Id left, in Id right)
     {
         ref int l = ref Unsafe.As<byte, int>(ref Unsafe.AsRef(in left._timestamp0));
         ref int r = ref Unsafe.As<byte, int>(ref Unsafe.AsRef(in right._timestamp0));
