@@ -24,9 +24,9 @@ public class IdTest
         Assert.That(id == id2, Is.True);
         Assert.That(id.Equals((object)id2), Is.True);
         Assert.That(id.Equals(id2), Is.True);
-        Assert.That(id.Equals2(id2), Is.True);
-        Assert.That(id.Equals3(id2), Is.True);
-        Assert.That(id.Equals4(id2), Is.True);
+        //Assert.That(id.Equals2(id2), Is.True);
+        //Assert.That(id.Equals3(id2), Is.True);
+        //Assert.That(id.Equals4(id2), Is.True);
 
         for (int i = 0; i < bytes.Length; i++)
         {
@@ -38,49 +38,49 @@ public class IdTest
             Assert.That(id == id2, Is.False);
             Assert.That(id.Equals((object)id2), Is.False);
             Assert.That(id.Equals(id2), Is.False);
-            Assert.That(id.Equals2(id2), Is.False);
-            Assert.That(id.Equals3(id2), Is.False);
-            Assert.That(id.Equals4(id2), Is.False);
+            //Assert.That(id.Equals2(id2), Is.False);
+            //Assert.That(id.Equals3(id2), Is.False);
+            //Assert.That(id.Equals4(id2), Is.False);
         }
     }
 
-    [Test]
-    public void New()
-    {
-        var start = Id._staticIncrement;
+    //[Test]
+    //public void New()
+    //{
+    //    var start = Id._staticIncrement;
 
-        //var ta = Id.GetSystemTimeAsTicks();
+    //    //var ta = Id.GetSystemTimeAsTicks();
 
-        var id = Id.New();
+    //    var id = Id.New();
 
-        Assert.That(id.GetHashCode(), Is.EqualTo(id.GetHashCode2()));
+    //    //Assert.That(id.GetHashCode(), Is.EqualTo(id.GetHashCode2()));
 
-        Assert.That(id.Timestamp, Is.EqualTo(id.Timestamp2));
-        Assert.That(id.Timestamp, Is.EqualTo(id.Timestamp3));
-        Assert.That(id.Machine, Is.EqualTo(id.Machine2));
-        Assert.That(id.Pid, Is.EqualTo(id.Pid2));
-        Assert.That(id.Increment, Is.EqualTo(id.Increment2));
+    //    //Assert.That(id.Timestamp, Is.EqualTo(id.Timestamp2));
+    //    //Assert.That(id.Timestamp, Is.EqualTo(id.Timestamp3));
+    //    //Assert.That(id.Machine, Is.EqualTo(id.Machine2));
+    //    //Assert.That(id.Pid, Is.EqualTo(id.Pid2));
+    //    //Assert.That(id.Increment, Is.EqualTo(id.Increment2));
 
-        var id2 = Id.New_Old();
+    //    //var id2 = Id.New_Old();
 
-        var end = Id._staticIncrement;
+    //    var end = Id._staticIncrement;
 
-        var count = end - start;
+    //    var count = end - start;
 
-        Assert.That(count, Is.EqualTo(2));
+    //    Assert.That(count, Is.EqualTo(2));
 
-        Assert.That(id, Is.Not.EqualTo(id2));
+    //    Assert.That(id, Is.Not.EqualTo(id2));
 
-        Assert.That(id.Timestamp, Is.EqualTo(id2.Timestamp));
+    //    Assert.That(id.Timestamp, Is.EqualTo(id2.Timestamp));
 
-        Assert.That(id.Machine, Is.EqualTo(id2.Machine));
+    //    Assert.That(id.Machine, Is.EqualTo(id2.Machine));
 
-        Assert.That(id.Pid, Is.EqualTo(id2.Pid));
+    //    Assert.That(id.Pid, Is.EqualTo(id2.Pid));
 
-        Assert.That(id.Increment, Is.Not.EqualTo(id2.Increment));
+    //    Assert.That(id.Increment, Is.Not.EqualTo(id2.Increment));
 
-        Assert.That(id.Increment, Is.EqualTo(id2.Increment - 1));
-    }
+    //    Assert.That(id.Increment, Is.EqualTo(id2.Increment - 1));
+    //}
 
     //[Test]
     public void New_Collision()
@@ -161,7 +161,7 @@ public class IdTest
             {
                 Assert.That(Internal.XXH32.DigestOf(array), Is.EqualTo(id.XXH32()));
                 Assert.That(Internal.XXH64.DigestOf(array), Is.EqualTo(id.XXH64()));
-                //Assert.That(id.ToBase85(), Is.EqualTo(id.ToBase85_2()));
+
                 Assert.That(id.XXH64_2(), Is.EqualTo(id.XXH64()));
             });
         }

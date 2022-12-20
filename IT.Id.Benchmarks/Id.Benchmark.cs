@@ -50,16 +50,25 @@ public class IdBenchmark
     //public int Id_Machine2() => _id.Machine2;
 
     //[Benchmark]
+    //public int Id_Machine3() => _id.Machine3;
+
+    //[Benchmark]
     //public int Id_Pid() => _id.Pid;
 
     //[Benchmark]
     //public int Id_Pid2() => _id.Pid2;
 
     //[Benchmark]
+    //public int Id_Pid3() => _id.Pid3;
+
+    //[Benchmark]
     //public int Id_Increment() => _id.Increment;
 
     //[Benchmark]
     //public int Id_Increment2() => _id.Increment2;
+
+    //[Benchmark]
+    //public int Id_Increment3() => _id.Increment2;
 
     #endregion Experimental
 
@@ -105,24 +114,24 @@ public class IdBenchmark
 
     #region GetHashCode
 
-    [Benchmark]
-    public int Id_GetHashCode() => _id.GetHashCode();
+    //    [Benchmark]
+    //    public int Id_GetHashCode() => _id.GetHashCode();
 
-    [Benchmark]
-    public int Id_GetHashCode2() => _id.GetHashCode2();
+    //    [Benchmark]
+    //    public int Id_GetHashCode2() => _id.GetHashCode2();
 
-    [Benchmark]
-    public int Ulid_GetHashCode() => _ulid.GetHashCode();
+    //    [Benchmark]
+    //    public int Ulid_GetHashCode() => _ulid.GetHashCode();
 
-    [Benchmark]
-    public int Guid_GetHashCode() => _guid.GetHashCode();
+    //    [Benchmark]
+    //    public int Guid_GetHashCode() => _guid.GetHashCode();
 
-#if NETCOREAPP3_0_OR_GREATER
+    //#if NETCOREAPP3_0_OR_GREATER
 
-    [Benchmark]
-    public int ObjectId_GetHashCode() => _objectId.GetHashCode();
+    //    [Benchmark]
+    //    public int ObjectId_GetHashCode() => _objectId.GetHashCode();
 
-#endif
+    //#endif
 
     #endregion GetHashCode
 
@@ -177,7 +186,7 @@ public class IdBenchmark
 
     #endregion CompareTo
 
-    #region ToByteArray
+    //    #region ToByteArray
 
     //[Benchmark]
     //public byte[] Id_ToByteArray() => _id.ToByteArray();
@@ -188,48 +197,52 @@ public class IdBenchmark
     //[Benchmark]
     //public byte[] Id_ToByteArray3() => _id.ToByteArray3();
 
-    //[Benchmark]
-    //public byte[] Ulid_ToByteArray() => _ulid.ToByteArray();
-
-    //[Benchmark]
-    //public byte[] Guid_ToByteArray() => _guid.ToByteArray();
-
-    //[Benchmark]
-    //public byte[] ObjectId_ToByteArray() => _objectId.ToByteArray();
-
-    #endregion ToByteArray
-
-    #region TryWrite
+    //    [Benchmark]
+    //    public byte[] Ulid_ToByteArray() => _ulid.ToByteArray();
 
     //    [Benchmark]
-    //    public Id Id_Write()
-    //    {
-    //        Span<byte> array = stackalloc byte[12];
+    //    public byte[] Guid_ToByteArray() => _guid.ToByteArray();
 
-    //        _id.TryWrite(array);
-
-    //        return new Id(array);
-    //    }
+    //#if NETCOREAPP3_0_OR_GREATER
 
     //    [Benchmark]
-    //    public Id Id_Write2()
-    //    {
-    //        Span<byte> array = stackalloc byte[12];
+    //    public byte[] ObjectId_ToByteArray() => _objectId.ToByteArray();
 
-    //        _id.TryWrite2(array);
+    //#endif
 
-    //        return new Id(array);
-    //    }
+    //    #endregion ToByteArray
 
-    //    [Benchmark]
-    //    public Id Id_Write3()
-    //    {
-    //        Span<byte> array = stackalloc byte[12];
+    //    #region TryWrite
 
-    //        _id.TryWrite3(array);
+    //[Benchmark]
+    //public Id Id_Write()
+    //{
+    //    Span<byte> array = stackalloc byte[12];
 
-    //        return new Id(array);
-    //    }
+    //    _id.TryWrite(array);
+
+    //    return new Id(array);
+    //}
+
+    //[Benchmark]
+    //public Id Id_Write2()
+    //{
+    //    Span<byte> array = stackalloc byte[12];
+
+    //    _id.TryWrite2(array);
+
+    //    return new Id(array);
+    //}
+
+    //[Benchmark]
+    //public Id Id_Write3()
+    //{
+    //    Span<byte> array = stackalloc byte[12];
+
+    //    _id.TryWrite3(array);
+
+    //    return new Id(array);
+    //}
 
     //    [Benchmark]
     //    public Ulid Ulid_Write()
@@ -243,17 +256,15 @@ public class IdBenchmark
 
     //#if NETCOREAPP3_0_OR_GREATER
 
-    //        [Benchmark]
-    //        public Guid Guid_Write()
-    //        {
-    //            Span<byte> array = stackalloc byte[16];
+    //    [Benchmark]
+    //    public Guid Guid_Write()
+    //    {
+    //        Span<byte> array = stackalloc byte[16];
 
-    //            _guid.TryWriteBytes(array);
+    //        _guid.TryWriteBytes(array);
 
-    //            return new Guid(array);
-    //        }
-
-    //#endif
+    //        return new Guid(array);
+    //    }
 
     //    [Benchmark]
     //    public ObjectId ObjectId_Write()
@@ -265,7 +276,9 @@ public class IdBenchmark
     //        return new ObjectId(array);
     //    }
 
-    #endregion TryWrite
+    //#endif
+
+    //    #endregion TryWrite
 
     #region Ctors
 

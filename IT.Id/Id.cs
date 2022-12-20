@@ -140,25 +140,23 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
     #region Props
 
-    public Int32 Timestamp => _timestamp0 << 24 | _timestamp1 << 16 | _timestamp2 << 8 | _timestamp3;
+    public Int32 Timestamp => BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<Int32>(ref Unsafe.AsRef(in _timestamp0)));
 
-    internal Int32 Timestamp2 => BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<Int32>(ref Unsafe.AsRef(in _timestamp0)));
+    //internal Int32 Timestamp3 => _timestamp0 << 24 | _timestamp1 << 16 | _timestamp2 << 8 | _timestamp3;
 
-    internal Int32 Timestamp3 => BinaryPrimitives.ReverseEndianness(Unsafe.As<byte, int>(ref Unsafe.AsRef(in _timestamp0)));
+    public Int32 Machine => (BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<Int32>(ref Unsafe.AsRef(in _machine0))) >> 8) & 0xffffff;
 
-    public Int32 Machine => (_machine0 << 16 | _machine1 << 8 | _machine2) & 0xffffff;
-
-    internal Int32 Machine2 => (BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<Int32>(ref Unsafe.AsRef(in _machine0))) >> 8) & 0xffffff;
+    //internal Int32 Machine3 => (_machine0 << 16 | _machine1 << 8 | _machine2) & 0xffffff;
 
     public String? MachineName => _machines == null ? null : (_machines.TryGetValue(Machine, out var name) ? name : null);
 
-    public Int16 Pid => (short)(_pid0 << 8 | _pid1);
+    public Int16 Pid => BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<Int16>(ref Unsafe.AsRef(in _pid0)));
 
-    internal Int16 Pid2 => BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<Int16>(ref Unsafe.AsRef(in _pid0)));
+    //internal Int16 Pid3 => (short)(_pid0 << 8 | _pid1);
 
-    public Int32 Increment => (_increment0 << 16 | _increment1 << 8 | _increment2) & 0xffffff;
+    public Int32 Increment => (BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<Int32>(ref Unsafe.AsRef(in _increment0))) >> 8) & 0xffffff;
 
-    internal Int32 Increment2 => (BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<Int32>(ref Unsafe.AsRef(in _increment0))) >> 8) & 0xffffff;
+    //internal Int32 Increment3 => (_increment0 << 16 | _increment1 << 8 | _increment2) & 0xffffff;
 
     public DateTimeOffset Created => _unixEpoch.AddSeconds((uint)Timestamp);
 
@@ -215,15 +213,15 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         return id;
     }
 
-    internal static Id New_Old()
-    {
-        // only use low order 3 bytes
-        int increment = Interlocked.Increment(ref _staticIncrement) & 0x00ffffff;
+    //internal static Id New_Old()
+    //{
+    //    // only use low order 3 bytes
+    //    int increment = Interlocked.Increment(ref _staticIncrement) & 0x00ffffff;
 
-        var pidIncrement = (_pid << 24) | increment;
+    //    var pidIncrement = (_pid << 24) | increment;
 
-        return new Id(GetTimestamp(), _machinePid, pidIncrement);
-    }
+    //    return new Id(GetTimestamp(), _machinePid, pidIncrement);
+    //}
 
     public static Id New(DateTime timestamp) => New(GetTimestampFromDateTime(timestamp));
 
@@ -336,69 +334,41 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
     //    increment = (bytes[9] << 16) + (bytes[10] << 8) + bytes[11];
     //}
 
-    public Byte[] ToByteArray() => new[] {
-        _timestamp0,
-        _timestamp1,
-        _timestamp2,
-        _timestamp3,
-        _machine0,
-        _machine1,
-        _machine2,
-        _pid0,
-        _pid1,
-        _increment0,
-        _increment1,
-        _increment2
-    };
-
-    internal Byte[] ToByteArray2()
+    public Byte[] ToByteArray()
     {
         var bytes = new byte[12];
-
-        //MemoryMarshal.TryWrite(bytes, ref Unsafe.AsRef(in this));
-
-        //Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(bytes), this);
 
         Unsafe.WriteUnaligned(ref bytes[0], this);
 
         return bytes;
     }
 
-    internal Byte[] ToByteArray3()
-    {
-        var bytes = new byte[12];
+    //internal Byte[] ToByteArray2()
+    //{
+    //    var bytes = new byte[12];
 
-        MemoryMarshal.TryWrite(bytes, ref Unsafe.AsRef(in this));
+    //    MemoryMarshal.TryWrite(bytes, ref Unsafe.AsRef(in this));
 
-        return bytes;
-    }
+    //    return bytes;
+    //}
+
+    //internal Byte[] ToByteArray3() => new[] {
+    //    _timestamp0,
+    //    _timestamp1,
+    //    _timestamp2,
+    //    _timestamp3,
+    //    _machine0,
+    //    _machine1,
+    //    _machine2,
+    //    _pid0,
+    //    _pid1,
+    //    _increment0,
+    //    _increment1,
+    //    _increment2
+    //};
 
     public Boolean TryWrite(Span<Byte> bytes)
     {
-        if (bytes.Length < 12) return false;
-
-        bytes[0] = _timestamp0;
-        bytes[1] = _timestamp1;
-        bytes[2] = _timestamp2;
-        bytes[3] = _timestamp3;
-        bytes[4] = _machine0;
-        bytes[5] = _machine1;
-        bytes[6] = _machine2;
-        bytes[7] = _pid0;
-        bytes[8] = _pid1;
-        bytes[9] = _increment0;
-        bytes[10] = _increment1;
-        bytes[11] = _increment2;
-
-        //Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(bytes), this);
-
-        return true;
-    }
-
-    internal Boolean TryWrite2(Span<Byte> bytes)
-    {
-        //return MemoryMarshal.TryWrite(destination, ref Unsafe.AsRef(in this));
-
         if (bytes.Length < 12) return false;
 
         Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(bytes), this);
@@ -406,7 +376,27 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         return true;
     }
 
-    internal Boolean TryWrite3(Span<Byte> bytes) => MemoryMarshal.TryWrite(bytes, ref Unsafe.AsRef(in this));
+    //internal Boolean TryWrite2(Span<Byte> bytes) => MemoryMarshal.TryWrite(bytes, ref Unsafe.AsRef(in this));
+
+    //internal Boolean TryWrite3(Span<Byte> bytes)
+    //{
+    //    if (bytes.Length < 12) return false;
+
+    //    bytes[0] = _timestamp0;
+    //    bytes[1] = _timestamp1;
+    //    bytes[2] = _timestamp2;
+    //    bytes[3] = _timestamp3;
+    //    bytes[4] = _machine0;
+    //    bytes[5] = _machine1;
+    //    bytes[6] = _machine2;
+    //    bytes[7] = _pid0;
+    //    bytes[8] = _pid1;
+    //    bytes[9] = _increment0;
+    //    bytes[10] = _increment1;
+    //    bytes[11] = _increment2;
+
+    //    return true;
+    //}
 
     public Int32 CompareTo(Id id)
     {
@@ -448,34 +438,34 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         return l == r && Unsafe.Add(ref l, 1) == Unsafe.Add(ref r, 1) && Unsafe.Add(ref l, 2) == Unsafe.Add(ref r, 2);
     }
 
-    internal unsafe Boolean Equals2(Id id)
-    {
-        fixed (byte* l = &_timestamp0)
-        {
-            byte* r = &id._timestamp0;
+    //internal unsafe Boolean Equals2(Id id)
+    //{
+    //    fixed (byte* l = &_timestamp0)
+    //    {
+    //        byte* r = &id._timestamp0;
 
-            return *(int*)l == *(int*)r && *(int*)(l + 4) == *(int*)(r + 4) && *(int*)(l + 8) == *(int*)(r + 8);
-        }
-    }
+    //        return *(int*)l == *(int*)r && *(int*)(l + 4) == *(int*)(r + 4) && *(int*)(l + 8) == *(int*)(r + 8);
+    //    }
+    //}
 
-    //faster in .net 6
-    internal unsafe Boolean Equals3(Id id)
-    {
-        fixed (byte* l = &_timestamp0)
-        {
-            byte* r = &id._timestamp0;
-            return *(long*)l == *(long*)r && *(int*)(l + 8) == *(int*)(r + 8);
-        }
-    }
+    ////faster in .net 6
+    //internal unsafe Boolean Equals3(Id id)
+    //{
+    //    fixed (byte* l = &_timestamp0)
+    //    {
+    //        byte* r = &id._timestamp0;
+    //        return *(long*)l == *(long*)r && *(int*)(l + 8) == *(int*)(r + 8);
+    //    }
+    //}
 
-    internal Boolean Equals4(Id id)
-    {
-        ref byte bl = ref Unsafe.AsRef(in _timestamp0);
-        ref byte br = ref Unsafe.AsRef(in id._timestamp0);
+    //internal Boolean Equals4(Id id)
+    //{
+    //    ref byte bl = ref Unsafe.AsRef(in _timestamp0);
+    //    ref byte br = ref Unsafe.AsRef(in id._timestamp0);
 
-        return Unsafe.As<byte, long>(ref bl) == Unsafe.As<byte, long>(ref br) &&
-               Unsafe.As<byte, int>(ref Unsafe.Add(ref bl, 8)) == Unsafe.As<byte, int>(ref Unsafe.Add(ref br, 8));
-    }
+    //    return Unsafe.As<byte, long>(ref bl) == Unsafe.As<byte, long>(ref br) &&
+    //           Unsafe.As<byte, int>(ref Unsafe.Add(ref bl, 8)) == Unsafe.As<byte, int>(ref Unsafe.Add(ref br, 8));
+    //}
 
     public override String ToString() => ToBase64Url();
 
@@ -487,14 +477,14 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         return r ^ Unsafe.Add(ref r, 1) ^ Unsafe.Add(ref r, 2);
     }
 
-    internal unsafe int GetHashCode2()
-    {
-        fixed (void* p = &_timestamp0)
-        {
-            var int32 = (int*)p;
-            return (*int32) ^ *(int32 + 1) ^ *(int32 + 2);
-        }
-    }
+    //internal unsafe int GetHashCode2()
+    //{
+    //    fixed (void* p = &_timestamp0)
+    //    {
+    //        var int32 = (int*)p;
+    //        return (*int32) ^ *(int32 + 1) ^ *(int32 + 2);
+    //    }
+    //}
 
     #endregion Public Methods
 
