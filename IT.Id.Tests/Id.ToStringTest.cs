@@ -80,11 +80,13 @@ public class IdToStringTest
             Assert.That(CheckId(Id.Parse("v{IV^PiNKcFO_~|")).ToString(Idf.Base85), Is.EqualTo("v{IV^PiNKcFO_~|"));
 
             //Win = \, Linux = /
-            //var p = Path.DirectorySeparatorChar;
+            var p = Path.DirectorySeparatorChar;
 
-            Assert.That(CheckId(Id.Parse("_/I/-TH145xA0ZPhqY")).ToString(Idf.Base64Path2), Is.EqualTo($"_/I/-TH145xA0ZPhqY"));
+            Console.WriteLine($"Path.DirectorySeparatorChar: '{p}'");
 
-            Assert.That(CheckId(Id.Parse("_/I/-/TH145xA0ZPhqY")).ToString(Idf.Base64Path3), Is.EqualTo($"_/I/-/TH145xA0ZPhqY"));
+            Assert.That(CheckId(Id.Parse("_/I/-TH145xA0ZPhqY")).ToBase64Path2(p), Is.EqualTo($"_{p}I{p}-TH145xA0ZPhqY"));
+
+            Assert.That(CheckId(Id.Parse("_/I/-/TH145xA0ZPhqY")).ToBase64Path3(p), Is.EqualTo($"_{p}I{p}-{p}TH145xA0ZPhqY"));
         });
     }
 
