@@ -65,17 +65,17 @@ public class StructBenchmark
     //    return max;
     //}
 
-    [Benchmark]
-    public Id32 CopyId32()
-    {
-        Id32 max = default;
-        var value = new Id32(Id, byte.MaxValue);
-        for (int i = 0; i < Count; i++)
-        {
-            max = CopyLocal(value);
-        }
-        return max;
-    }
+    //[Benchmark]
+    //public Id32 CopyId32()
+    //{
+    //    Id32 max = default;
+    //    var value = new Id32(Id, byte.MaxValue);
+    //    for (int i = 0; i < Count; i++)
+    //    {
+    //        max = CopyLocal(value);
+    //    }
+    //    return max;
+    //}
 
     [Benchmark]
     public Id40 CopyId40()
