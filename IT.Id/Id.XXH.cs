@@ -29,20 +29,20 @@ public readonly partial struct Id
         return h32 ^ (h32 >> 16);
     }
 
-    internal unsafe UInt32 XXH32_2()
-    {
-        fixed (byte* p = &_timestamp0)
-        {
-            var i = (uint*)p;
-            var h32 = PRIME32_5 + 12 + (*i) * PRIME32_3;
-            h32 = (h32 << 17 | h32 >> 15) * PRIME32_4 + (*(i + 1)) * PRIME32_3;
-            h32 = (h32 << 17 | h32 >> 15) * PRIME32_4 + (*(i + 2)) * PRIME32_3;
-            h32 = (h32 << 17 | h32 >> 15) * PRIME32_4;
-            h32 = (h32 ^ (h32 >> 15)) * PRIME32_2;
-            h32 = (h32 ^ (h32 >> 13)) * PRIME32_3;
-            return h32 ^ (h32 >> 16);
-        }
-    }
+    //internal unsafe UInt32 XXH32_2()
+    //{
+    //    fixed (byte* p = &_timestamp0)
+    //    {
+    //        var i = (uint*)p;
+    //        var h32 = PRIME32_5 + 12 + (*i) * PRIME32_3;
+    //        h32 = (h32 << 17 | h32 >> 15) * PRIME32_4 + (*(i + 1)) * PRIME32_3;
+    //        h32 = (h32 << 17 | h32 >> 15) * PRIME32_4 + (*(i + 2)) * PRIME32_3;
+    //        h32 = (h32 << 17 | h32 >> 15) * PRIME32_4;
+    //        h32 = (h32 ^ (h32 >> 15)) * PRIME32_2;
+    //        h32 = (h32 ^ (h32 >> 13)) * PRIME32_3;
+    //        return h32 ^ (h32 >> 16);
+    //    }
+    //}
 
     public UInt64 XXH64()
     {
@@ -56,19 +56,19 @@ public readonly partial struct Id
         return h64 ^ (h64 >> 32);
     }
 
-    internal unsafe UInt64 XXH64_2()
-    {
-        fixed (byte* p = &_timestamp0)
-        {
-            ulong h64 = *(ulong*)p * PRIME64_2;
-            h64 = (PRIME64_5 + 12) ^ ((h64 << 31 | h64 >> 33) * PRIME64_1);
-            h64 = ((h64 << 27 | h64 >> 37) * PRIME64_1 + PRIME64_4) ^ (*(uint*)(p + 8) * PRIME64_1);
-            h64 = (h64 << 23 | h64 >> 41) * PRIME64_2 + PRIME64_3;
-            h64 = (h64 ^ (h64 >> 33)) * PRIME64_2;
-            h64 = (h64 ^ (h64 >> 29)) * PRIME64_3;
-            return h64 ^ (h64 >> 32);
-        }
-    }
+    //internal unsafe UInt64 XXH64_2()
+    //{
+    //    fixed (byte* p = &_timestamp0)
+    //    {
+    //        ulong h64 = *(ulong*)p * PRIME64_2;
+    //        h64 = (PRIME64_5 + 12) ^ ((h64 << 31 | h64 >> 33) * PRIME64_1);
+    //        h64 = ((h64 << 27 | h64 >> 37) * PRIME64_1 + PRIME64_4) ^ (*(uint*)(p + 8) * PRIME64_1);
+    //        h64 = (h64 << 23 | h64 >> 41) * PRIME64_2 + PRIME64_3;
+    //        h64 = (h64 ^ (h64 >> 33)) * PRIME64_2;
+    //        h64 = (h64 ^ (h64 >> 29)) * PRIME64_3;
+    //        return h64 ^ (h64 >> 32);
+    //    }
+    //}
 
     //internal unsafe UInt64 XXH64_3()
     //{

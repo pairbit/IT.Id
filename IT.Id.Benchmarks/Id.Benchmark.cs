@@ -77,14 +77,14 @@ public class IdBenchmark
     [Benchmark]
     public UInt32 Id_XXH32() => _id.XXH32();
 
-    [Benchmark]
-    public UInt32 Id_XXH32_2() => _id.XXH32_2();
+    //[Benchmark]
+    //public UInt32 Id_XXH32_2() => _id.XXH32_2();
 
     [Benchmark]
     public UInt64 Id_XXH64() => _id.XXH64();
 
-    [Benchmark]
-    public UInt64 Id_XXH64_2() => _id.XXH64_2();
+    //[Benchmark]
+    //public UInt64 Id_XXH64_2() => _id.XXH64_2();
 
     #endregion Hashing
 
