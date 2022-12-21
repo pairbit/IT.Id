@@ -42,25 +42,37 @@ public class Id32ToStringTest
         id = Id.Parse("Y6MQTcwJH1V46fft");
 
         // 1 length
-        Assert.That(new Id32(id, 0, 0).ToBase64Url().Substring(16), Is.EqualTo("0"));
-        Assert.That(new Id32(id, 0, 63).ToBase64Url().Substring(16), Is.EqualTo("_"));
+        Assert.That(ToBase64Url(id, 0, 0), Is.EqualTo("0"));
+        Assert.That(ToBase64Url(id, 0, 63), Is.EqualTo("_"));
 
         //3 length
-        Assert.That(new Id32(id, 0, 64).ToBase64Url().Substring(16), Is.EqualTo("00_"));
+        Assert.That(ToBase64Url(id, 0, 64), Is.EqualTo("00_"));
+        Assert.That(ToBase64Url(id, 0, 64 * 64 + 63), Is.EqualTo("___"));
+        
+        //4 length
+        Assert.That(ToBase64Url(id, 0, ushort.MaxValue), Is.EqualTo("e-__"));
+
+        Assert.That(ToBase64Url(id, 3, 0), Is.EqualTo("K_0_"));
+        Assert.That(ToBase64Url(id, 3, 63), Is.EqualTo("K___"));
+        Assert.That(ToBase64Url(id, 3, ushort.MaxValue), Is.EqualTo("--__"));
 
         //5 length
-        Assert.That(new Id32(id, 17, 0).ToBase64Url().Substring(16), Is.EqualTo("3e_0_"));
-        Assert.That(new Id32(id, 17, 10).ToBase64Url().Substring(16), Is.EqualTo("3e_a_"));
-        Assert.That(new Id32(id, 17, 11).ToBase64Url().Substring(16), Is.EqualTo("3e_b_"));
-        Assert.That(new Id32(id, 17, 32000).ToBase64Url().Substring(16), Is.EqualTo("3mP0_"));
-        Assert.That(new Id32(id, 17, short.MaxValue).ToBase64Url().Substring(16), Is.EqualTo("3m-__"));
+        Assert.That(ToBase64Url(id, 17, 0), Is.EqualTo("3e_0_"));
+        Assert.That(ToBase64Url(id, 17, 10), Is.EqualTo("3e_a_"));
+        Assert.That(ToBase64Url(id, 17, 11), Is.EqualTo("3e_b_"));
+        Assert.That(ToBase64Url(id, 17, 32000), Is.EqualTo("3mP0_"));
+        Assert.That(ToBase64Url(id, 17, ushort.MaxValue), Is.EqualTo("3u-__"));
+        Assert.That(ToBase64Url(id, 259, ushort.MaxValue), Is.EqualTo("_--__"));
 
+        //6 length
+        Assert.That(ToBase64Url(id, 16643, ushort.MaxValue), Is.EqualTo("__--__"));
+        
         //7 length
-        Assert.That(new Id32(id, 32000, 0).ToBase64Url().Substring(16), Is.EqualTo("0X--_0_"));
-        Assert.That(new Id32(id, 32000, 10).ToBase64Url().Substring(16), Is.EqualTo("0X--_a_"));
-        Assert.That(new Id32(id, 32000, 63).ToBase64Url().Substring(16), Is.EqualTo("0X--___"));
-        Assert.That(new Id32(id, 32000, 64).ToBase64Url().Substring(16), Is.EqualTo("0X-_00_"));
-        Assert.That(new Id32(id, short.MaxValue, short.MaxValue).ToBase64Url().Substring(16), Is.EqualTo("0--S-__"));
+        Assert.That(ToBase64Url(id, 32000, 0), Is.EqualTo("0X--_0_"));
+        Assert.That(ToBase64Url(id, 32000, 10), Is.EqualTo("0X--_a_"));
+        Assert.That(ToBase64Url(id, 32000, 63), Is.EqualTo("0X--___"));
+        Assert.That(ToBase64Url(id, 32000, 64), Is.EqualTo("0X-_00_"));
+        Assert.That(ToBase64Url(id, ushort.MaxValue, ushort.MaxValue), Is.EqualTo("2----__"));
     }
 
     [Test]
@@ -96,4 +108,6 @@ public class Id32ToStringTest
         Assert.That(Id32.Parse(hexUpper), Is.EqualTo(id));
         Assert.That(Id32.Parse(hexLower), Is.EqualTo(id));
     }
+
+    private static string ToBase64Url(Id id, ushort type, ushort index) => new Id32(id, (short)type, (short)index).ToBase64Url().Substring(16);
 }

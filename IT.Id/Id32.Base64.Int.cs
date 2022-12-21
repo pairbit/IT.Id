@@ -5,18 +5,25 @@ namespace IT;
 
 public readonly partial struct Id32
 {
+    public static uint GetMaxValueBase64(uint length)
+    {
+        if (length == 1) return Base64.NumCount1 - 1;
+        if (length == 2) return Base64.NumSum2 - 1;
+        if (length == 3) return Base64.NumSum3 - 1;
+        if (length == 4) return Base64.NumSum4 - 1;
+        if (length == 5) return Base64.NumSum5 - 1;
+        if (length == 6) return uint.MaxValue;
+
+        throw new ArgumentOutOfRangeException();
+    }
+
     public static int GetLengthBase64(uint value)
     {
         if (value < Base64.NumCount1) return 1;
-
         if (value < Base64.NumSum2) return 2;
-
         if (value < Base64.NumSum3) return 3;
-
         if (value < Base64.NumSum4) return 4;
-
         if (value < Base64.NumSum5) return 5;
-
         return 6;
     }
 
