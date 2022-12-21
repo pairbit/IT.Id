@@ -5,6 +5,9 @@ using System.Runtime.CompilerServices;
 namespace IT;
 
 public readonly partial struct Id
+#if NET7_0_OR_GREATER
+: ISpanParsable<Id>
+#endif
 {
     #region Parse
 

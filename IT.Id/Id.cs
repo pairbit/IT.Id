@@ -16,7 +16,7 @@ namespace IT;
 [System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Converters.IdConverter))]
 public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 #if NET7_0_OR_GREATER
-, System.Numerics.IMinMaxValue<Id>, ISpanParsable<Id>
+, System.Numerics.IMinMaxValue<Id>
 #endif
 {
     #region Fields
@@ -489,7 +489,8 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
     #endregion Public Methods
 
     #region Private Methods
-
+    
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool EqualsCore(in Id left, in Id right)
     {
         ref int l = ref Unsafe.As<byte, int>(ref Unsafe.AsRef(in left._timestamp0));
