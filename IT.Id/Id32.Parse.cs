@@ -33,6 +33,10 @@ public readonly partial struct Id32
 
         if (len == 0) throw new FormatException();
 
+        //exclusion for Base64 with 1 char length
+        //if (len == 16) ParseBase85(chars);
+        if (len == 17) return ParseBase64(chars);
+
         var version = chars[len - 1];
 
         if (version == Base64.Format || version == Base64.FormatUrl) return ParseBase64(chars);

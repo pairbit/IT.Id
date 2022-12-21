@@ -42,8 +42,8 @@ public class Id32ToStringTest
         id = Id.Parse("Y6MQTcwJH1V46fft");
 
         // 1 length
-        Assert.That(new Id32(id, 0, 0).ToBase64Url().Substring(16), Is.EqualTo("0_"));
-        Assert.That(new Id32(id, 0, 63).ToBase64Url().Substring(16), Is.EqualTo("__"));
+        Assert.That(new Id32(id, 0, 0).ToBase64Url().Substring(16), Is.EqualTo("0"));
+        Assert.That(new Id32(id, 0, 63).ToBase64Url().Substring(16), Is.EqualTo("_"));
 
         //3 length
         Assert.That(new Id32(id, 0, 64).ToBase64Url().Substring(16), Is.EqualTo("00_"));

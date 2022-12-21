@@ -11,39 +11,70 @@ public readonly partial struct Id32
     {
         var value = BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref Unsafe.AsRef(in _value0)));
 
-        var len = 16 + GetLengthBase64(value) + 1;
+        var len = GetLengthBase64(value);
 
-        var str = new string('\0', len);
-
-        unsafe
+        if (len == 1)
         {
-            fixed (char* ptr = str)
+            var base64Url = new string('\0', 17);
+
+            unsafe
             {
-                var chars = new Span<Char>(ptr, len);
+                fixed (char* ptr = base64Url)
+                {
+                    var chars = new Span<Char>(ptr, 17);
 
-                _id.TryToBase64Url(chars);
+                    _id.TryToBase64Url(chars);
 
-                TryToBase64Url(chars.Slice(16), value);
-
-                chars[len - 1] = Base64.FormatUrl;
+                    chars[16] = Base64.tableNumUrl[value];
+                }
             }
-        }
 
-        return str;
+            return base64Url;
+        }
+        else
+        {
+            len += 17;
+
+            var base64Url = new string('\0', len);
+
+            unsafe
+            {
+                fixed (char* ptr = base64Url)
+                {
+                    var chars = new Span<Char>(ptr, len);
+
+                    _id.TryToBase64Url(chars);
+
+                    TryToBase64Url(chars.Slice(16), value);
+
+                    chars[len - 1] = Base64.FormatUrl;
+                }
+            }
+
+            return base64Url;
+        }
     }
 
     public static Id32 ParseBase64(ReadOnlySpan<Char> chars)
     {
         var len = chars.Length;
-        if (len == 0) throw new FormatException();
-
-        var version = chars[len - 1];
-
-        if (version != Base64.Format && version != Base64.FormatUrl) throw new FormatException();
-
-        len -= 17;
 
         if (len == 0) throw new FormatException();
+
+        if (len == 17)
+        {
+            len = 1;
+        }
+        else
+        {
+            var version = chars[len - 1];
+
+            if (version != Base64.Format && version != Base64.FormatUrl) throw new FormatException();
+
+            len -= 17;
+
+            if (len == 0) throw new FormatException();
+        }
 
         Id32 id32 = default;
 
