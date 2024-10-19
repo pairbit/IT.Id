@@ -13,12 +13,12 @@
 	<PublishRepositoryUrl>true</PublishRepositoryUrl>
 	<Authors>Ivan Tikhonov</Authors>
 	<Copyright>Ivan Tikhonov © 2022</Copyright>
-	<Version>2.0.2</Version>
+	<Version>2.0.3</Version>
 	<PackageTags>Id ObjectId</PackageTags>
 	<PackageReadmeFile>Readme.md</PackageReadmeFile>
 	<PackageIcon>Icon.png</PackageIcon>
     <PackageReleaseNotes>
-		more optimization
+		System.Text.Json 8.0.5
 	</PackageReleaseNotes>
 	<SignAssembly>true</SignAssembly>
 	<AssemblyOriginatorKeyFile>..\IT.snk</AssemblyOriginatorKeyFile>
@@ -36,17 +36,17 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework) == 'netstandard2.0'">
-	<PackageReference Include="System.Text.Json" Version="7.0.1" />
+	<PackageReference Include="System.Text.Json" Version="8.0.5" />
     <PackageReference Include="System.Memory" Version="4.5.5" />
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework) == 'netstandard2.1'">
-	<PackageReference Include="System.Text.Json" Version="7.0.1" />
+	<PackageReference Include="System.Text.Json" Version="8.0.5" />
 	<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>
