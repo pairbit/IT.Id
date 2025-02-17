@@ -137,7 +137,9 @@ public class IdTest
         Assert.Multiple(() =>
         {
             Assert.That(Id.Parse(id.ToString()), Is.EqualTo(id));
-
+#if NET
+            Assert.That(Id.Parse(id.ToUtf8String()), Is.EqualTo(id));
+#endif
             Assert.That(new Id(id.Timestamp, id.Machine, id.Pid, id.Increment), Is.EqualTo(id));
 
             Assert.That(new Id(id.ToByteArray()), Is.EqualTo(id));

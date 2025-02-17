@@ -12,8 +12,6 @@ namespace IT;
 
 [StructLayout(LayoutKind.Explicit, Size = 12)]
 [DebuggerDisplay("{ToString(),nq}")]
-[System.ComponentModel.TypeConverter(typeof(System.ComponentModel.IdConverter))]
-[System.Text.Json.Serialization.JsonConverter(typeof(System.Text.Json.Serialization.Converters.IdConverter))]
 public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 #if NET7_0_OR_GREATER
 , System.Numerics.IMinMaxValue<Id>
@@ -67,13 +65,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
     {
         if (bytes.Length != 12) ThrowArgumentException();
 
-        //this = MemoryMarshal.Read<Id>(bytes);
-
         this = Unsafe.ReadUnaligned<Id>(ref MemoryMarshal.GetReference(bytes));
-
-        //ref var src = ref MemoryMarshal.GetReference(bytes);
-        //Unsafe.WriteUnaligned(ref _timestamp0, Unsafe.As<byte, ulong>(ref src));
-        //Unsafe.WriteUnaligned(ref _pid1, Unsafe.As<byte, uint>(ref Unsafe.Add(ref src, 8)));
 
         //https://github.com/dotnet/runtime/pull/78446
         [StackTraceHidden]
@@ -301,38 +293,38 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         _machines = machines;
     }
 
-    //public static Byte[] Pack(Int32 timestamp, Int32 machine, Int16 pid, Int32 increment)
-    //{
-    //    if ((machine & 0xff000000) != 0) throw new ArgumentOutOfRangeException(nameof(machine), "The machine value must be between 0 and 16777215 (it must fit in 3 bytes).");
+#if NETSTANDARD2_0
+    public static Id Parse(string value)
+    {
+        if (value == null) throw new ArgumentNullException(nameof(value));
+        if (value.Length != 16) throw new ArgumentOutOfRangeException(nameof(value));
 
-    //    if ((increment & 0xff000000) != 0) throw new ArgumentOutOfRangeException(nameof(increment), "The increment value must be between 0 and 16777215 (it must fit in 3 bytes).");
+        return Unsafe.ReadUnaligned<Id>(ref MemoryMarshal.GetReference(Convert.FromBase64String(value).AsSpan()));
+    }
+#else
+    public static Id Parse(ReadOnlySpan<char> chars)
+    {
+        if (chars.Length != 16) throw new ArgumentOutOfRangeException(nameof(chars));
 
-    //    byte[] bytes = new byte[12];
-    //    bytes[0] = (byte)(timestamp >> 24);
-    //    bytes[1] = (byte)(timestamp >> 16);
-    //    bytes[2] = (byte)(timestamp >> 8);
-    //    bytes[3] = (byte)(timestamp);
-    //    bytes[4] = (byte)(machine >> 16);
-    //    bytes[5] = (byte)(machine >> 8);
-    //    bytes[6] = (byte)(machine);
-    //    bytes[7] = (byte)(pid >> 8);
-    //    bytes[8] = (byte)(pid);
-    //    bytes[9] = (byte)(increment >> 16);
-    //    bytes[10] = (byte)(increment >> 8);
-    //    bytes[11] = (byte)(increment);
-    //    return bytes;
-    //}
+        Span<byte> bytes = stackalloc byte[12];
 
-    //public static void Unpack(Byte[] bytes, out Int32 timestamp, out Int32 machine, out Int16 pid, out Int32 increment)
-    //{
-    //    if (bytes == null) throw new ArgumentNullException(nameof(bytes));
-    //    if (bytes.Length != 12) throw new ArgumentOutOfRangeException(nameof(bytes), "Byte array must be 12 bytes long.");
+        if (!Convert.TryFromBase64Chars(chars, bytes, out _)) throw new ArgumentOutOfRangeException(nameof(chars));
+        
+        return Unsafe.ReadUnaligned<Id>(ref MemoryMarshal.GetReference(bytes));
+    }
 
-    //    timestamp = (bytes[0] << 24) + (bytes[1] << 16) + (bytes[2] << 8) + bytes[3];
-    //    machine = (bytes[4] << 16) + (bytes[5] << 8) + bytes[6];
-    //    pid = (short)((bytes[7] << 8) + bytes[8]);
-    //    increment = (bytes[9] << 16) + (bytes[10] << 8) + bytes[11];
-    //}
+    public static Id Parse(ReadOnlySpan<byte> bytes)
+    {
+        if (bytes.Length != 16) throw new ArgumentOutOfRangeException(nameof(bytes));
+
+        Span<byte> decoded = stackalloc byte[12];
+        
+        if (System.Buffers.Text.Base64.DecodeFromUtf8(bytes, decoded, out _, out _) != System.Buffers.OperationStatus.Done)
+            throw new ArgumentOutOfRangeException(nameof(bytes));
+
+        return Unsafe.ReadUnaligned<Id>(ref MemoryMarshal.GetReference(decoded));
+    }
+#endif
 
     public Byte[] ToByteArray()
     {
@@ -343,30 +335,6 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         return bytes;
     }
 
-    //internal Byte[] ToByteArray2()
-    //{
-    //    var bytes = new byte[12];
-
-    //    MemoryMarshal.TryWrite(bytes, ref Unsafe.AsRef(in this));
-
-    //    return bytes;
-    //}
-
-    //internal Byte[] ToByteArray3() => new[] {
-    //    _timestamp0,
-    //    _timestamp1,
-    //    _timestamp2,
-    //    _timestamp3,
-    //    _machine0,
-    //    _machine1,
-    //    _machine2,
-    //    _pid0,
-    //    _pid1,
-    //    _increment0,
-    //    _increment1,
-    //    _increment2
-    //};
-
     public Boolean TryWrite(Span<Byte> bytes)
     {
         if (bytes.Length < 12) return false;
@@ -375,28 +343,6 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
         return true;
     }
-
-    //internal Boolean TryWrite2(Span<Byte> bytes) => MemoryMarshal.TryWrite(bytes, ref Unsafe.AsRef(in this));
-
-    //internal Boolean TryWrite3(Span<Byte> bytes)
-    //{
-    //    if (bytes.Length < 12) return false;
-
-    //    bytes[0] = _timestamp0;
-    //    bytes[1] = _timestamp1;
-    //    bytes[2] = _timestamp2;
-    //    bytes[3] = _timestamp3;
-    //    bytes[4] = _machine0;
-    //    bytes[5] = _machine1;
-    //    bytes[6] = _machine2;
-    //    bytes[7] = _pid0;
-    //    bytes[8] = _pid1;
-    //    bytes[9] = _increment0;
-    //    bytes[10] = _increment1;
-    //    bytes[11] = _increment2;
-
-    //    return true;
-    //}
 
     public Int32 CompareTo(Id id)
     {
@@ -408,7 +354,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         if (_machine0 != id._machine0) return _machine0 < id._machine0 ? -1 : 1;
         if (_machine1 != id._machine1) return _machine1 < id._machine1 ? -1 : 1;
         if (_machine2 != id._machine2) return _machine2 < id._machine2 ? -1 : 1;
-        
+
         if (_pid0 != id._pid0) return _pid0 < id._pid0 ? -1 : 1;
         if (_pid1 != id._pid1) return _pid1 < id._pid1 ? -1 : 1;
 
@@ -417,17 +363,6 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         if (_increment2 != id._increment2) return _increment2 < id._increment2 ? -1 : 1;
 
         return 0;
-
-        //fixed (byte* a = &_timestamp0)
-        //{
-        //    byte* b = &id._timestamp0;
-
-        //    if (*(ulong*)a != *(ulong*)b) return *(ulong*)a < *(ulong*)b ? -1 : 1;
-
-        //    if (*(uint*)(a + 8) != *(uint*)(b + 8)) return *(uint*)(a + 8) < *(uint*)(b + 8) ? -1 : 1;
-
-        //    return 0;
-        //}
     }
 
     public Boolean Equals(Id id)
@@ -438,26 +373,6 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         return l == r && Unsafe.Add(ref l, 1) == Unsafe.Add(ref r, 1) && Unsafe.Add(ref l, 2) == Unsafe.Add(ref r, 2);
     }
 
-    //internal unsafe Boolean Equals2(Id id)
-    //{
-    //    fixed (byte* l = &_timestamp0)
-    //    {
-    //        byte* r = &id._timestamp0;
-
-    //        return *(int*)l == *(int*)r && *(int*)(l + 4) == *(int*)(r + 4) && *(int*)(l + 8) == *(int*)(r + 8);
-    //    }
-    //}
-
-    ////faster in .net 6
-    //internal unsafe Boolean Equals3(Id id)
-    //{
-    //    fixed (byte* l = &_timestamp0)
-    //    {
-    //        byte* r = &id._timestamp0;
-    //        return *(long*)l == *(long*)r && *(int*)(l + 8) == *(int*)(r + 8);
-    //    }
-    //}
-
     //internal Boolean Equals4(Id id)
     //{
     //    ref byte bl = ref Unsafe.AsRef(in _timestamp0);
@@ -467,7 +382,31 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
     //           Unsafe.As<byte, int>(ref Unsafe.Add(ref bl, 8)) == Unsafe.As<byte, int>(ref Unsafe.Add(ref br, 8));
     //}
 
-    public override String ToString() => ToBase64Url();
+#if !NETSTANDARD2_0
+    public byte[] ToUtf8String()
+    {
+        Span<byte> bytes = stackalloc byte[12];
+        Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(bytes), this);
+
+        var base64 = new byte[16];
+
+        if (System.Buffers.Text.Base64.EncodeToUtf8(bytes, base64, out _, out _) != System.Buffers.OperationStatus.Done)
+            throw new InvalidOperationException();
+
+        return base64;
+    }
+#endif
+
+    public override string ToString()
+    {
+#if NETSTANDARD2_0
+        return Convert.ToBase64String(ToByteArray());
+#else
+        Span<byte> bytes = stackalloc byte[12];
+        Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(bytes), this);
+        return Convert.ToBase64String(bytes);
+#endif
+    }
 
     public override bool Equals(object? obj) => obj is Id id && EqualsCore(in this, in id);
 
@@ -477,19 +416,10 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         return r ^ Unsafe.Add(ref r, 1) ^ Unsafe.Add(ref r, 2);
     }
 
-    //internal unsafe int GetHashCode2()
-    //{
-    //    fixed (void* p = &_timestamp0)
-    //    {
-    //        var int32 = (int*)p;
-    //        return (*int32) ^ *(int32 + 1) ^ *(int32 + 2);
-    //    }
-    //}
-
-    #endregion Public Methods
+#endregion Public Methods
 
     #region Private Methods
-    
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool EqualsCore(in Id left, in Id right)
     {
@@ -579,13 +509,6 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
         return (int)(uint)secondsSinceEpoch;
     }
-
-    //private static void FromByteArray(ReadOnlySpan<byte> bytes, int offset, out int timestamp, out int b, out int c)
-    //{
-    //    timestamp = (bytes[offset] << 24) | (bytes[offset + 1] << 16) | (bytes[offset + 2] << 8) | bytes[offset + 3];
-    //    b = (bytes[offset + 4] << 24) | (bytes[offset + 5] << 16) | (bytes[offset + 6] << 8) | bytes[offset + 7];
-    //    c = (bytes[offset + 8] << 24) | (bytes[offset + 9] << 16) | (bytes[offset + 10] << 8) | bytes[offset + 11];
-    //}
 
     private static DateTime ToUniversalTime(DateTime dateTime)
     {
