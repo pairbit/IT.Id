@@ -400,6 +400,19 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
     #endregion NewObjectId
 
+    public static Id Next(Id id)
+    {
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+
+        var inc = IncInt();
+
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 9), (byte)(inc >> 16));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 10), (byte)(inc >> 8));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 11), (byte)inc);
+
+        return id;
+    }
+
     #endregion Public Methods
 
     #region Operators
@@ -488,10 +501,13 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static uint Inc()
+    private static uint Inc() => (uint)IncInt();
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int IncInt()
     {
         // only use low order 3 bytes
-        return (uint)(Interlocked.Increment(ref _staticIncrement) & 0x00ffffff);
+        return Interlocked.Increment(ref _staticIncrement) & 0x00ffffff;
     }
 
     private static short GetPid()

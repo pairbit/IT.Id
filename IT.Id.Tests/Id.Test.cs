@@ -12,6 +12,20 @@ public class IdTest
     }
 
     [Test]
+    public void NextTest()
+    {
+        var id = Id.New();
+        for (int i = 1; i < 1000; i++)
+        {
+            var nextId = Id.Next(id);
+            Assert.That(id.Timestamp, Is.EqualTo(nextId.Timestamp));
+            Assert.That(id.Pid, Is.EqualTo(nextId.Pid));
+            Assert.That(id.Machine, Is.EqualTo(nextId.Machine));
+            Assert.That(unchecked(id.Increment + i), Is.EqualTo(nextId.Increment));
+        }
+    }
+
+    [Test]
     public void EqualsTest()
     {
         var staticIncrement = int.MaxValue-1000;
