@@ -14,6 +14,11 @@ public class IdTest
     [Test]
     public void EqualsTest()
     {
+        var staticIncrement = int.MaxValue-1000;
+        var a = (uint)Interlocked.Increment(ref staticIncrement) & 0x00ffffff;
+        
+        var b = (uint)(Interlocked.Increment(ref staticIncrement) & 0x00ffffff);
+
         var id = Id.New();
 
         var bytes = id.ToByteArray();
