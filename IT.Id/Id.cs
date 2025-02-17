@@ -21,25 +21,25 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
     //DateTime.UnixEpoch
     private static readonly DateTime _unixEpoch = new(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-    private static readonly Int64 _unixEpochTicks = _unixEpoch.Ticks;
+    private static readonly long _unixEpochTicks = _unixEpoch.Ticks;
 
-    private static readonly Int16 _pid = GetPid();
-    private static readonly Int32 _pid24 = GetPid() << 24;
-    private static readonly Int32 _machinePid = (GetMachineXXHash() << 8) | ((_pid >> 8) & 0xff);
-    private static readonly Int32 _machinePidReverse = BinaryPrimitives.ReverseEndianness((GetMachineXXHash() << 8) | ((_pid >> 8) & 0xff));
-    private static readonly Int64 _random = CalculateRandomValue();
-    private static readonly Int32 _random24 = (int)(_random << 24);
-    private static readonly Int32 _random8Reverse = BinaryPrimitives.ReverseEndianness((int)(_random >> 8));
-    internal static Int32 _staticIncrement = new Random().Next();
-    private static IDictionary<Int32, String>? _machines;
+    private static readonly short _pid = GetPid();
+    private static readonly uint _pid24 = (uint)(GetPid() << 24);
+    private static readonly int _machinePid = ((int)GetMachineXXHash() << 8) | ((_pid >> 8) & 0xff);
+    private static readonly int _machinePidReverse = BinaryPrimitives.ReverseEndianness(((int)GetMachineXXHash() << 8) | ((_pid >> 8) & 0xff));
+    private static readonly long _random = CalculateRandomValue();
+    private static readonly uint _random24 = (uint)(_random << 24);
+    private static readonly uint _random8Reverse = BinaryPrimitives.ReverseEndianness((uint)(_random >> 8));
+    internal static int _staticIncrement = new Random().Next();
+    private static IDictionary<uint, string>? _machines;
 
     /// <summary>
     /// First 3 bytes of machine name hash
     /// </summary>
-    public static readonly Int32 MachineHash24 = GetMachineXXHash();
+    public static readonly uint MachineHash24 = GetMachineXXHash();
     public static readonly Id Empty = default;
     public static readonly Id Min = new(0, 0, 0);
-    public static readonly Id Max = new(-1, -1, -1);
+    public static readonly Id Max = new(uint.MaxValue, uint.MaxValue, uint.MaxValue);
 
     [FieldOffset(0)] private readonly byte _timestamp0;
     [FieldOffset(1)] private readonly byte _timestamp1;
@@ -59,6 +59,11 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
     #endregion Fields
 
+    static Id()
+    {
+
+    }
+
     #region Ctors
 
     public Id(ReadOnlySpan<Byte> bytes)
@@ -72,12 +77,12 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         static void ThrowArgumentException() => throw new ArgumentException("The byte array must be 12 bytes long.", nameof(bytes));
     }
 
-    public Id(DateTime timestamp, Int32 machine, Int16 pid, Int32 increment)
+    public Id(DateTime timestamp, uint machine, ushort pid, uint increment)
         : this(GetTimestampFromDateTime(timestamp), machine, pid, increment)
     {
     }
 
-    public Id(Int32 timestamp, Int32 machine, Int16 pid, Int32 increment)
+    public Id(uint timestamp, uint machine, ushort pid, uint increment)
     {
         if ((machine & 0xff000000) != 0) throw new ArgumentOutOfRangeException(nameof(machine), "The machine value must be between 0 and 16777215 (it must fit in 3 bytes).");
 
@@ -105,7 +110,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         //Unsafe.WriteUnaligned(ref _pid1, BinaryPrimitives.ReverseEndianness((pid << 24) | increment));
     }
 
-    public Id(Int32 timestamp, Int32 machinePid, Int32 pidIncrement)
+    public Id(uint timestamp, uint machinePid, uint pidIncrement)
     {
         //_timestamp0 = (byte)(timestamp >> 24);
         //_timestamp1 = (byte)(timestamp >> 16);
@@ -140,21 +145,21 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
 #endif
 
-    public Int32 Timestamp => BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<Int32>(ref Unsafe.AsRef(in _timestamp0)));
+    public uint Timestamp => BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref Unsafe.AsRef(in _timestamp0)));
 
     //internal Int32 Timestamp3 => _timestamp0 << 24 | _timestamp1 << 16 | _timestamp2 << 8 | _timestamp3;
 
-    public Int32 Machine => (BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<Int32>(ref Unsafe.AsRef(in _machine0))) >> 8) & 0xffffff;
+    public uint Machine => (BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref Unsafe.AsRef(in _machine0))) >> 8) & 0xffffff;
 
     //internal Int32 Machine3 => (_machine0 << 16 | _machine1 << 8 | _machine2) & 0xffffff;
 
     public String? MachineName => _machines == null ? null : (_machines.TryGetValue(Machine, out var name) ? name : null);
 
-    public Int16 Pid => BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<Int16>(ref Unsafe.AsRef(in _pid0)));
+    public ushort Pid => BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<ushort>(ref Unsafe.AsRef(in _pid0)));
 
     //internal Int16 Pid3 => (short)(_pid0 << 8 | _pid1);
 
-    public Int32 Increment => (BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<Int32>(ref Unsafe.AsRef(in _increment0))) >> 8) & 0xffffff;
+    public uint Increment => (BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref Unsafe.AsRef(in _increment0))) >> 8) & 0xffffff;
 
     //internal Int32 Increment3 => (_increment0 << 16 | _increment1 << 8 | _increment2) & 0xffffff;
 
@@ -293,7 +298,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         if (names == null) throw new ArgumentNullException(nameof(names));
         if (names.Length == 0) throw new ArgumentException("names is empty", nameof(names));
 
-        var machines = new Dictionary<Int32, String>();
+        var machines = new Dictionary<uint, String>();
 
         foreach (var name in names)
         {
@@ -323,14 +328,31 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
         ref var b = ref Unsafe.As<Id, byte>(ref id);
 
-        Unsafe.WriteUnaligned(ref b, BinaryPrimitives.ReverseEndianness((int)(uint)(long)Math.Floor((double)(DateTime.UtcNow.Ticks - _unixEpochTicks) / TimeSpan.TicksPerSecond)));
+        Unsafe.WriteUnaligned(ref b, BinaryPrimitives.ReverseEndianness(GetTimestamp()));
 
         Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), _machinePidReverse);
 
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness(_pid24 | (Interlocked.Increment(ref _staticIncrement) & 0x00ffffff)));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness(_pid24 | (uint)(Interlocked.Increment(ref _staticIncrement) & 0x00ffffff)));
 
         return id;
     }
+
+    public static Id New(uint timestamp)
+    {
+        Id id = default;
+
+        ref var b = ref Unsafe.As<Id, byte>(ref id);
+
+        Unsafe.WriteUnaligned(ref b, BinaryPrimitives.ReverseEndianness(timestamp));
+
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), _machinePidReverse);
+
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness(_pid24 | (uint)(Interlocked.Increment(ref _staticIncrement) & 0x00ffffff)));
+
+        return id;
+    }
+
+    public static Id New(DateTime timestamp) => New(GetTimestampFromDateTime(timestamp));
 
     //internal static Id New_Old()
     //{
@@ -341,18 +363,6 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
     //    return new Id(GetTimestamp(), _machinePid, pidIncrement);
     //}
-
-    public static Id New(DateTime timestamp) => New(GetTimestampFromDateTime(timestamp));
-
-    public static Id New(Int32 timestamp)
-    {
-        // only use low order 3 bytes
-        int increment = Interlocked.Increment(ref _staticIncrement) & 0x00ffffff;
-
-        var pidIncrement = (_pid << 24) | increment;
-
-        return new Id(timestamp, _machinePid, pidIncrement);
-    }
 
     #endregion New
 
@@ -367,11 +377,11 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
         ref var b = ref Unsafe.As<Id, byte>(ref id);
 
-        Unsafe.WriteUnaligned(ref b, BinaryPrimitives.ReverseEndianness((int)(uint)(long)Math.Floor((double)(DateTime.UtcNow.Ticks - _unixEpochTicks) / TimeSpan.TicksPerSecond)));
+        Unsafe.WriteUnaligned(ref b, BinaryPrimitives.ReverseEndianness(GetTimestamp()));
 
         Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), _random8Reverse);
 
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness(_random24 | (Interlocked.Increment(ref _staticIncrement) & 0x00ffffff)));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness(_random24 | ((uint)Interlocked.Increment(ref _staticIncrement) & 0x00ffffff)));
 
         return id;
     }
@@ -379,22 +389,22 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
     internal static Id NewObjectIdOld()
     {
         // only use low order 3 bytes
-        int increment = Interlocked.Increment(ref _staticIncrement) & 0x00ffffff;
+        uint increment = (uint)Interlocked.Increment(ref _staticIncrement) & 0x00ffffff;
 
         var random = _random;
 
-        var b = (int)(random >> 8); // first 4 bytes of random
-        var c = (int)(random << 24) | increment; // 5th byte of random and 3 byte increment
+        var b = (uint)(random >> 8); // first 4 bytes of random
+        var c = (uint)(random << 24) | increment; // 5th byte of random and 3 byte increment
 
         return new Id(GetTimestamp(), b, c);
     }
 
     public static Id NewObjectId(DateTime timestamp) => NewObjectId(GetTimestampFromDateTime(timestamp));
 
-    public static Id NewObjectId(Int32 timestamp)
+    public static Id NewObjectId(uint timestamp)
     {
         // only use low order 3 bytes
-        int increment = Interlocked.Increment(ref _staticIncrement) & 0x00ffffff;
+        uint increment = (uint)Interlocked.Increment(ref _staticIncrement) & 0x00ffffff;
         return Create(timestamp, _random, increment);
     }
 
@@ -439,14 +449,14 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         return combined & 0xffffffffff; // low order 5 bytes
     }
 
-    private static Id Create(int timestamp, long random, int increment)
+    private static Id Create(uint timestamp, long random, uint increment)
     {
         if (random < 0 || random > 0xffffffffff) throw new ArgumentOutOfRangeException(nameof(random), "The random value must be between 0 and 1099511627775 (it must fit in 5 bytes).");
 
         if (increment < 0 || increment > 0xffffff) throw new ArgumentOutOfRangeException(nameof(increment), "The increment value must be between 0 and 16777215 (it must fit in 3 bytes).");
 
-        var b = (int)(random >> 8); // first 4 bytes of random
-        var c = (int)(random << 24) | increment; // 5th byte of random and 3 byte increment
+        var b = (uint)(random >> 8); // first 4 bytes of random
+        var c = (uint)(random << 24) | increment; // 5th byte of random and 3 byte increment
         return new Id(timestamp, b, c);
     }
 
@@ -472,21 +482,19 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         return 0x00ffffff & machineName.GetHashCode(); // use first 3 bytes of hash
     }
 
-    private static int GetMachineXXHash() => XXHash24(Environment.MachineName);
+    private static uint GetMachineXXHash() => XXHash24(Environment.MachineName);
 
-    private static int XXHash24(String machineName)
+    private static uint XXHash24(string machineName)
     {
         var bytes = Encoding.UTF8.GetBytes(machineName);
-        var hash = (int)Internal.XXH32.DigestOf(bytes);
+        var hash = Internal.XXH32.DigestOf(bytes);
         return 0x00ffffff & hash; // use first 3 bytes of hash
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static Int32 GetTimestamp()
+    private static uint GetTimestamp()
     {
-        var totalSeconds = (double)(DateTime.UtcNow.Ticks - _unixEpochTicks) / TimeSpan.TicksPerSecond;
-
-        return (int)(uint)(long)Math.Floor(totalSeconds);
+        return (uint)(long)Math.Floor((double)(DateTime.UtcNow.Ticks - _unixEpochTicks) / TimeSpan.TicksPerSecond);
     }
 
     private static short GetPid()
@@ -501,13 +509,13 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         }
     }
 
-    private static int GetTimestampFromDateTime(DateTime timestamp)
+    private static uint GetTimestampFromDateTime(DateTime timestamp)
     {
         var secondsSinceEpoch = (long)Math.Floor((ToUniversalTime(timestamp) - _unixEpoch).TotalSeconds);
 
         if (secondsSinceEpoch < uint.MinValue || secondsSinceEpoch > uint.MaxValue) throw new ArgumentOutOfRangeException(nameof(timestamp));
 
-        return (int)(uint)secondsSinceEpoch;
+        return (uint)secondsSinceEpoch;
     }
 
     private static DateTime ToUniversalTime(DateTime dateTime)
