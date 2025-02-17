@@ -171,7 +171,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
     //internal Int32 Increment3 => (_increment0 << 16 | _increment1 << 8 | _increment2) & 0xffffff;
 
-    public DateTimeOffset Created => _unixEpoch.AddSeconds((uint)Timestamp);
+    public DateTimeOffset Created => _unixEpoch.AddSeconds(Timestamp);
 
     #endregion Props
 
