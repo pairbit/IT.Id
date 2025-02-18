@@ -136,16 +136,16 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         //Unsafe.WriteUnaligned(ref _pid1, BinaryPrimitives.ReverseEndianness((pid << 24) | increment));
     }
 
-    //public Id(uint timestamp, ulong random, uint increment)
-    //{
-    //    if (random < 0 || random > 0xffffffffff) throw new ArgumentOutOfRangeException(nameof(random), "The random value must be between 0 and 1099511627775 (it must fit in 5 bytes).");
+    public Id(uint timestamp, ulong random, uint increment)
+    {
+        if (random > 0xffffffffff) throw new ArgumentOutOfRangeException(nameof(random), "The random value must be between 0 and 1099511627775 (it must fit in 5 bytes).");
 
-    //    if (increment < 0 || increment > 0xffffff) throw new ArgumentOutOfRangeException(nameof(increment), "The increment value must be between 0 and 16777215 (it must fit in 3 bytes).");
+        if (increment > 0xffffff) throw new ArgumentOutOfRangeException(nameof(increment), "The increment value must be between 0 and 16777215 (it must fit in 3 bytes).");
 
-    //    Unsafe.WriteUnaligned(ref _timestamp0, BinaryPrimitives.ReverseEndianness(timestamp));
-    //    Unsafe.WriteUnaligned(ref _machine0, BinaryPrimitives.ReverseEndianness((uint)(random >> 8)));
-    //    Unsafe.WriteUnaligned(ref _pid1, BinaryPrimitives.ReverseEndianness((uint)(random << 24) | increment));
-    //}
+        Unsafe.WriteUnaligned(ref _timestamp0, BinaryPrimitives.ReverseEndianness(timestamp));
+        Unsafe.WriteUnaligned(ref _machine0, BinaryPrimitives.ReverseEndianness((uint)(random >> 8)));
+        Unsafe.WriteUnaligned(ref _pid1, BinaryPrimitives.ReverseEndianness((uint)(random << 24) | increment));
+    }
 
     public Id(uint timestamp, uint machinePid, uint pidIncrement)
     {

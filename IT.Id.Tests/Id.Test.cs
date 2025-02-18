@@ -66,6 +66,53 @@ public class IdTest
     }
 
     [Test]
+    public void NewTest()
+    {
+        var id = Id.New();
+        for (int i = 1; i < 1000; i++)
+        {
+            var nextId = Id.New();
+            Assert.That(id.Timestamp, Is.EqualTo(nextId.Timestamp));
+            Assert.That(id.Random, Is.EqualTo(nextId.Random));
+            Assert.That(id.Machine, Is.EqualTo(nextId.Machine));
+            Assert.That(id.Pid, Is.EqualTo(nextId.Pid));
+            Assert.That(unchecked(id.Increment + i), Is.EqualTo(nextId.Increment));
+
+            Assert.That(id.IsCurrentMachine, Is.True);
+            Assert.That(id.IsCurrentPid, Is.True);
+            Assert.That(id.IsCurrentRandom, Is.False);
+        }
+
+        id = Id.NewObjectId();
+        for (int i = 1; i < 1000; i++)
+        {
+            var nextId = Id.NewObjectId();
+            Assert.That(id.Timestamp, Is.EqualTo(nextId.Timestamp));
+            Assert.That(id.Random, Is.EqualTo(nextId.Random));
+            Assert.That(id.Machine, Is.EqualTo(nextId.Machine));
+            Assert.That(id.Pid, Is.EqualTo(nextId.Pid));
+            Assert.That(unchecked(id.Increment + i), Is.EqualTo(nextId.Increment));
+
+            Assert.That(id.IsCurrentMachine, Is.False);
+            Assert.That(id.IsCurrentPid, Is.False);
+            Assert.That(id.IsCurrentRandom, Is.True);
+        }
+    }
+
+    [Test]
+    public void MinMax()
+    {
+        var min = Id.Min;
+
+        Assert.That(new Id(min.Timestamp, min.Machine, min.Pid, min.Increment), Is.EqualTo(min));
+        Assert.That(new Id(min.Timestamp, min.Random, min.Increment), Is.EqualTo(min));
+        
+        var max = Id.Max;
+        Assert.That(new Id(max.Timestamp, max.Machine, max.Pid, max.Increment), Is.EqualTo(max));
+        Assert.That(new Id(max.Timestamp, max.Random, max.Increment), Is.EqualTo(max));
+    }
+
+    [Test]
     public void NextTest()
     {
         var id = Id.New();
@@ -225,18 +272,34 @@ public class IdTest
     [Test]
     public void Ctor()
     {
-        var id = Id.New();
-
-        Assert.Multiple(() =>
+        Span<byte> span = stackalloc byte[12];
+        for (int i = 0; i < 1000; i++)
         {
+            var id = Id.New();
+            //Assert.That(new Id(id.Created.Date, id.Machine, id.Pid, id.Increment), Is.EqualTo(id));
             Assert.That(new Id(id.Timestamp, id.Machine, id.Pid, id.Increment), Is.EqualTo(id));
+            Assert.That(new Id(id.Timestamp, id.Random, id.Increment), Is.EqualTo(id));
 
             Assert.That(new Id(id.ToByteArray()), Is.EqualTo(id));
 
-            Span<byte> span = stackalloc byte[12];
             id.TryWrite(span);
             Assert.That(new Id(span), Is.EqualTo(id));
-        });
+            span.Clear();
+        }
+
+        for (int i = 0; i < 1000; i++)
+        {
+            var id = Id.NewObjectId();
+            //Assert.That(new Id(id.Created.Date, id.Machine, id.Pid, id.Increment), Is.EqualTo(id));
+            Assert.That(new Id(id.Timestamp, id.Machine, id.Pid, id.Increment), Is.EqualTo(id));
+            Assert.That(new Id(id.Timestamp, id.Random, id.Increment), Is.EqualTo(id));
+
+            Assert.That(new Id(id.ToByteArray()), Is.EqualTo(id));
+
+            id.TryWrite(span);
+            Assert.That(new Id(span), Is.EqualTo(id));
+            span.Clear();
+        }
     }
 
     [Test]
