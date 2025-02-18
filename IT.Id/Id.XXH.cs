@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 namespace IT;
 
@@ -17,7 +16,7 @@ public readonly partial struct Id
     private const ulong PRIME64_4 = 9650029242287828579ul;
     private const ulong PRIME64_5 = 2870177450012600261ul;
 
-    public UInt32 XXH32()
+    public uint XXH32()
     {
         ref uint i = ref Unsafe.As<byte, uint>(ref Unsafe.AsRef(in _timestamp0));
         var h32 = PRIME32_5 + 12 + i * PRIME32_3;
@@ -29,7 +28,7 @@ public readonly partial struct Id
         return h32 ^ (h32 >> 16);
     }
 
-    public UInt64 XXH64()
+    public ulong XXH64()
     {
         ref byte b = ref Unsafe.AsRef(in _timestamp0);
         ulong h64 = Unsafe.As<byte, ulong>(ref b) * PRIME64_2;

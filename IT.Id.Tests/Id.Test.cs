@@ -122,7 +122,7 @@ public class IdTest
 
         Assert.That(new Id(min.Timestamp, min.Machine, min.Pid, min.Increment), Is.EqualTo(min));
         Assert.That(new Id(min.Timestamp, min.Random, min.Increment), Is.EqualTo(min));
-        
+
         var max = Id.Max;
         Assert.That(new Id(max.Timestamp, max.Machine, max.Pid, max.Increment), Is.EqualTo(max));
         Assert.That(new Id(max.Timestamp, max.Random, max.Increment), Is.EqualTo(max));
@@ -321,21 +321,18 @@ public class IdTest
     [Test]
     public void XXH()
     {
+        var id = Id.New();
+        Span<byte> raw = stackalloc byte[12];
         for (int i = 0; i < 1000; i++)
         {
-            var id = Id.New();
+            id = Id.New();
 
-            var array = id.ToByteArray();
+            Assert.That(id.TryWrite(raw), Is.True); ;
 
-            Assert.Multiple(() =>
-            {
-                Assert.That(Internal.XXH32.DigestOf(array), Is.EqualTo(id.XXH32()));
-                Assert.That(Internal.XXH64.DigestOf(array), Is.EqualTo(id.XXH64()));
+            Assert.That(Internal.XXH32.DigestOf(raw), Is.EqualTo(id.XXH32()));
+            Assert.That(Internal.XXH64.DigestOf(raw), Is.EqualTo(id.XXH64()));
 
-                //Assert.That(id.XXH32_2(), Is.EqualTo(id.XXH32()));
-                //Assert.That(id.XXH64_2(), Is.EqualTo(id.XXH64()));
-            });
+            raw.Clear();
         }
     }
-
 }
