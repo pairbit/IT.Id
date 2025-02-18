@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Buffers;
 using System.Buffers.Binary;
+using System.Buffers.Text;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -288,31 +290,6 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         Convert.TryToBase64Chars(raw, chars, out _);
     }
 
-    public byte[] ToUtf8String()
-    {
-        Span<byte> raw = stackalloc byte[12];
-        Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(raw), this);
-
-        var utf8 = new byte[16];
-
-        if (System.Buffers.Text.Base64.EncodeToUtf8(raw, utf8, out _, out _) != System.Buffers.OperationStatus.Done)
-            throw new InvalidOperationException();
-
-        return utf8;
-    }
-
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public void ToUtf8String(Span<byte> bytes)
-    {
-        if (bytes.Length < 16) throw new ArgumentOutOfRangeException(nameof(bytes), bytes.Length, Message.InvalidLength(bytes.Length, 16));
-
-        Span<byte> raw = stackalloc byte[12];
-        Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(raw), this);
-
-        if (System.Buffers.Text.Base64.EncodeToUtf8(raw, bytes, out _, out _) != System.Buffers.OperationStatus.Done)
-            throw new InvalidOperationException();
-    }
-
     public bool TryFormat(Span<char> chars, out int written)
     {
         if (chars.Length < 16)
@@ -331,6 +308,31 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     }
 #endif
 
+    public byte[] ToUtf8String()
+    {
+        Span<byte> raw = stackalloc byte[12];
+        Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(raw), this);
+
+        var utf8 = new byte[16];
+
+        if (Base64.EncodeToUtf8(raw, utf8, out _, out _) != OperationStatus.Done)
+            throw new InvalidOperationException();
+
+        return utf8;
+    }
+
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    public void ToUtf8String(Span<byte> bytes)
+    {
+        if (bytes.Length < 16) throw new ArgumentOutOfRangeException(nameof(bytes), bytes.Length, Message.InvalidLength(bytes.Length, 16));
+
+        Span<byte> raw = stackalloc byte[12];
+        Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(raw), this);
+
+        if (Base64.EncodeToUtf8(raw, bytes, out _, out _) != OperationStatus.Done)
+            throw new InvalidOperationException();
+    }
+
     public bool TryFormat(Span<byte> bytes, out int written)
     {
         if (bytes.Length < 16)
@@ -342,7 +344,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         Span<byte> raw = stackalloc byte[12];
         Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(raw), this);
 
-        if (System.Buffers.Text.Base64.EncodeToUtf8(raw, bytes, out _, out _) != System.Buffers.OperationStatus.Done)
+        if (Base64.EncodeToUtf8(raw, bytes, out _, out _) != OperationStatus.Done)
             throw new InvalidOperationException();
 
         written = 16;
@@ -428,7 +430,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         Span<byte> raw = stackalloc byte[12];
 
-        if (System.Buffers.Text.Base64.DecodeFromUtf8(bytes, raw, out _, out _) != System.Buffers.OperationStatus.Done)
+        if (Base64.DecodeFromUtf8(bytes, raw, out _, out _) != OperationStatus.Done)
             throw new ArgumentOutOfRangeException(nameof(bytes));
 
         return Unsafe.ReadUnaligned<Id>(ref MemoryMarshal.GetReference(raw));
@@ -440,7 +442,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
         Span<byte> raw = stackalloc byte[12];
 
-        if (System.Buffers.Text.Base64.DecodeFromUtf8(bytes, raw, out _, out _) != System.Buffers.OperationStatus.Done)
+        if (Base64.DecodeFromUtf8(bytes, raw, out _, out _) != OperationStatus.Done)
             goto fail;
 
         id = Unsafe.ReadUnaligned<Id>(ref MemoryMarshal.GetReference(raw));

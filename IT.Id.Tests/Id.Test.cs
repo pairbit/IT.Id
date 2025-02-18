@@ -40,6 +40,8 @@ public class IdTest
             Assert.That(id.Machine, Is.EqualTo(Id.CurrentMachine));
             Assert.That(id.IsCurrentMachine, Is.True);
             Assert.That(unchecked(id.Increment + i), Is.EqualTo(nextId.Increment));
+
+            id.ToUtf8String
         }
 
         id = Id.NewObjectId();
