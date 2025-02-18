@@ -15,7 +15,7 @@ public class IdMessagePackTest
         [DataMember(Order = 1)]
         public string? Name { get; set; }
 
-        public string ToJsonArray() => $"[\"{Id:/}\",\"{Name}\"]";
+        public string ToJsonArray() => $"[\"{Id}\",\"{Name}\"]";
     }
 
     [SetUp]
@@ -42,7 +42,7 @@ public class IdMessagePackTest
 
         var json = MessagePackSerializer.ConvertToJson(serialized);
 
-        Assert.That(json, Is.EqualTo($"\"{id:/}\""));
+        Assert.That(json, Is.EqualTo($"\"{id}\""));
 
         Assert.Throws<MessagePackSerializationException>(() => MessagePackSerializer.Deserialize<Id>(serialized));
 
@@ -70,7 +70,7 @@ public class IdMessagePackTest
 
         var json = MessagePackSerializer.ConvertToJson(serialized);
 
-        Assert.That(json, Is.EqualTo($"\"{id:/}\""));
+        Assert.That(json, Is.EqualTo($"\"{id}\""));
 
         Assert.Throws<MessagePackSerializationException>(() => MessagePackSerializer.Deserialize<Id?>(serialized));
 

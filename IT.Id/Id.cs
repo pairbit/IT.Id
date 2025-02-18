@@ -11,11 +11,23 @@ namespace IT;
 
 [StructLayout(LayoutKind.Explicit, Size = 12)]
 [DebuggerDisplay("{ToString(),nq}")]
-public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
+public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattable
+#if NET6_0_OR_GREATER
+, ISpanFormattable
+#endif
 #if NET7_0_OR_GREATER
 , System.Numerics.IMinMaxValue<Id>
+, ISpanParsable<Id>
+#endif
+#if NET8_0_OR_GREATER
+, IUtf8SpanFormattable, IUtf8SpanParsable<Id>
 #endif
 {
+    static class Message
+    {
+        public static string InvalidLength(long invalid, int valid) => $"{nameof(Id)} length cannot be {invalid}. {nameof(Id)} length must be {valid}";
+    }
+
     #region Fields
 
     //DateTime.UnixEpoch
@@ -187,9 +199,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
     #endregion Props
 
-    #region Public Methods
-
-    public Byte[] ToByteArray()
+    public byte[] ToByteArray()
     {
         var bytes = new byte[12];
 
@@ -198,7 +208,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         return bytes;
     }
 
-    public Boolean TryWrite(Span<Byte> bytes)
+    public Boolean TryWrite(Span<byte> bytes)
     {
         if (bytes.Length < 12) return false;
 
@@ -245,7 +255,40 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
     //           Unsafe.As<byte, int>(ref Unsafe.Add(ref bl, 8)) == Unsafe.As<byte, int>(ref Unsafe.Add(ref br, 8));
     //}
 
+    public override bool Equals(object? obj) => obj is Id id && EqualsCore(in this, in id);
+
+    public override int GetHashCode()
+    {
+        ref int r = ref Unsafe.As<byte, int>(ref Unsafe.AsRef(in _timestamp0));
+        return r ^ Unsafe.Add(ref r, 1) ^ Unsafe.Add(ref r, 2);
+    }
+
+    #region ToString
+
+    public override string ToString()
+    {
+#if NETSTANDARD2_0
+        return Convert.ToBase64String(ToByteArray());
+#else
+        Span<byte> raw = stackalloc byte[12];
+        Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(raw), this);
+        return Convert.ToBase64String(raw);
+#endif
+    }
+
 #if !NETSTANDARD2_0
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    public void ToString(Span<char> chars)
+    {
+        if (chars.Length < 16) throw new ArgumentOutOfRangeException(nameof(chars), chars.Length, Message.InvalidLength(chars.Length, 16));
+
+        Span<byte> raw = stackalloc byte[12];
+
+        Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(raw), this);
+
+        Convert.TryToBase64Chars(raw, chars, out _);
+    }
+
     public byte[] ToUtf8String()
     {
         Span<byte> bytes = stackalloc byte[12];
@@ -258,26 +301,88 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
         return base64;
     }
-#endif
 
-    public override string ToString()
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    public void ToUtf8String(Span<byte> bytes)
     {
-#if NETSTANDARD2_0
-        return Convert.ToBase64String(ToByteArray());
-#else
-        Span<byte> bytes = stackalloc byte[12];
+        if (bytes.Length < 16) throw new ArgumentOutOfRangeException(nameof(bytes), bytes.Length, Message.InvalidLength(bytes.Length, 16));
+
+        Span<byte> raw = stackalloc byte[12];
         Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(bytes), this);
-        return Convert.ToBase64String(bytes);
-#endif
+
+        if (System.Buffers.Text.Base64.EncodeToUtf8(raw, bytes, out _, out _) != System.Buffers.OperationStatus.Done)
+            throw new InvalidOperationException();
     }
 
-    public override bool Equals(object? obj) => obj is Id id && EqualsCore(in this, in id);
-
-    public override int GetHashCode()
+    public bool TryFormat(Span<char> chars, out int written)
     {
-        ref int r = ref Unsafe.As<byte, int>(ref Unsafe.AsRef(in _timestamp0));
-        return r ^ Unsafe.Add(ref r, 1) ^ Unsafe.Add(ref r, 2);
+        if (chars.Length < 16)
+        {
+            written = 0;
+            return false;
+        }
+
+        Span<byte> raw = stackalloc byte[12];
+
+        Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(raw), this);
+
+        Convert.TryToBase64Chars(raw, chars, out _);
+
+        written = 16;
+        return true;
     }
+#endif
+
+    public bool TryFormat(Span<byte> bytes, out int written)
+    {
+        if (bytes.Length < 16)
+        {
+            written = 0;
+            return false;
+        }
+
+        Span<byte> raw = stackalloc byte[12];
+        Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(bytes), this);
+
+        if (System.Buffers.Text.Base64.EncodeToUtf8(raw, bytes, out _, out _) != System.Buffers.OperationStatus.Done)
+            throw new InvalidOperationException();
+
+        written = 16;
+        return true;
+    }
+
+    #endregion ToString
+
+    #region Formattable
+
+#if NET8_0_OR_GREATER
+    bool IUtf8SpanFormattable.TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
+    {
+        if (format.Length != 0) throw new FormatException();
+
+        return TryFormat(utf8Destination, out bytesWritten);
+    }
+#endif
+
+#if NET6_0_OR_GREATER
+    bool ISpanFormattable.TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
+    {
+        if (format.Length != 0) throw new FormatException();
+
+        return TryFormat(destination, out charsWritten);
+    }
+#endif
+
+    string IFormattable.ToString(string? format, IFormatProvider? formatProvider)
+    {
+        if (format != null) throw new FormatException();
+
+        return ToString();
+    }
+
+    #endregion Formattable
+
+    #region Parse
 
 #if NETSTANDARD2_0
     public static Id Parse(string value)
@@ -288,6 +393,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         return Unsafe.ReadUnaligned<Id>(ref MemoryMarshal.GetReference(Convert.FromBase64String(value).AsSpan()));
     }
 #else
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public static Id Parse(ReadOnlySpan<char> chars)
     {
         if (chars.Length != 16) throw new ArgumentOutOfRangeException(nameof(chars));
@@ -299,6 +405,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         return Unsafe.ReadUnaligned<Id>(ref MemoryMarshal.GetReference(bytes));
     }
 
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
     public static Id Parse(ReadOnlySpan<byte> bytes)
     {
         if (bytes.Length != 16) throw new ArgumentOutOfRangeException(nameof(bytes));
@@ -310,7 +417,86 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
         return Unsafe.ReadUnaligned<Id>(ref MemoryMarshal.GetReference(decoded));
     }
+
+    public static bool TryParse(ReadOnlySpan<char> chars, out Id id)
+    {
+        if (chars.Length != 16) goto fail;
+
+        Span<byte> bytes = stackalloc byte[12];
+
+        if (!Convert.TryFromBase64Chars(chars, bytes, out _)) goto fail;
+
+        id = Unsafe.ReadUnaligned<Id>(ref MemoryMarshal.GetReference(bytes));
+
+        return true;
+
+    fail:
+        id = default;
+        return false;
+    }
+
+    public static bool TryParse(ReadOnlySpan<byte> bytes, out Id id)
+    {
+        if (bytes.Length != 16) goto fail;
+
+        Span<byte> decoded = stackalloc byte[12];
+
+        if (System.Buffers.Text.Base64.DecodeFromUtf8(bytes, decoded, out _, out _) != System.Buffers.OperationStatus.Done)
+            goto fail;
+
+        id = Unsafe.ReadUnaligned<Id>(ref MemoryMarshal.GetReference(decoded));
+        return true;
+
+    fail:
+        id = default;
+        return false;
+    }
 #endif
+
+    #endregion Parse
+
+    #region Parsable
+
+#if NET8_0_OR_GREATER
+
+    static Id IUtf8SpanParsable<Id>.Parse(ReadOnlySpan<byte> utf8Text, IFormatProvider? provider)
+        => Parse(utf8Text);
+
+    static bool IUtf8SpanParsable<Id>.TryParse(ReadOnlySpan<byte> utf8Text, IFormatProvider? provider, out Id result)
+        => TryParse(utf8Text, out result);
+#endif
+
+#if NET7_0_OR_GREATER
+    static Id ISpanParsable<Id>.Parse(ReadOnlySpan<char> s, IFormatProvider? provider)
+        => Parse(s);
+
+    static bool ISpanParsable<Id>.TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, out Id result)
+        => TryParse(s, out result);
+
+    static Id IParsable<Id>.Parse(string s, IFormatProvider? provider)
+        => Parse(s);
+
+    static bool IParsable<Id>.TryParse(string? s, IFormatProvider? provider, out Id result)
+        => TryParse(s, out result);
+#endif
+
+    #endregion Parsable
+
+    #region Operators
+
+    public static Boolean operator <(Id left, Id right) => left.CompareTo(right) < 0;
+
+    public static Boolean operator <=(Id left, Id right) => left.CompareTo(right) <= 0;
+
+    public static Boolean operator ==(Id left, Id right) => EqualsCore(in left, in right);
+
+    public static Boolean operator !=(Id left, Id right) => !EqualsCore(in left, in right);
+
+    public static Boolean operator >=(Id left, Id right) => left.CompareTo(right) >= 0;
+
+    public static Boolean operator >(Id left, Id right) => left.CompareTo(right) > 0;
+
+    #endregion Operators
 
     #region New
 
@@ -341,10 +527,6 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
     public static Id New(DateTime timestamp) => New(GetTimestampFromDateTime(timestamp));
 
-    #endregion New
-
-    #region NewObjectId
-
     /// <summary>
     /// https://www.mongodb.com/docs/manual/reference/method/ObjectId/
     /// </summary>
@@ -367,8 +549,6 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
     public static Id NewObjectId(DateTime timestamp) => NewObjectId(GetTimestampFromDateTime(timestamp));
 
-    #endregion NewObjectId
-
     public static Id Next(Id id)
     {
         ref var b = ref Unsafe.As<Id, byte>(ref id);
@@ -382,23 +562,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         return id;
     }
 
-    #endregion Public Methods
-
-    #region Operators
-
-    public static Boolean operator <(Id left, Id right) => left.CompareTo(right) < 0;
-
-    public static Boolean operator <=(Id left, Id right) => left.CompareTo(right) <= 0;
-
-    public static Boolean operator ==(Id left, Id right) => EqualsCore(in left, in right);
-
-    public static Boolean operator !=(Id left, Id right) => !EqualsCore(in left, in right);
-
-    public static Boolean operator >=(Id left, Id right) => left.CompareTo(right) >= 0;
-
-    public static Boolean operator >(Id left, Id right) => left.CompareTo(right) > 0;
-
-    #endregion Operators
+    #endregion New
 
     #region Private Methods
 
