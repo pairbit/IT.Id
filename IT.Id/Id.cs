@@ -25,7 +25,6 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
     private static readonly uint _pid24;
     private static readonly int _machinePidReverse;
-    private static readonly long _random;
     private static readonly uint _random24;
     private static readonly uint _random8Reverse;
     internal static int _staticIncrement;
@@ -116,6 +115,17 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
         //Unsafe.WriteUnaligned(ref _machine0, BinaryPrimitives.ReverseEndianness((machine << 8) | ((pid >> 8) & 0xff)));
         //Unsafe.WriteUnaligned(ref _pid1, BinaryPrimitives.ReverseEndianness((pid << 24) | increment));
+    }
+
+    public Id(uint timestamp, long random, uint increment)
+    {
+        if (random < 0 || random > 0xffffffffff) throw new ArgumentOutOfRangeException(nameof(random), "The random value must be between 0 and 1099511627775 (it must fit in 5 bytes).");
+
+        if (increment < 0 || increment > 0xffffff) throw new ArgumentOutOfRangeException(nameof(increment), "The increment value must be between 0 and 16777215 (it must fit in 3 bytes).");
+
+        Unsafe.WriteUnaligned(ref _timestamp0, BinaryPrimitives.ReverseEndianness(timestamp));
+        Unsafe.WriteUnaligned(ref _machine0, BinaryPrimitives.ReverseEndianness((uint)(random >> 8)));
+        Unsafe.WriteUnaligned(ref _pid1, BinaryPrimitives.ReverseEndianness((uint)(random << 24) | increment));
     }
 
     public Id(uint timestamp, uint machinePid, uint pidIncrement)
@@ -340,7 +350,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
         Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), _machinePidReverse);
 
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness(_pid24 | Inc()));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness(_pid24 | UInc()));
 
         return id;
     }
@@ -349,16 +359,6 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
     public static Id New(DateTime timestamp) => New(GetTimestampFromDateTime(timestamp));
 
-    //internal static Id New_Old()
-    //{
-    //    // only use low order 3 bytes
-    //    int increment = Interlocked.Increment(ref _staticIncrement) & 0x00ffffff;
-
-    //    var pidIncrement = (_pid << 24) | increment;
-
-    //    return new Id(GetTimestamp(), _machinePid, pidIncrement);
-    //}
-
     #endregion New
 
     #region NewObjectId
@@ -366,37 +366,24 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
     /// <summary>
     /// https://www.mongodb.com/docs/manual/reference/method/ObjectId/
     /// </summary>
-    public static Id NewObjectId()
+    public static Id NewObjectId(uint timestamp)
     {
         Id id = default;
 
         ref var b = ref Unsafe.As<Id, byte>(ref id);
 
-        Unsafe.WriteUnaligned(ref b, BinaryPrimitives.ReverseEndianness(GetTimestamp()));
+        Unsafe.WriteUnaligned(ref b, BinaryPrimitives.ReverseEndianness(timestamp));
 
         Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 4), _random8Reverse);
 
-        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness(_random24 | Inc()));
+        Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 8), BinaryPrimitives.ReverseEndianness(_random24 | UInc()));
 
         return id;
     }
 
-    //internal static Id NewObjectIdOld()
-    //{
-    //    var random = _random;
-
-    //    var b = (uint)(random >> 8); // first 4 bytes of random
-    //    var c = (uint)(random << 24) | Inc(); // 5th byte of random and 3 byte increment
-
-    //    return new Id(GetTimestamp(), b, c);
-    //}
+    public static Id NewObjectId() => NewObjectId(GetTimestamp());
 
     public static Id NewObjectId(DateTime timestamp) => NewObjectId(GetTimestampFromDateTime(timestamp));
-
-    public static Id NewObjectId(uint timestamp)
-    {
-        return Create(timestamp, _random, Inc());
-    }
 
     #endregion NewObjectId
 
@@ -404,7 +391,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
     {
         ref var b = ref Unsafe.As<Id, byte>(ref id);
 
-        var inc = IncInt();
+        var inc = Inc();
 
         Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 9), (byte)(inc >> 16));
         Unsafe.WriteUnaligned(ref Unsafe.Add(ref b, 10), (byte)(inc >> 8));
@@ -452,17 +439,6 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         return combined & 0xffffffffff; // low order 5 bytes
     }
 
-    private static Id Create(uint timestamp, long random, uint increment)
-    {
-        if (random < 0 || random > 0xffffffffff) throw new ArgumentOutOfRangeException(nameof(random), "The random value must be between 0 and 1099511627775 (it must fit in 5 bytes).");
-
-        if (increment < 0 || increment > 0xffffff) throw new ArgumentOutOfRangeException(nameof(increment), "The increment value must be between 0 and 16777215 (it must fit in 3 bytes).");
-
-        var b = (uint)(random >> 8); // first 4 bytes of random
-        var c = (uint)(random << 24) | increment; // 5th byte of random and 3 byte increment
-        return new Id(timestamp, b, c);
-    }
-
     /// <summary>
     /// Gets the current process id.  This method exists because of how CAS operates on the call stack, checking
     /// for permissions before executing the method.  Hence, if we inlined this call, the calling method would not execute
@@ -501,10 +477,10 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static uint Inc() => (uint)IncInt();
+    private static uint UInc() => (uint)Inc();
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int IncInt()
+    private static int Inc()
     {
         // only use low order 3 bytes
         return Interlocked.Increment(ref _staticIncrement) & 0x00ffffff;
