@@ -11,6 +11,23 @@ public class IdTest
     {
     }
 
+    //[Test]
+    public void StaticID()
+    {
+        var timestamp = 1739867386;
+        var machine = (uint)13371679;
+        var pid = unchecked((ushort)-70000);
+        var inc = (uint)(Id._staticIncrement + 1) & 0x00ffffff;
+
+        var id = Id.New(timestamp);
+        Assert.That(id.Timestamp, Is.EqualTo(timestamp));
+        Assert.That((uint)id.Machine, Is.EqualTo(machine));
+        Assert.That((ushort)id.Pid, Is.EqualTo(pid));
+        Assert.That((uint)id.Increment, Is.EqualTo(inc));
+
+        Assert.That(id.ToString(), Is.EqualTo("Z7RE-swJH-6Q_u6R"));
+    }
+
     [Test]
     public void EqualsTest()
     {
