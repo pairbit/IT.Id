@@ -46,6 +46,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     /// First 3 bytes of machine name hash
     /// </summary>
     public static readonly uint CurrentMachine;
+    public static readonly ushort CurrentPid;
     public static readonly ulong CurrentRandom;
     public static readonly Id Empty = default;
     public static readonly Id Min = new(0, 0, 0);
@@ -71,12 +72,14 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     static Id()
     {
-        CurrentMachine = XXH24(Environment.MachineName);
+        uint machine = XXH24(Environment.MachineName);
         ushort pid = GetPid();
-        var machinePid = ((int)CurrentMachine << 8) | ((pid >> 8) & 0xff);
+        int machinePid = ((int)machine << 8) | ((pid >> 8) & 0xff);
 
         _machinePidReverse = BinaryPrimitives.ReverseEndianness(machinePid);
         _pid24 = (uint)(pid << 24);
+        CurrentMachine = machine;
+        CurrentPid = pid;
 
         var seed = GetSeed();
         var random = CalculateRandomValue(seed);
@@ -187,13 +190,15 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     public bool IsCurrentRandom => Random == CurrentRandom;
 
-    public uint Machine => (BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref Unsafe.AsRef(in _machine0))) >> 8) & 0xffffff;
-
     //internal Int32 Machine3 => (_machine0 << 16 | _machine1 << 8 | _machine2) & 0xffffff;
+
+    public uint Machine => (BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref Unsafe.AsRef(in _machine0))) >> 8) & 0xffffff;
 
     public bool IsCurrentMachine => Machine == CurrentMachine;
 
     public ushort Pid => BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<ushort>(ref Unsafe.AsRef(in _pid0)));
+
+    public bool IsCurrentPid => Pid == CurrentPid;
 
     //internal Int16 Pid3 => (short)(_pid0 << 8 | _pid1);
 

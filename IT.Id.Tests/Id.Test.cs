@@ -79,6 +79,7 @@ public class IdTest
             Assert.That(unchecked(id.Increment + i), Is.EqualTo(nextId.Increment));
 
             Assert.That(id.IsCurrentMachine, Is.True);
+            Assert.That(id.IsCurrentPid, Is.True);
             Assert.That(id.IsCurrentRandom, Is.False);
         }
 
@@ -93,6 +94,7 @@ public class IdTest
             Assert.That(unchecked(id.Increment + i), Is.EqualTo(nextId.Increment));
 
             Assert.That(id.IsCurrentMachine, Is.False);
+            Assert.That(id.IsCurrentPid, Is.False);
             Assert.That(id.IsCurrentRandom, Is.True);
         }
     }
