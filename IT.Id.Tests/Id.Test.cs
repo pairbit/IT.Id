@@ -87,7 +87,7 @@ public class IdTest
         var id = Id.New();
         for (int i = 1; i < 1000; i++)
         {
-            var nextId = Id.New();
+            var nextId = Id.New(id.Timestamp);
             Assert.That(id.Timestamp, Is.EqualTo(nextId.Timestamp));
             Assert.That(id.Random, Is.EqualTo(nextId.Random));
             Assert.That(id.Machine, Is.EqualTo(nextId.Machine));
@@ -102,7 +102,7 @@ public class IdTest
         id = Id.NewObjectId();
         for (int i = 1; i < 1000; i++)
         {
-            var nextId = Id.NewObjectId();
+            var nextId = Id.NewObjectId(id.Timestamp);
             Assert.That(id.Timestamp, Is.EqualTo(nextId.Timestamp));
             Assert.That(id.Random, Is.EqualTo(nextId.Random));
             Assert.That(id.Machine, Is.EqualTo(nextId.Machine));
