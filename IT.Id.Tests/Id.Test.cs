@@ -7,6 +7,26 @@ public class IdTest
     {
     }
 
+    //[Test]
+    public void StaticID()
+    {
+        var timestamp = (uint)1739867386;
+        var machine = (uint)13371679;
+        var pid = unchecked((ushort)-70000);
+        var inc = (uint)(Id._staticIncrement + 1) & 0x00ffffff;
+
+        var id = Id.New(timestamp);
+        Assert.That(id.Timestamp, Is.EqualTo(timestamp));
+        Assert.That(id.Machine, Is.EqualTo(machine));
+        Assert.That(id.Pid, Is.EqualTo(pid));
+        Assert.That(id.Increment, Is.EqualTo(inc));
+
+        Assert.That(id.ToString(), Is.EqualTo("Z7RE+swJH+6Q/u6R"));
+#if NET
+        Assert.That(id.ToUtf8String().AsSpan().SequenceEqual("Z7RE+swJH+6Q/u6R"u8), Is.True);
+#endif
+    }
+
     [Test]
     public void NextTest()
     {

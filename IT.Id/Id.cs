@@ -58,9 +58,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
     static Id()
     {
         CurrentMachine = XXH24(Environment.MachineName);
-        short pid = GetPid();
+        ushort pid = GetPid();
         var machinePid = ((int)CurrentMachine << 8) | ((pid >> 8) & 0xff);
-        
+
         _machinePidReverse = BinaryPrimitives.ReverseEndianness(machinePid);
         _pid24 = (uint)(pid << 24);
 
@@ -464,14 +464,14 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
     private static int Inc()
     {
         // only use low order 3 bytes
-        return Interlocked.Increment(ref _staticIncrement) & 0x00ffffff;
+        return Interlocked.Add(ref _staticIncrement, 1) & 0x00ffffff;
     }
 
-    private static short GetPid()
+    private static ushort GetPid()
     {
         try
         {
-            return (short)GetCurrentProcessId(); // use low order two bytes only
+            return (ushort)GetCurrentProcessId(); // use low order two bytes only
         }
         catch (SecurityException)
         {
