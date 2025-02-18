@@ -25,6 +25,22 @@ public class IdTest
         Assert.That(id.ToUtf8String().AsSpan().SequenceEqual("Z7RE+swJH+6Q/u6R"u8), Is.True);
     }
 
+    //[Test]
+    public void StaticObjectID()
+    {
+        var timestamp = (uint)1739867386;
+        var rand = (ulong)842072483480;
+        var inc = (uint)(Id._staticIncrement + 1) & 0x00ffffff;
+
+        var objectId = Id.NewObjectId(timestamp);
+        Assert.That(objectId.Timestamp, Is.EqualTo(timestamp));
+        Assert.That(objectId.Random, Is.EqualTo(rand));
+        Assert.That(objectId.Increment, Is.EqualTo(inc));
+
+        Assert.That(objectId.ToString(), Is.EqualTo("Z7RE+sQPbmaY/u6R"));
+        Assert.That(objectId.ToUtf8String().AsSpan().SequenceEqual("Z7RE+sQPbmaY/u6R"u8), Is.True);
+    }
+
     [Test]
     public void ToStringAndParse()
     {
