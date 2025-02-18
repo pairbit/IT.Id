@@ -323,7 +323,6 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         }
 
         Span<byte> raw = stackalloc byte[12];
-
         Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(raw), this);
 
         Convert.TryToBase64Chars(raw, chars, out _);
@@ -342,7 +341,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
         }
 
         Span<byte> raw = stackalloc byte[12];
-        Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(bytes), this);
+        Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(raw), this);
 
         if (System.Buffers.Text.Base64.EncodeToUtf8(raw, bytes, out _, out _) != System.Buffers.OperationStatus.Done)
             throw new InvalidOperationException();
@@ -398,60 +397,60 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
     {
         if (chars.Length != 16) throw new ArgumentOutOfRangeException(nameof(chars));
 
-        Span<byte> bytes = stackalloc byte[12];
+        Span<byte> raw = stackalloc byte[12];
 
-        if (!Convert.TryFromBase64Chars(chars, bytes, out _)) throw new ArgumentOutOfRangeException(nameof(chars));
+        if (!Convert.TryFromBase64Chars(chars, raw, out _)) throw new ArgumentOutOfRangeException(nameof(chars));
 
-        return Unsafe.ReadUnaligned<Id>(ref MemoryMarshal.GetReference(bytes));
-    }
-
-    /// <exception cref="ArgumentOutOfRangeException"></exception>
-    public static Id Parse(ReadOnlySpan<byte> bytes)
-    {
-        if (bytes.Length != 16) throw new ArgumentOutOfRangeException(nameof(bytes));
-
-        Span<byte> decoded = stackalloc byte[12];
-
-        if (System.Buffers.Text.Base64.DecodeFromUtf8(bytes, decoded, out _, out _) != System.Buffers.OperationStatus.Done)
-            throw new ArgumentOutOfRangeException(nameof(bytes));
-
-        return Unsafe.ReadUnaligned<Id>(ref MemoryMarshal.GetReference(decoded));
+        return Unsafe.ReadUnaligned<Id>(ref MemoryMarshal.GetReference(raw));
     }
 
     public static bool TryParse(ReadOnlySpan<char> chars, out Id id)
     {
         if (chars.Length != 16) goto fail;
 
-        Span<byte> bytes = stackalloc byte[12];
+        Span<byte> raw = stackalloc byte[12];
 
-        if (!Convert.TryFromBase64Chars(chars, bytes, out _)) goto fail;
+        if (!Convert.TryFromBase64Chars(chars, raw, out _)) goto fail;
 
-        id = Unsafe.ReadUnaligned<Id>(ref MemoryMarshal.GetReference(bytes));
-
+        id = Unsafe.ReadUnaligned<Id>(ref MemoryMarshal.GetReference(raw));
         return true;
 
     fail:
         id = default;
         return false;
+    }
+
+#endif
+
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    public static Id Parse(ReadOnlySpan<byte> bytes)
+    {
+        if (bytes.Length != 16) throw new ArgumentOutOfRangeException(nameof(bytes));
+
+        Span<byte> raw = stackalloc byte[12];
+
+        if (System.Buffers.Text.Base64.DecodeFromUtf8(bytes, raw, out _, out _) != System.Buffers.OperationStatus.Done)
+            throw new ArgumentOutOfRangeException(nameof(bytes));
+
+        return Unsafe.ReadUnaligned<Id>(ref MemoryMarshal.GetReference(raw));
     }
 
     public static bool TryParse(ReadOnlySpan<byte> bytes, out Id id)
     {
         if (bytes.Length != 16) goto fail;
 
-        Span<byte> decoded = stackalloc byte[12];
+        Span<byte> raw = stackalloc byte[12];
 
-        if (System.Buffers.Text.Base64.DecodeFromUtf8(bytes, decoded, out _, out _) != System.Buffers.OperationStatus.Done)
+        if (System.Buffers.Text.Base64.DecodeFromUtf8(bytes, raw, out _, out _) != System.Buffers.OperationStatus.Done)
             goto fail;
 
-        id = Unsafe.ReadUnaligned<Id>(ref MemoryMarshal.GetReference(decoded));
+        id = Unsafe.ReadUnaligned<Id>(ref MemoryMarshal.GetReference(raw));
         return true;
 
     fail:
         id = default;
         return false;
     }
-#endif
 
     #endregion Parse
 
