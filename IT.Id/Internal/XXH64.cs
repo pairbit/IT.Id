@@ -17,7 +17,7 @@ internal static unsafe class XXH64
 
     public static unsafe ulong DigestOf(ReadOnlySpan<byte> bytes)
     {
-        if (bytes == null)
+        if (bytes.IsEmpty)
             throw new ArgumentException("Invalid buffer boundaries");
 
         fixed (byte* bytes0 = bytes)
