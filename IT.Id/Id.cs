@@ -183,6 +183,10 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>, IFormattabl
 
     //internal Int32 Timestamp3 => _timestamp0 << 24 | _timestamp1 << 16 | _timestamp2 << 8 | _timestamp3;
 
+    public ulong Random => ((ulong)BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref Unsafe.AsRef(in _machine0))) << 8) | _pid1;
+
+    public bool IsCurrentRandom => Random == CurrentRandom;
+
     public uint Machine => (BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref Unsafe.AsRef(in _machine0))) >> 8) & 0xffffff;
 
     //internal Int32 Machine3 => (_machine0 << 16 | _machine1 << 8 | _machine2) & 0xffffff;

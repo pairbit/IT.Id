@@ -73,11 +73,13 @@ public class IdTest
         {
             var nextId = Id.Next(id);
             Assert.That(id.Timestamp, Is.EqualTo(nextId.Timestamp));
-            Assert.That(id.Pid, Is.EqualTo(nextId.Pid));
+            Assert.That(id.Random, Is.EqualTo(nextId.Random));
             Assert.That(id.Machine, Is.EqualTo(nextId.Machine));
-            Assert.That(id.Machine, Is.EqualTo(Id.CurrentMachine));
-            Assert.That(id.IsCurrentMachine, Is.True);
+            Assert.That(id.Pid, Is.EqualTo(nextId.Pid));
             Assert.That(unchecked(id.Increment + i), Is.EqualTo(nextId.Increment));
+
+            Assert.That(id.IsCurrentMachine, Is.True);
+            Assert.That(id.IsCurrentRandom, Is.False);
         }
 
         id = Id.NewObjectId();
@@ -85,11 +87,13 @@ public class IdTest
         {
             var nextId = Id.Next(id);
             Assert.That(id.Timestamp, Is.EqualTo(nextId.Timestamp));
-            Assert.That(id.Pid, Is.EqualTo(nextId.Pid));
+            Assert.That(id.Random, Is.EqualTo(nextId.Random));
             Assert.That(id.Machine, Is.EqualTo(nextId.Machine));
-            Assert.That(id.IsCurrentMachine, Is.False);
-            //Assert.That(id.Random, Is.EqualTo(Id.CurrentRandom));
+            Assert.That(id.Pid, Is.EqualTo(nextId.Pid));
             Assert.That(unchecked(id.Increment + i), Is.EqualTo(nextId.Increment));
+
+            Assert.That(id.IsCurrentMachine, Is.False);
+            Assert.That(id.IsCurrentRandom, Is.True);
         }
     }
 
