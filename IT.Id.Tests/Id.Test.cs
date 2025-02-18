@@ -1,3 +1,5 @@
+using System.IO.Hashing;
+
 namespace IT.Tests;
 
 public class IdTest
@@ -329,8 +331,14 @@ public class IdTest
 
             Assert.That(id.TryWrite(raw), Is.True); ;
 
-            Assert.That(Internal.XXH32.DigestOf(raw), Is.EqualTo(id.XXH32()));
-            Assert.That(Internal.XXH64.DigestOf(raw), Is.EqualTo(id.XXH64()));
+            var xxh32 = id.XXH32();
+            var xxh64 = id.XXH64();
+
+            Assert.That(Internal.XXH32.DigestOf(raw), Is.EqualTo(xxh32));
+            Assert.That(Internal.XXH64.DigestOf(raw), Is.EqualTo(xxh64));
+
+            Assert.That(XxHash32.HashToUInt32(raw), Is.EqualTo(xxh32));
+            Assert.That(XxHash64.HashToUInt64(raw), Is.EqualTo(xxh64));
 
             raw.Clear();
         }

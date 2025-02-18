@@ -15,7 +15,7 @@ internal static unsafe class XXH64
 
     public static unsafe ulong DigestOf(void* bytes, int length) => XXH64_hash(bytes, length, 0);
 
-    public static unsafe ulong DigestOf(Span<byte> bytes)
+    public static unsafe ulong DigestOf(ReadOnlySpan<byte> bytes)
     {
         if (bytes == null)
             throw new ArgumentException("Invalid buffer boundaries");

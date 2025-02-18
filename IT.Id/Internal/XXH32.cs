@@ -15,7 +15,7 @@ internal static unsafe class XXH32
 
     public static unsafe uint DigestOf(void* bytes, int length) => XXH32_hash(bytes, length, 0);
 
-    public static unsafe uint DigestOf(Span<byte> bytes)
+    public static unsafe uint DigestOf(ReadOnlySpan<byte> bytes)
     {
         if (bytes == null)
             throw new ArgumentException("Invalid buffer boundaries");
