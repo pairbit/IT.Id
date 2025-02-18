@@ -17,7 +17,8 @@ public class IdTest
             Assert.That(id.Timestamp, Is.EqualTo(nextId.Timestamp));
             Assert.That(id.Pid, Is.EqualTo(nextId.Pid));
             Assert.That(id.Machine, Is.EqualTo(nextId.Machine));
-            Assert.That(id.Machine, Is.EqualTo(Id.MachineHash24));
+            Assert.That(id.Machine, Is.EqualTo(Id.CurrentMachine));
+            Assert.That(id.IsCurrentMachine, Is.True);
             Assert.That(unchecked(id.Increment + i), Is.EqualTo(nextId.Increment));
         }
 
@@ -28,7 +29,7 @@ public class IdTest
             Assert.That(id.Timestamp, Is.EqualTo(nextId.Timestamp));
             Assert.That(id.Pid, Is.EqualTo(nextId.Pid));
             Assert.That(id.Machine, Is.EqualTo(nextId.Machine));
-            //Assert.That(id.Random, Is.EqualTo(Id.MachineRandom));
+            //Assert.That(id.Random, Is.EqualTo(Id.CurrentRandom));
             Assert.That(unchecked(id.Increment + i), Is.EqualTo(nextId.Increment));
         }
     }
@@ -197,30 +198,4 @@ public class IdTest
         }
     }
 
-    [Test]
-    public void IdMachine()
-    {
-        var id = Id.New();
-        var objectId = Id.NewObjectId();
-        Assert.Multiple(() =>
-        {
-            Assert.That(id.MachineName, Is.Null);
-            Assert.That(objectId.MachineName, Is.Null);
-            Assert.That(id.Machine, Is.EqualTo(Id.MachineHash24));
-            Assert.That(objectId.Machine, Is.Not.EqualTo(Id.MachineHash24));
-        });
-        string[] names = null!;
-
-        Assert.Throws<ArgumentNullException>(() => Id.Machines(names));
-        Assert.Throws<ArgumentException>(() => Id.Machines());
-        Assert.Throws<ArgumentException>(() => Id.Machines("abc", "abc"));
-
-        Id.Machines(Environment.MachineName, "IT2");
-        Assert.Throws<InvalidOperationException>(() => Id.Machines("IT3"));
-        Assert.Multiple(() =>
-        {
-            Assert.That(id.MachineName, Is.EqualTo(Environment.MachineName));
-            Assert.That(objectId.MachineName, Is.Null);
-        });
-    }
 }

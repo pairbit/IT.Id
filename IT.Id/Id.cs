@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Buffers.Binary;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -28,13 +27,12 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
     private static readonly uint _random24;
     private static readonly uint _random8Reverse;
     internal static int _staticIncrement;
-    private static IDictionary<uint, string>? _machines;
 
     /// <summary>
     /// First 3 bytes of machine name hash
     /// </summary>
-    public static readonly uint MachineHash24;
-    public static readonly ulong MachineRandom;
+    public static readonly uint CurrentMachine;
+    public static readonly ulong CurrentRandom;
     public static readonly Id Empty = default;
     public static readonly Id Min = new(0, 0, 0);
     public static readonly Id Max = new(uint.MaxValue, uint.MaxValue, uint.MaxValue);
@@ -59,9 +57,9 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
     static Id()
     {
-        MachineHash24 = GetMachineXXHash();
+        CurrentMachine = XXH24(Environment.MachineName);
         short pid = GetPid();
-        var machinePid = ((int)MachineHash24 << 8) | ((pid >> 8) & 0xff);
+        var machinePid = ((int)CurrentMachine << 8) | ((pid >> 8) & 0xff);
         
         _machinePidReverse = BinaryPrimitives.ReverseEndianness(machinePid);
         _pid24 = (uint)(pid << 24);
@@ -70,7 +68,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         var random = CalculateRandomValue(seed);
         _random8Reverse = BinaryPrimitives.ReverseEndianness((uint)(random >> 8));
         _random24 = (uint)(random << 24);
-        MachineRandom = random;
+        CurrentRandom = random;
 
         _staticIncrement = new Random().Next();
     }
@@ -175,7 +173,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
 
     //internal Int32 Machine3 => (_machine0 << 16 | _machine1 << 8 | _machine2) & 0xffffff;
 
-    public String? MachineName => _machines == null ? null : (_machines.TryGetValue(Machine, out var name) ? name : null);
+    public bool IsCurrentMachine => Machine == CurrentMachine;
 
     public ushort Pid => BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<ushort>(ref Unsafe.AsRef(in _pid0)));
 
@@ -314,26 +312,6 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
     }
 #endif
 
-    public static void Machines(params String[] names)
-    {
-        if (_machines != null) throw new InvalidOperationException("Machines already initialized");
-        if (names == null) throw new ArgumentNullException(nameof(names));
-        if (names.Length == 0) throw new ArgumentException("names is empty", nameof(names));
-
-        var machines = new Dictionary<uint, String>();
-
-        foreach (var name in names)
-        {
-            var hash = XXHash24(name);
-
-            if (machines.ContainsKey(hash)) throw new ArgumentException($"Machine name '{name}' has already been added", nameof(names));
-
-            machines.Add(hash, name);
-        }
-
-        _machines = machines;
-    }
-
     #region New
 
     //https://github.com/dotnet/runtime/blob/e66a6a319cc372f30c3dad9f491ac636c0ce03e4/src/libraries/Common/src/Interop/Unix/System.Native/Interop.GetSystemTimeAsTicks.cs#L12
@@ -466,9 +444,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         return 0x00ffffff & machineName.GetHashCode(); // use first 3 bytes of hash
     }
 
-    private static uint GetMachineXXHash() => XXHash24(Environment.MachineName);
-
-    private static uint XXHash24(string machineName)
+    private static uint XXH24(string machineName)
     {
         var bytes = Encoding.UTF8.GetBytes(machineName);
         var hash = Internal.XXH32.DigestOf(bytes);
