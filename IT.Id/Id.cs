@@ -34,6 +34,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
     /// First 3 bytes of machine name hash
     /// </summary>
     public static readonly uint MachineHash24;
+    public static readonly ulong MachineRandom;
     public static readonly Id Empty = default;
     public static readonly Id Min = new(0, 0, 0);
     public static readonly Id Max = new(uint.MaxValue, uint.MaxValue, uint.MaxValue);
@@ -61,19 +62,22 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         MachineHash24 = GetMachineXXHash();
         short pid = GetPid();
         var machinePid = ((int)MachineHash24 << 8) | ((pid >> 8) & 0xff);
-
-        _pid24 = (uint)(pid << 24);
+        
         _machinePidReverse = BinaryPrimitives.ReverseEndianness(machinePid);
+        _pid24 = (uint)(pid << 24);
 
-        var random = CalculateRandomValue();
-        _random24 = (uint)(random << 24);
+        var seed = GetSeed();
+        var random = CalculateRandomValue(seed);
         _random8Reverse = BinaryPrimitives.ReverseEndianness((uint)(random >> 8));
+        _random24 = (uint)(random << 24);
+        MachineRandom = random;
+
         _staticIncrement = new Random().Next();
     }
 
     #region Ctors
 
-    public Id(ReadOnlySpan<Byte> bytes)
+    public Id(ReadOnlySpan<byte> bytes)
     {
         if (bytes.Length != 12) ThrowArgumentException();
 
@@ -117,16 +121,16 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         //Unsafe.WriteUnaligned(ref _pid1, BinaryPrimitives.ReverseEndianness((pid << 24) | increment));
     }
 
-    public Id(uint timestamp, long random, uint increment)
-    {
-        if (random < 0 || random > 0xffffffffff) throw new ArgumentOutOfRangeException(nameof(random), "The random value must be between 0 and 1099511627775 (it must fit in 5 bytes).");
+    //public Id(uint timestamp, ulong random, uint increment)
+    //{
+    //    if (random < 0 || random > 0xffffffffff) throw new ArgumentOutOfRangeException(nameof(random), "The random value must be between 0 and 1099511627775 (it must fit in 5 bytes).");
 
-        if (increment < 0 || increment > 0xffffff) throw new ArgumentOutOfRangeException(nameof(increment), "The increment value must be between 0 and 16777215 (it must fit in 3 bytes).");
+    //    if (increment < 0 || increment > 0xffffff) throw new ArgumentOutOfRangeException(nameof(increment), "The increment value must be between 0 and 16777215 (it must fit in 3 bytes).");
 
-        Unsafe.WriteUnaligned(ref _timestamp0, BinaryPrimitives.ReverseEndianness(timestamp));
-        Unsafe.WriteUnaligned(ref _machine0, BinaryPrimitives.ReverseEndianness((uint)(random >> 8)));
-        Unsafe.WriteUnaligned(ref _pid1, BinaryPrimitives.ReverseEndianness((uint)(random << 24) | increment));
-    }
+    //    Unsafe.WriteUnaligned(ref _timestamp0, BinaryPrimitives.ReverseEndianness(timestamp));
+    //    Unsafe.WriteUnaligned(ref _machine0, BinaryPrimitives.ReverseEndianness((uint)(random >> 8)));
+    //    Unsafe.WriteUnaligned(ref _pid1, BinaryPrimitives.ReverseEndianness((uint)(random << 24) | increment));
+    //}
 
     public Id(uint timestamp, uint machinePid, uint pidIncrement)
     {
@@ -429,15 +433,16 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
         return l == r && Unsafe.Add(ref l, 1) == Unsafe.Add(ref r, 1) && Unsafe.Add(ref l, 2) == Unsafe.Add(ref r, 2);
     }
 
-    private static long CalculateRandomValue()
+    private static ulong CalculateRandomValue(int seed)
     {
-        var seed = (int)DateTime.UtcNow.Ticks ^ GetMachineHash() ^ GetPid();
         var random = new Random(seed);
         var high = random.Next();
         var low = random.Next();
-        var combined = (long)((ulong)(uint)high << 32 | (ulong)(uint)low);
+        var combined = (ulong)(uint)high << 32 | (uint)low;
         return combined & 0xffffffffff; // low order 5 bytes
     }
+
+    private static int GetSeed() => (int)DateTime.UtcNow.Ticks ^ GetMachineHash() ^ GetPid();
 
     /// <summary>
     /// Gets the current process id.  This method exists because of how CAS operates on the call stack, checking

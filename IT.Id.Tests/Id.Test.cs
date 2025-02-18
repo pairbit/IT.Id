@@ -1,7 +1,3 @@
-using System.ComponentModel;
-using System.Drawing;
-using System.Security.Cryptography;
-
 namespace IT.Tests;
 
 public class IdTest
@@ -21,6 +17,7 @@ public class IdTest
             Assert.That(id.Timestamp, Is.EqualTo(nextId.Timestamp));
             Assert.That(id.Pid, Is.EqualTo(nextId.Pid));
             Assert.That(id.Machine, Is.EqualTo(nextId.Machine));
+            Assert.That(id.Machine, Is.EqualTo(Id.MachineHash24));
             Assert.That(unchecked(id.Increment + i), Is.EqualTo(nextId.Increment));
         }
 
@@ -31,6 +28,7 @@ public class IdTest
             Assert.That(id.Timestamp, Is.EqualTo(nextId.Timestamp));
             Assert.That(id.Pid, Is.EqualTo(nextId.Pid));
             Assert.That(id.Machine, Is.EqualTo(nextId.Machine));
+            //Assert.That(id.Random, Is.EqualTo(Id.MachineRandom));
             Assert.That(unchecked(id.Increment + i), Is.EqualTo(nextId.Increment));
         }
     }
@@ -38,9 +36,9 @@ public class IdTest
     [Test]
     public void EqualsTest()
     {
-        var staticIncrement = int.MaxValue-1000;
+        var staticIncrement = int.MaxValue - 1000;
         var a = (uint)Interlocked.Increment(ref staticIncrement) & 0x00ffffff;
-        
+
         var b = (uint)(Interlocked.Increment(ref staticIncrement) & 0x00ffffff);
 
         var id = Id.New();
