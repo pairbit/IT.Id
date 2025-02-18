@@ -143,6 +143,7 @@ public readonly partial struct Id : IComparable<Id>, IEquatable<Id>
     public Int32 Timestamp => BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<Int32>(ref Unsafe.AsRef(in _timestamp0)));
 
     //internal Int32 Timestamp3 => _timestamp0 << 24 | _timestamp1 << 16 | _timestamp2 << 8 | _timestamp3;
+    public ulong Random => ((ulong)BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<uint>(ref Unsafe.AsRef(in _machine0))) << 8) | _pid1;
 
     public Int32 Machine => (BinaryPrimitives.ReverseEndianness(Unsafe.ReadUnaligned<Int32>(ref Unsafe.AsRef(in _machine0))) >> 8) & 0xffffff;
 
