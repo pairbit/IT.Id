@@ -22,9 +22,47 @@ public class IdTest
         Assert.That(id.Increment, Is.EqualTo(inc));
 
         Assert.That(id.ToString(), Is.EqualTo("Z7RE+swJH+6Q/u6R"));
-#if NET
         Assert.That(id.ToUtf8String().AsSpan().SequenceEqual("Z7RE+swJH+6Q/u6R"u8), Is.True);
+    }
+
+    [Test]
+    public void ToStringAndParse()
+    {
+        Span<byte> bytes = stackalloc byte[16];
+        Span<char> chars = stackalloc char[16];
+
+        for (int i = 0; i < 1000; i++)
+        {
+            var id = Id.New();
+            var str = id.ToString();
+            var utf8str = id.ToUtf8String();
+
+            id.ToUtf8String(bytes);
+            Assert.That(bytes.SequenceEqual(utf8str), Is.True);
+
+            bytes.Clear();
+            Assert.That(id.TryFormat(bytes, out var written), Is.True);
+            Assert.That(bytes.SequenceEqual(utf8str), Is.True);
+            Assert.That(written, Is.EqualTo(16));
+
+            Assert.That(Id.Parse(str), Is.EqualTo(id));
+
+            Assert.That(Id.Parse(utf8str), Is.EqualTo(id));
+            Assert.That(Id.TryParse(utf8str, out var id3), Is.True);
+            Assert.That(id3, Is.EqualTo(id));
+
+#if NET
+            id.ToString(chars);
+            Assert.That(chars.SequenceEqual(str), Is.True);
+
+            Assert.That(id.TryFormat(chars, out var written2), Is.True);
+            Assert.That(chars.SequenceEqual(str), Is.True);
+            Assert.That(written2, Is.EqualTo(16));
+
+            Assert.That(Id.TryParse(str, out var id2), Is.True);
+            Assert.That(id2, Is.EqualTo(id));
 #endif
+        }
     }
 
     [Test]
@@ -40,8 +78,6 @@ public class IdTest
             Assert.That(id.Machine, Is.EqualTo(Id.CurrentMachine));
             Assert.That(id.IsCurrentMachine, Is.True);
             Assert.That(unchecked(id.Increment + i), Is.EqualTo(nextId.Increment));
-
-            id.ToUtf8String
         }
 
         id = Id.NewObjectId();
@@ -51,6 +87,7 @@ public class IdTest
             Assert.That(id.Timestamp, Is.EqualTo(nextId.Timestamp));
             Assert.That(id.Pid, Is.EqualTo(nextId.Pid));
             Assert.That(id.Machine, Is.EqualTo(nextId.Machine));
+            Assert.That(id.IsCurrentMachine, Is.False);
             //Assert.That(id.Random, Is.EqualTo(Id.CurrentRandom));
             Assert.That(unchecked(id.Increment + i), Is.EqualTo(nextId.Increment));
         }
@@ -186,10 +223,6 @@ public class IdTest
 
         Assert.Multiple(() =>
         {
-            Assert.That(Id.Parse(id.ToString()), Is.EqualTo(id));
-#if NET
-            Assert.That(Id.Parse(id.ToUtf8String()), Is.EqualTo(id));
-#endif
             Assert.That(new Id(id.Timestamp, id.Machine, id.Pid, id.Increment), Is.EqualTo(id));
 
             Assert.That(new Id(id.ToByteArray()), Is.EqualTo(id));
